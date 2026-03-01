@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.0.3](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.2...v0.0.3) (2026-03-01)
+
+
+### Bug Fixes
+
+* update peerDependencies to &gt;=0.73 and add missing keywords ([#5](https://github.com/javier545dev/react-native-config-ultimate/issues/5)) ([1174921](https://github.com/javier545dev/react-native-config-ultimate/commit/117492166a9cd886b5c917e24157eeffbfca90f9))
+
 ## [0.0.2](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.1...v0.0.2) (2026-03-01)
 
 
