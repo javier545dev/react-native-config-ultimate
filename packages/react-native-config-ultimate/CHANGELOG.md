@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.0.2](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.1...v0.0.2) (2026-03-01)
+
+
+### Bug Fixes
+
+* bugfixes and test coverage improvements (0.0.2) ([e5a03b7](https://github.com/javier545dev/react-native-config-ultimate/commit/e5a03b78d64b1a94131cacb00f94611c58c45f20))
+
 ## [7.0.0](https://github.com/javier545dev/react-native-config-ultimate/releases/tag/v7.0.0) (2026-02-28)
 
 ### ⚠ BREAKING CHANGES
