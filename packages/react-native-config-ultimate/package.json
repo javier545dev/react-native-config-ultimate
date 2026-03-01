@@ -36,8 +36,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/javier545dev/react-native-config-ultimate.git",
-    "baseUrl": "https://github.com/javier545dev/react-native-config-ultimate"
+    "url": "git+https://github.com/javier545dev/react-native-config-ultimate.git"
+  },
+  "homepage": "https://github.com/javier545dev/react-native-config-ultimate#readme",
+  "bugs": {
+    "url": "https://github.com/javier545dev/react-native-config-ultimate/issues"
   },
   "keywords": [
     "react-native",
@@ -67,8 +70,6 @@
     }
   ],
   "license": "MIT",
-  "licenseFilename": "LICENSE",
-  "readmeFilename": "README.md",
   "peerDependencies": {
     "react-native": ">=0.60.0-rc.0 <1.0.x"
   },
@@ -97,10 +98,6 @@
     "handlebars": "^4.7.7",
     "js-yaml": "^4",
     "yargs": "^17"
-  },
-  "resolutions": {
-    "logkitty": "^0.7.1",
-    "lodash": "^4.17.19"
   },
   "codegenConfig": {
     "name": "RNUltimateConfigSpec",
