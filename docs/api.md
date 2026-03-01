@@ -3,11 +3,16 @@
 Table of contents
 
 1. [Files](#files)
+   1. [Dotenv variable expansion](#dotenv-variable-expansion)
+   1. [Per platform values](#per-platform-values)
 1. [CLI](#cli)
+   1. [Multi-env file merging](#multi-env-file-merging)
    1. [Advanced options for monorepo](#advanced-options-for-monorepo)
    1. [RC file](#rc-file)
       1. [Hooks](#hooks)
+      1. [Schema validation](#schema-validation)
       1. [JS override](#js-override)
+1. [New Architecture](#new-architecture)
 1. [Javascript](#javascript)
 1. [Typescript](#typescript)
 1. [ios](#ios)
@@ -22,7 +27,7 @@ Table of contents
 
 ## Files
 
-Environment data can be read from both dotenv and YAML files. Latter are automaticlaly detected by CLI based on extension: `.yaml` or `.yml`.
+Environment data can be read from both dotenv and YAML files. The format is automatically detected by the CLI based on file extension: `.yaml` or `.yml` → YAML; anything else → dotenv.
 
 Example of configuration in env file:
 
@@ -37,6 +42,28 @@ Equivalent config with YAML:
 HELLO: world
 TEST: 100
 ```
+
+### Dotenv variable expansion
+
+Variable references using `$VAR` syntax are automatically expanded in dotenv files:
+
+```env
+BASE_URL=https://api.example.com
+API_URL=$BASE_URL/v1
+AUTH_URL=$BASE_URL/auth
+```
+
+This also works across files when [merging multiple env files](#multi-env-file-merging):
+
+```env
+# .env.base
+BASE_URL=https://api.example.com
+
+# .env.staging
+API_URL=$BASE_URL/v1   # → https://api.example.com/v1
+```
+
+> **Note:** Variable expansion is only applied to dotenv-format files. YAML files use their own native anchor/alias syntax (`*anchor`).
 
 ### Per platform values
 
@@ -57,9 +84,46 @@ API_KEY:
 
 Inject environment data with a single command:
 
-| npm                  | yarn             |
-| -------------------- | ---------------- |
-| `npm yarn rnuc .env` | `yarn rnuc .env` |
+| npm             | yarn             |
+| --------------- | ---------------- |
+| `npx rnuc .env` | `yarn rnuc .env` |
+
+### Multi-env file merging
+
+Pass multiple env files to merge them. Files are processed left-to-right; **the last file wins** for any conflicting keys.
+
+```bash
+# Base config + environment-specific override
+npx rnuc .env.base .env.staging
+
+# Base config + local secrets (gitignored)
+npx rnuc .env.base .env.local
+
+# Three-level merge
+npx rnuc .env.base .env.staging .env.local
+```
+
+Example:
+
+```env
+# .env.base
+APP_NAME=MyApp
+API_URL=https://api.example.com
+DEBUG=false
+
+# .env.staging
+API_URL=https://staging.api.example.com
+DEBUG=true
+```
+
+Result of `rnuc .env.base .env.staging`:
+```
+APP_NAME=MyApp                           # from .env.base
+API_URL=https://staging.api.example.com  # overridden by .env.staging
+DEBUG=true                               # overridden by .env.staging
+```
+
+> **Tip:** Add environment-specific files (`.env.staging`, `.env.prod`) to git and keep `.env.local` in `.gitignore` for local secrets.
 
 ### Advanced options for monorepo
 
@@ -103,6 +167,52 @@ module.exports = {
 };
 ```
 
+### Schema validation
+
+Define a `schema` in `.rnucrc.js` to validate env vars at **build time**. The build will fail with a clear error message listing all problems at once if any variable fails validation.
+
+Validation runs **after** the `on_env` hook, so the hook can inject or transform variables before they are checked.
+
+```js
+// .rnucrc.js
+module.exports = {
+  schema: {
+    // Required string
+    API_KEY: { type: 'string', required: true },
+
+    // Required number — fails if value cannot be parsed as a number
+    TIMEOUT_MS: { type: 'number', required: true },
+
+    // Optional boolean — accepted values: true/false/1/0 (case-insensitive)
+    DEBUG: { type: 'boolean' },
+
+    // String with regex pattern constraint
+    ENV_NAME: {
+      type: 'string',
+      required: true,
+      pattern: '^(dev|staging|prod)$',
+    },
+  },
+};
+```
+
+When validation fails, the build exits with all errors listed at once:
+
+```
+❌ react-native-ultimate-config: env validation failed:
+  • Missing required env var: API_KEY
+  • TIMEOUT_MS must be a number, got "fast"
+  • ENV_NAME does not match pattern /^(dev|staging|prod)$/, got "production"
+```
+
+#### Schema field options
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | `'string' \| 'number' \| 'boolean'` | Expected type. All env values are strings by default; `number` and `boolean` validate parsability. |
+| `required` | `boolean` | If `true`, the build fails when the var is missing or empty. Default: `false`. |
+| `pattern` | `string` | A regex pattern the value must match (applied to the string representation). |
+
 ### JS override
 
 When rc file contains boolean field `js_override` `react-native-ultimate-config` will generate js code overriding values passed from native code. [Scenarios why this may be needed](./cookbook.md#override-native-values-in-js)
@@ -111,6 +221,22 @@ When rc file contains boolean field `js_override` `react-native-ultimate-config`
 module.exports = {
   js_override: true,
 };
+```
+
+## New Architecture
+
+`react-native-ultimate-config` v7 supports **both** the Old Architecture (Bridge / NativeModules) and the New Architecture (TurboModules) with the same API. No configuration required — the library auto-detects which architecture is active.
+
+| Architecture | React Native | How it works |
+|---|---|---|
+| Old (Bridge) | >=0.60 | `NativeModules.UltimateConfig.getConstants()` |
+| New (TurboModules) | >=0.68 | TurboModule spec via Codegen |
+
+The JS API is identical in both cases:
+
+```typescript
+import config from 'react-native-ultimate-config';
+config.MY_VAR; // works on old arch and new arch
 ```
 
 ## Javascript
@@ -127,7 +253,20 @@ config.MY_CONFIG;
 
 ## Typescript
 
-`index.d.ts` file is generated according to consumed environment
+`index.d.ts` is automatically generated by `rnuc` with **exact types** derived from your env file. No manual type declarations needed.
+
+```typescript
+// Generated index.d.ts (example)
+export interface ConfigVariables {
+  API_URL: string;
+  TIMEOUT_MS: number;   // typed as number when using YAML
+  DEBUG: boolean;       // typed as boolean when using YAML
+}
+declare const UltimateConfig: ConfigVariables;
+export default UltimateConfig;
+```
+
+For dotenv files, all values are typed as `string`. For YAML files, the actual type (`string`, `number`, `boolean`) is inferred from the value.
 
 ## ios
 

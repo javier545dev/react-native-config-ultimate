@@ -6,26 +6,32 @@ _Config that works_
 [![npm](https://img.shields.io/npm/v/react-native-ultimate-config?color=green&label=version)](https://www.npmjs.com/package/react-native-ultimate-config)
 [![npm](https://img.shields.io/npm/dw/react-native-ultimate-config?color=green)](https://www.npmjs.com/package/react-native-ultimate-config)
 
-_Project generated with https://github.com/brodybits/create-react-native-module_
-
-## Suport of gradle
+## Gradle compatibility
 
 | react-native-ultimate-config | gradle |
 | ---------------------------- | ------ |
 | ^3                           | <=6    |
-| >4                           | 7      |
+| ^4 – ^6                      | 7      |
+| ^7                           | 8      |
+
+## React Native compatibility
+
+| react-native-ultimate-config | react-native | react  | New Architecture |
+| ---------------------------- | ------------ | ------ | ---------------- |
+| ^7                           | >=0.60 <1.x  | >=16   | ✅ TurboModules  |
+| ^6                           | >=0.60 <1.x  | >=16   | ❌               |
 
 ## TL;DR usage
 
 1. install
-   |npm | yarn |
+   | npm | yarn |
    |-|-|
    |`npm install react-native-ultimate-config` | `yarn add react-native-ultimate-config`|
 2. [one-off setup for native projects](./docs/quickstart.md)
 3. initialize env
-   |npm | yarn |
+   | npm | yarn |
    |-|-|
-   |`npm run rnuc <env file>`|`yarn rnuc <env file>`|
+   |`npx rnuc .env`|`yarn rnuc .env`|
 4. build! `react-native run-{ios,android}`
 
 ## ☝❗Approach to versioning and breaking changes
@@ -57,9 +63,12 @@ Therefore every time this library is updated all files MUST be regenerated using
 1. [Web support](./docs/api.md#web) (works with React Native for Web)
 1. [Hooks](./docs/api.md#hooks)
 1. [Monorepo support](./docs/monorepo-tips.md) (yarn workspaces or lerna)
-1. Unit tested with jest
-1. E2E tested with detox
-1. Provides typescript [typings](./docs/api.md#typescript)
+1. **[New Architecture](./docs/api.md#new-architecture)** — TurboModules support (RN 0.68+), fully backward-compatible with old arch
+1. **[Multi-env file merging](./docs/api.md#multi-env-file-merging)** — `rnuc .env.base .env.staging` (v7+)
+1. **[Dotenv variable expansion](./docs/api.md#dotenv-variable-expansion)** — `API_URL=$BASE_URL/v1` (v7+)
+1. **[Schema validation](./docs/api.md#schema-validation)** — fail at build time on missing or invalid vars (v7+)
+1. Unit tested with jest (83 tests)
+1. Written in TypeScript with strict mode — [exact typings](./docs/api.md#typescript) generated for your env vars
 1. Supports [dotenv and yaml](./docs/api.md#files)
 1. [Fully typed](./docs/api.md#note-about-types) values available when using yaml config
 1. Configure values [per platform](./docs/api.md#per-platform-values) in one file

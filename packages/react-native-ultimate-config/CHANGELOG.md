@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.0](https://github.com/maxkomarychev/react-native-ultimate-config/compare/v6.0.1...v7.0.0) (2026-02-28)
+
+### ⚠ BREAKING CHANGES
+
+* Requires **React Native ≥ 0.68** for New Architecture (TurboModules). Old Architecture (Bridge) is still fully supported down to RN 0.60.
+* Requires **Node.js ≥ 16**.
+* The CLI no longer sets `process.env` as a side effect when loading dotenv files (replaced `dotenv.config()` with `dotenv.parse()` + `dotenv-expand`). If your `.rnucrc.js` hook relied on `process.env` being populated by `rnuc`, move that logic into the `on_env` hook itself.
+
+### Features
+
+* **New Architecture (TurboModules)** — full Codegen spec (`NativeUltimateConfig.ts`) for RN 0.68+. Backward-compatible with old Bridge architecture via `NativeModules.UltimateConfig`. No API changes required.
+* **Multi-env file merging** — pass multiple files to `rnuc`; they are merged left-to-right, last file wins for conflicting keys:
+  ```bash
+  npx rnuc .env.base .env.staging
+  npx rnuc .env.base .env.local
+  ```
+* **Dotenv variable expansion** — `$VAR` references are expanded automatically, including cross-file references when merging:
+  ```env
+  BASE_URL=https://api.example.com
+  API_URL=$BASE_URL/v1   # → https://api.example.com/v1
+  ```
+* **Schema validation** — define a `schema` in `.rnucrc.js` to validate env vars at build time. Build fails immediately with all errors listed at once:
+  ```js
+  module.exports = {
+    schema: {
+      API_KEY:  { type: 'string',  required: true },
+      TIMEOUT:  { type: 'number',  required: true },
+      ENV_NAME: { type: 'string',  required: true, pattern: '^(dev|staging|prod)$' },
+    },
+  };
+  ```
+* **Full TypeScript rewrite** — entire library source migrated to TypeScript with strict mode. Zero `any`. Exact types on all public APIs.
+* **React 19** — updated to React 19.2.4 and `@types/react@^19.0.0`.
+* **Gradle 8** — example app updated to Gradle 8.8 (required by RN 0.79.x).
+* **Lerna v9** — monorepo tooling upgraded from Lerna v3 to v9.
+
+### Bug Fixes
+
+* Removed all `any` casts in CLI (`cli.ts`) — replaced with typed yargs v17 API using `@types/yargs`.
+
+### Tests
+
+* Test suite expanded from 50 to 83 tests across 7 suites.
+* Added `validate-env.spec.ts` for schema validation coverage.
+* Updated `load-env.spec.ts` for multi-file merge, dotenv expansion, and YAML merge scenarios.
+* Added schema + multi-file test cases to `main.spec.ts`.
+
 ### [6.0.1](https://github.com/maxkomarychev/react-native-ultimate-config/compare/v6.0.0...v6.0.1) (2023-09-01)
 
 
