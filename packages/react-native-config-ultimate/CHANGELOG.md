@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.0.7](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.6...v0.0.7) (2026-03-01)
+
+
+### Bug Fixes
+
+* include NativeUltimateConfig.ts for Codegen ([8e4f165](https://github.com/javier545dev/react-native-config-ultimate/commit/8e4f165f0ba7a6edc2d29569f1cd17d2442536af))
+
 ## [0.0.6](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.5...v0.0.6) (2026-03-01)
 
 
