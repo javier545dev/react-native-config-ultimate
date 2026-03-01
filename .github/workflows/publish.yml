@@ -3,6 +3,12 @@ name: Publish to npm
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version being published (for reference only)"
+        required: false
+        default: "latest"
 
 jobs:
   publish:
