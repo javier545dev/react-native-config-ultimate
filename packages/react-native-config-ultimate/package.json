@@ -32,7 +32,7 @@
     "typecheck": "tsc --noEmit",
     "pretest": "tsc",
     "test": "jest",
-    "prepack": "echo '#error \"invoke bin.js with env file before compiling native project\"' > ios/ConfigValues.h && echo 'module.exports = {};' > override.js",
+    "prepack": "printf '#error \"react-native-config-ultimate: ConfigValues.h not generated. Run: npx rncu .env from your project root before building iOS.\\n\"' > ios/ConfigValues.h && echo 'module.exports = {};' > override.js",
     "lint": "eslint src/**/*.ts index.ts --max-warnings=0",
     "format": "prettier --write src/**/*.ts index.ts"
   },
