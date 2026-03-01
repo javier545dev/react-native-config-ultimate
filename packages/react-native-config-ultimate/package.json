@@ -58,8 +58,13 @@
     "xcconfig",
     "gradle",
     "objective-c",
+    "swift",
     "java",
-    "typescript"
+    "kotlin",
+    "typescript",
+    "yaml",
+    "new-architecture",
+    "turbomodules"
   ],
   "author": {
     "name": "Javier Fuentes",
@@ -74,7 +79,7 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "react-native": ">=0.60.0-rc.0 <1.0.x"
+    "react-native": ">=0.73.0 <1.0.x"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
