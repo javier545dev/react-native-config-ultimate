@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.0.6](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.5...v0.0.6) (2026-03-01)
+
+
+### Bug Fixes
+
+* remove .ts files from npm package to fix Metro resolution in RN 0.80+ ([491cc06](https://github.com/javier545dev/react-native-config-ultimate/commit/491cc06657f724728651e8aa7e9498b57441da1e))
+
 ## [0.0.5](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.4...v0.0.5) (2026-03-01)
 
 
