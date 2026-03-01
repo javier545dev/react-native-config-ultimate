@@ -26,7 +26,7 @@ _Config that works_
 
 | react-native-config-ultimate | gradle |
 | ---------------------------- | ------ |
-| ^7                           | 8      |
+| 0.0.x                        | 8      |
 
 > For older versions see the original package [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config).
 
@@ -34,7 +34,7 @@ _Config that works_
 
 | react-native-config-ultimate | react-native | react  | New Architecture |
 | ---------------------------- | ------------ | ------ | ---------------- |
-| ^7                           | >=0.60 <1.x  | >=19   | ✅ TurboModules  |
+| 0.0.x                        | >=0.73       | >=18   | ✅ TurboModules  |
 
 ## TL;DR usage
 
@@ -61,9 +61,9 @@ Therefore every time this library is updated all files MUST be regenerated using
 1. [Features 🎆](#features)
 1. [Mission 🥾](#mission)
 1. [Quickstart Guide 🏃](./docs/quickstart.md)
+1. [Migration Guide 🚀](./docs/migration.md) — from `react-native-ultimate-config` or `react-native-config`
 1. [API 🧰](./docs/api.md)
 1. [Testing Guide 🧪](./docs/testing.md)
-1. [Changelog 📓](./packages/react-native-ultimate-config/CHANGELOG.md)
 1. [Cookbook 🥦](./docs/cookbook.md)
 1. [Troubleshooting 🎱](./docs/troubleshooting.md)
 1. [Contributor notes](./docs/contributor-notes.md)
@@ -83,7 +83,7 @@ Therefore every time this library is updated all files MUST be regenerated using
 1. **[Multi-env file merging](./docs/api.md#multi-env-file-merging)** — `rncu .env.base .env.staging` (v7+)
 1. **[Dotenv variable expansion](./docs/api.md#dotenv-variable-expansion)** — `API_URL=$BASE_URL/v1` (v7+)
 1. **[Schema validation](./docs/api.md#schema-validation)** — fail at build time on missing or invalid vars (v7+)
-1. Unit tested with jest (83 tests)
+1. Unit tested with jest (136 tests, 93%+ coverage)
 1. Written in TypeScript with strict mode — [exact typings](./docs/api.md#typescript) generated for your env vars
 1. Supports [dotenv and yaml](./docs/api.md#files)
 1. [Fully typed](./docs/api.md#note-about-types) values available when using yaml config
