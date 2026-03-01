@@ -1,12 +1,22 @@
 {
   "name": "react-native-config-ultimate",
   "title": "React Native Config Ultimate",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Config that works. A community-maintained fork of react-native-ultimate-config.",
   "main": "index.js",
+  "module": "index.js",
   "react-native": "index.js",
+  "source": "index.ts",
   "browser": "index.web.js",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "react-native": "./index.js",
+      "import": "./index.js",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
   "files": [
     "bin.js",
     "index.js",
@@ -14,10 +24,7 @@
     "index.web.js",
     "src/*.js",
     "!src/*.spec.js",
-    "src/*.ts",
-    "!src/*.spec.ts",
     "src/templates",
-    "index.ts",
     "override.js",
     "ios/UltimateConfig.{h,mm}",
     "ios/ConfigValues.h",
