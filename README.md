@@ -74,7 +74,7 @@ Therefore every time this library is updated all files MUST be regenerated using
 1. Simple one-off [setup](./docs/quickstart.md) for native projects
 1. No need to mess with xcode schemes or android flavors
 1. Access from [javascript](./docs/api.md#javascript)
-1. Access from native code: [java](./docs/api.md#java) and [objective-c](./docs/api.md#objective-c)
+1. Access from native code: [Java](./docs/api.md#java), [Kotlin](./docs/api.md#kotlin), [Objective-C](./docs/api.md#objective-c), and [Swift](./docs/api.md#swift)
 1. Access in build tools: [xcode](./docs/api.md#ios), [gradle](./docs/api.md#buildgradle) and [AndroidManifest.xml](./docs/api.md#androidmanifestxml)
 1. [Web support](./docs/api.md#web) (works with React Native for Web)
 1. [Hooks](./docs/api.md#hooks)
@@ -107,10 +107,10 @@ by abstracting away from nuances of native projects.
 With `react-native-config-ultimate` it is possible to [consume](./docs/api.md) variables in
 every place of a typical react-native app:
 
-- javascript
+- javascript / typescript
 - native code
-  - java
-  - objective-c
+  - java / kotlin
+  - objective-c / swift
 - native build configuration
   - ios
     - build settings
@@ -123,11 +123,11 @@ every place of a typical react-native app:
 ```
 |-------------------------------------------------------|
 |                                                       |
-|                     javascript                        |
+|                 javascript / typescript               |
 |                                                       |
 |-------------------------------------------------------|
 |                          |                            |
-|       objective-c        |           java             |
+|   objective-c / swift    |       java / kotlin        |
 |                          |                            |
 |-------------------------------------------------------|
 |                          |                            |
@@ -136,3 +136,15 @@ every place of a typical react-native app:
 |                          |                            |
 |-------------------------------------------------------|
 ```
+
+---
+
+## Releases
+
+This project uses [release-please](https://github.com/googleapis/release-please) for automated releases. Every merge to `master` with conventional commits (`feat:`, `fix:`, etc.) will automatically:
+
+1. Create/update a Release PR with changelog
+2. When merged, create a GitHub Release
+3. Publish to npm
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for commit conventions.
