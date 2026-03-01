@@ -161,4 +161,63 @@ describe('validate-env', () => {
       ).not.toThrow();
     });
   });
+
+  describe('env key name validation', () => {
+    it('throws for keys with invalid characters', () => {
+      const schema: Schema = {};
+      expect(() => validate_env({ 'invalid-key': 'value' }, schema)).toThrow(
+        'Invalid env key name: "invalid-key"'
+      );
+    });
+
+    it('throws for keys starting with a number', () => {
+      const schema: Schema = {};
+      expect(() => validate_env({ '123KEY': 'value' }, schema)).toThrow(
+        'Invalid env key name: "123KEY"'
+      );
+    });
+
+    it('throws for keys with spaces', () => {
+      const schema: Schema = {};
+      expect(() => validate_env({ 'MY KEY': 'value' }, schema)).toThrow(
+        'Invalid env key name: "MY KEY"'
+      );
+    });
+
+    it('accepts valid key names starting with underscore', () => {
+      const schema: Schema = {};
+      expect(() => validate_env({ _PRIVATE_KEY: 'value' }, schema)).not.toThrow();
+    });
+
+    it('accepts valid key names with numbers', () => {
+      const schema: Schema = {};
+      expect(() => validate_env({ API_V2_URL: 'value' }, schema)).not.toThrow();
+    });
+  });
+
+  describe('invalid regex patterns', () => {
+    it('reports error for invalid regex in schema', () => {
+      const schema: Schema = {
+        ENV: { type: 'string', pattern: '[invalid(' },
+      };
+      expect(() => validate_env({ ENV: 'test' }, schema)).toThrow(
+        'invalid regex pattern /[invalid(/'
+      );
+    });
+
+    it('reports multiple invalid regex patterns', () => {
+      const schema: Schema = {
+        ENV1: { type: 'string', pattern: '[bad1(' },
+        ENV2: { type: 'string', pattern: '[bad2(' },
+      };
+      let error: Error | undefined;
+      try {
+        validate_env({ ENV1: 'a', ENV2: 'b' }, schema);
+      } catch (e) {
+        error = e as Error;
+      }
+      expect(error?.message).toContain('ENV1: invalid regex pattern');
+      expect(error?.message).toContain('ENV2: invalid regex pattern');
+    });
+  });
 });

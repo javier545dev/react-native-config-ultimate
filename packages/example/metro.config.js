@@ -1,25 +1,23 @@
+const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
+const path = require("path");
+
+const repoRoot = path.resolve(__dirname, "../../");
+
 /**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
+ * Metro configuration
+ * https://reactnative.dev/docs/metro
  *
- * @format
+ * @type {import('@react-native/metro-config').MetroConfig}
  */
-
-const path = require('path');
-
-const repoRoot = path.resolve(__dirname, '../../');
-const watchFolders = [
-  path.resolve(repoRoot, 'packages', 'react-native-config-ultimate'),
-];
-
-module.exports = {
-  watchFolders,
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
-  },
+const config = {
+	watchFolders: [
+		repoRoot, // needed so Metro can resolve hoisted packages from root node_modules
+	],
+	resolver: {
+		nodeModulesPaths: [
+			path.resolve(repoRoot, "node_modules"), // resolve hoisted deps (e.g. @babel/runtime)
+		],
+	},
 };
+
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);

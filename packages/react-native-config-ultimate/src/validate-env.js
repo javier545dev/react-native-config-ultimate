@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validate_env = validate_env;
+const VALID_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
 /**
  * Validate env data against a schema defined in `.rncurc.js`.
  * Called after `on_env` so the hook can add/transform vars before validation.
@@ -10,6 +11,12 @@ exports.validate_env = validate_env;
  */
 function validate_env(env, schema) {
     const errors = [];
+    // Validate all env key names are valid identifiers
+    for (const key of Object.keys(env)) {
+        if (!VALID_KEY_PATTERN.test(key)) {
+            errors.push(`Invalid env key name: "${key}". Keys must start with a letter or underscore and contain only letters, numbers, and underscores.`);
+        }
+    }
     // Pre-compile all regex patterns once, before iterating over env values.
     // This avoids re-compiling the same pattern for every validated key.
     const compiled_patterns = new Map();

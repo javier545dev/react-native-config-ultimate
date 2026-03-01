@@ -5,125 +5,128 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import type React from "react";
+import type { PropsWithChildren } from "react";
 import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+	ScrollView,
+	StatusBar,
+	StyleSheet,
+	Text,
+	useColorScheme,
+	View,
+} from "react-native";
 
 import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+	Colors,
+	DebugInstructions,
+	Header,
+	LearnMoreLinks,
+	ReloadInstructions,
+} from "react-native/Libraries/NewAppScreen";
 
-import config from 'react-native-config-ultimate';
+import config from "react-native-config-ultimate";
 
 type SectionProps = PropsWithChildren<{
-  title: string;
+	title: string;
 }>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  const sectionId = title.toLowerCase().replace(/\s+/g, '-');
-  return (
-    <View style={styles.sectionContainer} testID={`section-${sectionId}`}>
-      <Text
-        testID={`section-title-${sectionId}`}
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        testID={`section-body-${sectionId}`}
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+function Section({ children, title }: SectionProps): React.JSX.Element {
+	const isDarkMode = useColorScheme() === "dark";
+	const sectionId = title.toLowerCase().replace(/\s+/g, "-");
+	return (
+		<View style={styles.sectionContainer} testID={`section-${sectionId}`}>
+			<Text
+				testID={`section-title-${sectionId}`}
+				style={[
+					styles.sectionTitle,
+					{
+						color: isDarkMode ? Colors.white : Colors.black,
+					},
+				]}
+			>
+				{title}
+			</Text>
+			<Text
+				testID={`section-body-${sectionId}`}
+				style={[
+					styles.sectionDescription,
+					{
+						color: isDarkMode ? Colors.light : Colors.dark,
+					},
+				]}
+			>
+				{children}
+			</Text>
+		</View>
+	);
 }
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+	const isDarkMode = useColorScheme() === "dark";
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+	const backgroundStyle = {
+		backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+	};
 
-  const safePadding = '5%';
+	const safePadding = "5%";
 
-  return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header />
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Config">
-            <Text testID="config-values">{JSON.stringify(config)}</Text>
-          </Section>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </View>
-  );
+	return (
+		<View style={backgroundStyle}>
+			<StatusBar
+				barStyle={isDarkMode ? "light-content" : "dark-content"}
+				backgroundColor={backgroundStyle.backgroundColor}
+			/>
+			<ScrollView style={backgroundStyle}>
+				<View style={{ paddingRight: safePadding }}>
+					<Header />
+				</View>
+				<View
+					style={{
+						backgroundColor: isDarkMode ? Colors.black : Colors.white,
+						paddingHorizontal: safePadding,
+						paddingBottom: safePadding,
+					}}
+				>
+					<Section title="Config">
+						<Text testID="config-values">{JSON.stringify(config)}</Text>
+					</Section>
+					<Section title="Step One">
+						Edit <Text style={styles.highlight}>App.tsx</Text> to change this
+						screen and then come back to see your edits.
+					</Section>
+					<Section title="See Your Changes">
+						<ReloadInstructions />
+					</Section>
+					<Section title="Debug">
+						<DebugInstructions />
+					</Section>
+					<Section title="Learn More">
+						Read the docs to discover what to do next:
+					</Section>
+					<LearnMoreLinks />
+				</View>
+			</ScrollView>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
+	sectionContainer: {
+		marginTop: 32,
+		paddingHorizontal: 24,
+	},
+	sectionTitle: {
+		fontSize: 24,
+		fontWeight: "600",
+	},
+	sectionDescription: {
+		marginTop: 8,
+		fontSize: 18,
+		fontWeight: "400",
+	},
+	highlight: {
+		fontWeight: "700",
+	},
 });
 
 export default App;

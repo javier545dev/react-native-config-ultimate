@@ -91,6 +91,19 @@ android {
     sourceCompatibility JavaVersion.VERSION_17
     targetCompatibility JavaVersion.VERSION_17
   }
+
+  // Select the correct source set based on architecture.
+  // - newarch/: extends NativeUltimateConfigSpec (Codegen-generated TurboModule base)
+  // - oldarch/: extends ReactContextBaseJavaModule (classic bridge)
+  sourceSets {
+    main {
+      if (isNewArchitectureEnabled()) {
+        java.srcDirs += 'src/newarch/java'
+      } else {
+        java.srcDirs += 'src/oldarch/java'
+      }
+    }
+  }
 }
 
 repositories {

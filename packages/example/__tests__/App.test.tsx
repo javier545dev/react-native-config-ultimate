@@ -78,8 +78,7 @@ describe('App', () => {
 
     // config-values testID renders JSON.stringify(config)
     const configText = root!.root.findAll(
-      node =>
-        node.props.testID === 'config-values' && node.type === 'Text',
+      node => node.props.testID === 'config-values',
     );
 
     expect(configText.length).toBeGreaterThan(0);

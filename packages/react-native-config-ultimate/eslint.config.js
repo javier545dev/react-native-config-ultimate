@@ -28,7 +28,7 @@ module.exports = [
       'example/**',
       'example-web/**',
       '**/*.spec.ts',
-      '**/*.js',
+      'src/**/*.js',
     ],
   },
 ];

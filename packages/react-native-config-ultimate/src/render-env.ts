@@ -25,7 +25,11 @@ function is_boolean(value: unknown): boolean {
 
 function escape(value: unknown): unknown {
   if (is_string(value)) {
-    return (value as string).replace(/"/gm, '\\"');
+    return (value as string)
+      .replace(/\\/gm, '\\\\')
+      .replace(/"/gm, '\\"')
+      .replace(/\n/gm, '\\n')
+      .replace(/\r/gm, '\\r');
   }
   return value;
 }

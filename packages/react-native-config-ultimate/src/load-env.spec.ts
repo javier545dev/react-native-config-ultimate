@@ -160,4 +160,70 @@ describe('load-env', () => {
       );
     });
   });
+
+  describe('mixed format (yaml + dotenv)', () => {
+    it('merges yaml and dotenv files together', () => {
+      // First file is yaml
+      mockReadFileSync
+        .mockReturnValueOnce(Buffer.from('YAML_VAR: from_yaml'))
+        .mockReturnValueOnce('DOTENV_VAR=from_dotenv');
+      mockYaml.mockReturnValueOnce({ YAML_VAR: 'from_yaml' });
+      mockParse.mockReturnValueOnce({ DOTENV_VAR: 'from_dotenv' });
+
+      const result = load_env(['config.yaml', '.env']);
+
+      expect(mockYaml).toHaveBeenCalled();
+      expect(mockParse).toHaveBeenCalled();
+      expect(result).toEqual({
+        YAML_VAR: 'from_yaml',
+        DOTENV_VAR: 'from_dotenv',
+      });
+    });
+
+    it('dotenv file in mixed mode still gets expanded', () => {
+      mockReadFileSync
+        .mockReturnValueOnce(Buffer.from('BASE: https://api.com'))
+        .mockReturnValueOnce('URL=$BASE/v1');
+      mockYaml.mockReturnValueOnce({ BASE: 'https://api.com' });
+      mockParse.mockReturnValueOnce({ URL: '$BASE/v1' });
+      // In mixed mode, expand is called per-dotenv-file
+      mockExpand.mockReturnValueOnce({
+        parsed: { URL: 'https://api.com/v1' },
+      });
+
+      const result = load_env(['config.yaml', '.env']);
+
+      expect(result).toEqual({
+        BASE: 'https://api.com',
+        URL: 'https://api.com/v1',
+      });
+    });
+
+    it('last file wins for conflicting keys in mixed mode', () => {
+      mockReadFileSync
+        .mockReturnValueOnce(Buffer.from('SHARED: from_yaml'))
+        .mockReturnValueOnce('SHARED=from_dotenv');
+      mockYaml.mockReturnValueOnce({ SHARED: 'from_yaml' });
+      mockParse.mockReturnValueOnce({ SHARED: 'from_dotenv' });
+
+      const result = load_env(['config.yaml', '.env']);
+
+      expect(result.SHARED).toBe('from_dotenv');
+    });
+
+    it('handles dotenv first, then yaml', () => {
+      mockReadFileSync
+        .mockReturnValueOnce('DOTENV_VAR=first')
+        .mockReturnValueOnce(Buffer.from('YAML_VAR: second'));
+      mockParse.mockReturnValueOnce({ DOTENV_VAR: 'first' });
+      mockYaml.mockReturnValueOnce({ YAML_VAR: 'second' });
+
+      const result = load_env(['.env', 'config.yml']);
+
+      expect(result).toEqual({
+        DOTENV_VAR: 'first',
+        YAML_VAR: 'second',
+      });
+    });
+  });
 });

@@ -35,6 +35,7 @@ public class UltimateConfigPackage extends TurboReactPackage {
   public ReactModuleInfoProvider getReactModuleInfoProvider() {
     return () -> {
       final Map<String, ReactModuleInfo> moduleInfos = new HashMap<>();
+      boolean isTurboModule = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
       moduleInfos.put(
         UltimateConfigModule.NAME,
         new ReactModuleInfo(
@@ -42,9 +43,8 @@ public class UltimateConfigPackage extends TurboReactPackage {
           UltimateConfigModule.NAME,
           false,  // canOverrideExistingModule
           false,  // needsEagerInit
-          true,   // hasConstants  — constants are the primary API
-          false,  // isCxxModule
-          BuildConfig.IS_NEW_ARCHITECTURE_ENABLED  // isTurboModule
+          isTurboModule,  // isCxxModule — true for TurboModules
+          isTurboModule   // isTurboModule
         )
       );
       return moduleInfos;

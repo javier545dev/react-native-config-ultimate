@@ -1,7 +1,8 @@
-import { NativeModules } from 'react-native';
-import type { ConfigValue } from './src/NativeUltimateConfig';
+import { TurboModuleRegistry, NativeModules } from 'react-native';
+import type { Spec } from './src/NativeUltimateConfig';
 
-export type { ConfigValue, Spec } from './src/NativeUltimateConfig';
+export type ConfigValue = string | number | boolean;
+export type { Spec } from './src/NativeUltimateConfig';
 
 type Config = Record<string, ConfigValue>;
 
@@ -10,9 +11,27 @@ type Config = Record<string, ConfigValue>;
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const override: Config = require('./override');
 
-const { UltimateConfig } = NativeModules;
+// New Architecture: TurboModules are accessed via TurboModuleRegistry.
+// The spec exposes getAll(): string — returns config values as JSON.
+// Old Architecture: constants are exposed directly on NativeModules via constantsToExport.
+const turboModule = TurboModuleRegistry.get<Spec>('UltimateConfig');
+
+let nativeConstants: Config;
+
+if (turboModule != null && typeof turboModule.getAll === 'function') {
+  // New Arch: call getAll() and parse JSON
+  try {
+    const raw = turboModule.getAll();
+    nativeConstants = JSON.parse(raw) as Config;
+  } catch {
+    nativeConstants = {};
+  }
+} else {
+  // Old Arch / interop bridge: constants are properties on NativeModules.UltimateConfig
+  nativeConstants = (NativeModules.UltimateConfig as Config | undefined) ?? {};
+}
 
 export default {
-  ...(UltimateConfig as Config | undefined),
+  ...nativeConstants,
   ...override,
 } as Config;

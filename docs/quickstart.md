@@ -9,7 +9,7 @@ For advanced setup please refer to [cookbook](./cookbook.md)
 
    | npm                                        | yarn                                    |
    | ------------------------------------------ | --------------------------------------- |
-   | `npm install react-native-ultimate-config` | `yarn add react-native-ultimate-config` |
+   | `npm install react-native-config-ultimate` | `yarn add react-native-config-ultimate` |
 
 1. Create example file
 
@@ -22,7 +22,7 @@ For advanced setup please refer to [cookbook](./cookbook.md)
    Add this to `.gitignore`:
 
    ```
-   # react-native-ultimate-config
+   # react-native-config-ultimate
    rncu.xcconfig
    ```
 
@@ -58,7 +58,7 @@ For advanced setup please refer to [cookbook](./cookbook.md)
          (before the `android {}` block):
 
          ```gradle
-         apply from: "../../node_modules/react-native-ultimate-config/android/rncu.gradle"
+         apply from: "../../node_modules/react-native-config-ultimate/android/rncu.gradle"
          ```
 
          > **Note:** In React Native ≥ 0.71 `react.gradle` was removed. Do **not**
@@ -118,7 +118,7 @@ For advanced setup please refer to [cookbook](./cookbook.md)
 
 1. Configure web projects (optional, one-off setup)
 
-   You can import your config into a web project as well (e.g. a project using [React Native for Web](https://github.com/necolas/react-native-web)). `react-native-ultimate-config` vends a web-friendly CommonJS module using the [package.json browser field](https://docs.npmjs.com/cli/v7/configuring-npm/package-json#browser). Most web bundlers support this with minimal effort:
+   You can import your config into a web project as well (e.g. a project using [React Native for Web](https://github.com/necolas/react-native-web)). `react-native-config-ultimate` vends a web-friendly CommonJS module using the [package.json browser field](https://docs.npmjs.com/cli/v7/configuring-npm/package-json#browser). Most web bundlers support this with minimal effort:
 
    - **Webpack** - No configuration needed. If you choose to set [target](https://webpack.js.org/configuration/target/) it must include `"web"`.
    - **Rollup** - Install [@rollup/plugin-node-resolve](https://www.npmjs.com/package/@rollup/plugin-node-resolve) and set `browser` to `true`.
