@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.0.4](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.3...v0.0.4) (2026-03-01)
+
+
+### Bug Fixes
+
+* exclude test files from npm package ([#9](https://github.com/javier545dev/react-native-config-ultimate/issues/9)) ([fca4c29](https://github.com/javier545dev/react-native-config-ultimate/commit/fca4c29ce6cbe73287ec1c5b9946c5cc0da14ef2))
+
 ## [0.0.3](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.2...v0.0.3) (2026-03-01)
 
 
