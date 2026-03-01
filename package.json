@@ -1,33 +1,33 @@
 {
-  "name": "root",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "_comment_library": "── Library ────────────────────────────────────",
-    "build": "lerna run build --scope=react-native-config-ultimate",
-    "test": "lerna run test --scope=react-native-config-ultimate",
-    "lint": "lerna run lint --scope=react-native-config-ultimate",
+	"name": "root",
+	"private": true,
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"_comment_library": "── Library ────────────────────────────────────",
+		"build": "lerna run build --scope=react-native-config-ultimate",
+		"test": "lerna run test --scope=react-native-config-ultimate",
+		"lint": "lerna run lint --scope=react-native-config-ultimate",
 
-    "_comment_example": "── Example app ────────────────────────────────",
-    "example:setup": "npm run build && npm run example:env && npm run pods",
-    "example:env": "lerna run rncu --scope=example -- -- .env",
-    "example:env:watch": "lerna run rncu --scope=example -- -- .env --watch",
-    "example:start": "lerna run start --scope=example",
-    "example:ios": "lerna run ios --scope=example",
-    "example:android": "lerna run android --scope=example",
-    "pods": "cd packages/example/ios && pod install",
+		"_comment_example": "── Example app ────────────────────────────────",
+		"example:setup": "npm run build && npm run example:env && npm run pods",
+		"example:env": "lerna run rncu --scope=example -- -- .env",
+		"example:env:watch": "lerna run rncu --scope=example -- -- .env --watch",
+		"example:start": "lerna run start --scope=example",
+		"example:ios": "lerna run ios --scope=example",
+		"example:android": "lerna run android --scope=example",
+		"pods": "cd packages/example/ios && pod install",
 
-    "_comment_web": "── Example web ────────────────────────────────",
-    "example:web:setup": "npm run build && npm run example:web:env",
-    "example:web:env": "lerna run rncu --scope=example-web -- -- .env",
-    "example:web:start": "lerna run start --scope=example-web",
+		"_comment_web": "── Example web ────────────────────────────────",
+		"example:web:setup": "npm run build && npm run example:web:env",
+		"example:web:env": "lerna run rncu --scope=example-web -- -- .env",
+		"example:web:start": "lerna run start --scope=example-web",
 
-    "_comment_release": "── Release ─────────────────────────────────────",
-    "version": "cd packages/react-native-config-ultimate && npx standard-version"
-  },
-  "devDependencies": {
-    "lerna": "^9.0.4"
-  }
+		"_comment_release": "── Release ─────────────────────────────────────",
+		"version": "cd packages/react-native-config-ultimate && npx standard-version"
+	},
+	"devDependencies": {
+		"lerna": "^9.0.4"
+	}
 }
