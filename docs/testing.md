@@ -22,8 +22,8 @@ This guide explains how to test React Native apps that use
 ### Run
 
 ```bash
-# From the library package (98 tests)
-cd packages/react-native-ultimate-config
+# From the library package (100+ tests)
+cd packages/react-native-config-ultimate
 npm test
 
 # From your own app
@@ -310,7 +310,7 @@ jobs:
 
 | What | Command | Where |
 |---|---|---|
-| Unit tests (library) | `npm test` | `packages/react-native-ultimate-config/` |
+| Unit tests (library) | `npm test` | `packages/react-native-config-ultimate/` |
 | Unit tests (example app) | `npm test` | `packages/example/` |
 | Maestro e2e | `maestro test .maestro/` | `packages/example/` |
 | Detox build iOS | `npm run test:e2e:build:ios` | `packages/example/` |

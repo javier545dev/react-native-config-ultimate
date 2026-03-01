@@ -10,6 +10,19 @@ import type { EnvData, Schema } from './resolve-env';
 export function validate_env(env: EnvData, schema: Schema): void {
   const errors: string[] = [];
 
+  // Pre-compile all regex patterns once, before iterating over env values.
+  // This avoids re-compiling the same pattern for every validated key.
+  const compiled_patterns = new Map<string, RegExp>();
+  for (const [key, field] of Object.entries(schema)) {
+    if (field.pattern) {
+      try {
+        compiled_patterns.set(key, new RegExp(field.pattern));
+      } catch {
+        errors.push(`${key}: invalid regex pattern /${field.pattern}/`);
+      }
+    }
+  }
+
   for (const [key, field] of Object.entries(schema)) {
     const raw = env[key];
     const missing =
@@ -37,7 +50,8 @@ export function validate_env(env: EnvData, schema: Schema): void {
       );
     }
 
-    if (field.pattern && !new RegExp(field.pattern).test(value)) {
+    const pattern = compiled_patterns.get(key);
+    if (pattern && !pattern.test(value)) {
       errors.push(
         `${key} does not match pattern /${field.pattern}/, got "${value}"`
       );
@@ -46,7 +60,7 @@ export function validate_env(env: EnvData, schema: Schema): void {
 
   if (errors.length > 0) {
     throw new Error(
-      `\n\n❌ react-native-ultimate-config: env validation failed:\n` +
+      `\n\n❌ react-native-config-ultimate: env validation failed:\n` +
         errors.map((e) => `  • ${e}`).join('\n') +
         '\n'
     );

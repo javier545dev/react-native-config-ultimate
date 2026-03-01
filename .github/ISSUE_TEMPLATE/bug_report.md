@@ -34,13 +34,13 @@ is better.
 
 ## Integration option
 
-- [ ] I am using `rnuc` CLI to inject environment (default integration option
+- [ ] I am using `rncu` CLI to inject environment (default integration option
       from [quickstart guide](../../docs/quickstart.md))
 - [ ] I am using scheme/flavor based integration (experimental integration
       option from cookbook:
       [scheme](../../docs/cookbook.md#using-multiple-schemes-ios),
       [flavors](../../docs/cookbook.md#using-multiple-flavors-android))
-- [ ] I am using `react-native-ultimate-config` within monorepo managed with
+- [ ] I am using `react-native-config-ultimate` within monorepo managed with
       Lerna or Yarn Workspaces [Monorepo support](../../docs/api.md#advanced-options-for-monorepo)
 
 ## Env file
@@ -62,7 +62,7 @@ is better.
 ## Packages
 
 - version of `react-native`: ❗ _INSERT VERSION HERE_
-- version of `react-native-ultimate-config`: ❗*INSERT VERSION HERE*
+- version of `react-native-config-ultimate`: ❗*INSERT VERSION HERE*
 
 Run `react-native info` and post below:
 

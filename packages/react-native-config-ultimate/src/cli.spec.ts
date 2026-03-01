@@ -49,7 +49,10 @@ describe('cli', () => {
 
   beforeEach(() => {
     mock_main.mockReset().mockResolvedValue(undefined);
-    mock_exists_sync.mockReset().mockReturnValue(false); // no RC file by default
+    // Default: env files exist, RC file does NOT exist.
+    // This mimics the real-world baseline: user passes a valid .env file,
+    // but hasn't created a .rncurc.js config yet.
+    mock_exists_sync.mockReset().mockImplementation((p: string) => !p.endsWith('.rncurc.js'));
     mock_chokidar_watch.mockReset().mockReturnValue(mock_watcher);
     mock_watcher_on.mockReset().mockReturnThis();
     mock_watcher_close.mockReset().mockResolvedValue(undefined);
@@ -92,10 +95,9 @@ describe('cli', () => {
 
     it('loads and passes RC file when it exists', async () => {
       set_argv('.env');
-      mock_exists_sync.mockImplementation((p: string) =>
-        p.endsWith('.rncurc.js')
-      );
-      // behavior when .rncurc.js is declared to exist but can't be resolved.
+      // All files exist (env file + RC file). The RC file can't actually be
+      // resolved via require() in test env, so cli() is expected to throw.
+      mock_exists_sync.mockReturnValue(true);
       await expect(cli()).rejects.toThrow();
     });
 
@@ -120,9 +122,9 @@ describe('cli', () => {
 
     it('also watches .rncurc.js when it exists', async () => {
       set_argv('.env', '--watch');
-      mock_exists_sync.mockImplementation((p: string) =>
-        p.endsWith('.rncurc.js')
-      );
+      // All files exist (env + RC). We suppress the require() error below
+      // so the test can verify that .rncurc.js is added to the watcher list.
+      mock_exists_sync.mockReturnValue(true);
       // Suppress require() failure for missing rc file in initial run
       mock_main.mockResolvedValue(undefined);
       try {

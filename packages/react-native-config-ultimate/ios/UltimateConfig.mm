@@ -6,7 +6,8 @@ RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup
 {
-    return YES;
+    // getConstants() reads from a static in-memory struct — no UI or main thread access needed.
+    return NO;
 }
 
 - (NSDictionary *)constantsToExport

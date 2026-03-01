@@ -6,11 +6,11 @@ This document covers common errors and pitfalls when implementing the library in
 
 After following the steps in the [quickstart guide](./quickstart.md) your builds depend on the generated config files. When these files are missing, you may see build errors like:
 
-> yaml file at path /X/Y/node_modules/react-native-ultimate-config/android/rncu.yaml does not exist
+> yaml file at path /X/Y/node_modules/react-native-config-ultimate/android/rncu.yaml does not exist
 
 Or
 
-> /X/Y/node_modules/react-native-ultimate-config/ios/ConfigValues.h:1:2: error: "invoke bin.js with env file before compiling native project"
+> /X/Y/node_modules/react-native-config-ultimate/ios/ConfigValues.h:1:2: error: "invoke bin.js with env file before compiling native project"
 
 When this happens, all you need to do is trigger the script that generates the required config files:
 

@@ -15,8 +15,7 @@ export default function flatten(config: EnvConfig, platform: Platform): FlatConf
     '`platform` should one of: ' + VALID_PLATFORMS.join(', ')
   );
   const result: FlatConfig = {};
-  for (const key in config) {
-    const value = config[key];
+  for (const [key, value] of Object.entries(config)) {
     if (value && typeof value === 'object') {
       result[key] = (value as PerPlatformValue)[platform];
     } else {

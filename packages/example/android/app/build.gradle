@@ -110,4 +110,4 @@ dependencies {
     }
 }
 
-apply from: "../../node_modules/react-native-ultimate-config/android/rnuc.gradle"
+apply from: "../../node_modules/react-native-config-ultimate/android/rncu.gradle"

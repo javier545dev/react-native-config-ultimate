@@ -1,7 +1,7 @@
 # Monorepo tips
 
 
-When using rnuc for a project which is a part of monorepo the following things
+When using rncu for a project which is a part of monorepo the following things
 can some handy:
 
 
@@ -27,7 +27,7 @@ snipped in your root `build.gradle`:
     ```
     |-- package.json
     |-- node_modules
-        |-- react-native-ultimate-config
+        |-- react-native-config-ultimate
     |-- packages
         |-- my_app
         |-- package1

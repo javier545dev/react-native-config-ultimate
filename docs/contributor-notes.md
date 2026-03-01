@@ -3,7 +3,7 @@
 ## Directory structure
 
 Repository is maintained using [lerna](https://github.com/lerna/lerna) in order
-to symlink rnuc library into example app.
+to symlink rncu library into example app.
 
 ## Working with example
 

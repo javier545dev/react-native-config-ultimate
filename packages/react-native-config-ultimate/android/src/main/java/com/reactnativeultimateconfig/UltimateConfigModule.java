@@ -1,5 +1,7 @@
 package com.reactnativeultimateconfig;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -47,7 +49,7 @@ public class UltimateConfigModule extends ReactContextBaseJavaModule {
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      Log.w(NAME, "Failed to read config constants from BuildConfig: " + e.getMessage());
     }
     return constants;
   }

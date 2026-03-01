@@ -51,17 +51,57 @@ export default async function cli(): Promise<void> {
     .parseAsync();
 
   const project_root = argv.projectRoot;
-  const lib_root =
-    argv.libRoot ??
-    path.join(
+
+  /**
+   * Resolve the library root directory.
+   *
+   * Priority:
+   * 1. --libRoot flag (explicit override)
+   * 2. Conventional path <projectRoot>/node_modules/react-native-config-ultimate
+   *    — used when the directory exists (standard install, or bin.spec.ts integration test).
+   * 3. require.resolve() — handles npm workspaces hoisting, pnpm, Yarn PnP,
+   *    and any layout where the package is hoisted above projectRoot.
+   * 4. Fall back to conventional path even if it doesn't exist yet
+   *    (write-env.ts will create the directories on first run).
+   */
+  const lib_root: string = (() => {
+    if (argv.libRoot) return argv.libRoot;
+
+    const conventional = path.join(
       project_root,
       'node_modules',
       'react-native-config-ultimate'
     );
 
+    // If the directory already exists at the conventional location, use it.
+    // This handles standard installs and the integration test temp-dir setup.
+    if (fs.existsSync(conventional)) return conventional;
+
+    // Otherwise, try require.resolve to handle hoisted workspaces.
+    try {
+      const pkg_json = require.resolve(
+        'react-native-config-ultimate/package.json',
+        { paths: [project_root] }
+      );
+      return path.dirname(pkg_json);
+    } catch {
+      // Last resort: return the conventional path and let write-env create it.
+      return conventional;
+    }
+  })();
+
   // Accept one or more positional env file paths.
   // Multiple files are merged left-to-right (last file wins for conflicting keys).
   const env_files = argv._.map(String);
+
+  // Validate env files exist before running anything.
+  const missing_files = env_files.filter((f) => !fs.existsSync(f));
+  if (missing_files.length > 0) {
+    for (const f of missing_files) {
+      log_err(`env file not found: ${f}`);
+    }
+    process.exit(1);
+  }
 
   const rc_file = path.resolve(project_root, '.rncurc.js');
 

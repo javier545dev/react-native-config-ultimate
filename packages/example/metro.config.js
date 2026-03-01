@@ -9,7 +9,7 @@ const path = require('path');
 
 const repoRoot = path.resolve(__dirname, '../../');
 const watchFolders = [
-  path.resolve(repoRoot, 'packages', 'react-native-ultimate-config'),
+  path.resolve(repoRoot, 'packages', 'react-native-config-ultimate'),
 ];
 
 module.exports = {

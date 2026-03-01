@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "./logo.svg";
-import Config from "react-native-ultimate-config";
+import Config from "react-native-config-ultimate";
 import "./App.css";
 
 function App() {

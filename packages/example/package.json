@@ -16,7 +16,7 @@
     "test:maestro": "maestro test .maestro/",
     "test:maestro:flow": "maestro test",
     "lint": "eslint .",
-    "rncu": "npx rncu"
+    "rncu": "rncu"
   },
   "dependencies": {
     "react": "19.2.4",
@@ -24,7 +24,6 @@
     "react-native-config-ultimate": "*"
   },
   "devDependencies": {
-    "@types/detox": "^20.0.0",
     "detox": "^20.0.0",
     "@babel/core": "^7.25.0",
     "@babel/preset-env": "^7.25.0",

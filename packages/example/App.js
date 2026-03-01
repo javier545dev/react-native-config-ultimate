@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 
 import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
-import Config from 'react-native-ultimate-config';
+import Config from 'react-native-config-ultimate';
 
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';

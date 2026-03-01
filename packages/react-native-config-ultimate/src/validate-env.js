@@ -10,6 +10,19 @@ exports.validate_env = validate_env;
  */
 function validate_env(env, schema) {
     const errors = [];
+    // Pre-compile all regex patterns once, before iterating over env values.
+    // This avoids re-compiling the same pattern for every validated key.
+    const compiled_patterns = new Map();
+    for (const [key, field] of Object.entries(schema)) {
+        if (field.pattern) {
+            try {
+                compiled_patterns.set(key, new RegExp(field.pattern));
+            }
+            catch (_a) {
+                errors.push(`${key}: invalid regex pattern /${field.pattern}/`);
+            }
+        }
+    }
     for (const [key, field] of Object.entries(schema)) {
         const raw = env[key];
         const missing = raw === undefined || raw === null || String(raw).trim() === '';
@@ -27,12 +40,13 @@ function validate_env(env, schema) {
             !['true', 'false', '1', '0'].includes(value.toLowerCase())) {
             errors.push(`${key} must be a boolean (true/false/1/0), got "${value}"`);
         }
-        if (field.pattern && !new RegExp(field.pattern).test(value)) {
+        const pattern = compiled_patterns.get(key);
+        if (pattern && !pattern.test(value)) {
             errors.push(`${key} does not match pattern /${field.pattern}/, got "${value}"`);
         }
     }
     if (errors.length > 0) {
-        throw new Error(`\n\n❌ react-native-ultimate-config: env validation failed:\n` +
+        throw new Error(`\n\n❌ react-native-config-ultimate: env validation failed:\n` +
             errors.map((e) => `  • ${e}`).join('\n') +
             '\n');
     }

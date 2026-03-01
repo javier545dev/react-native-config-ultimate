@@ -42,7 +42,7 @@ buck-out/
 *.keystore
 
 # Codegen
-rnuc.xcconfig
+rncu.xcconfig
 
 # Jest
 coverage
