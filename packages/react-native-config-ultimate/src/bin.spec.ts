@@ -12,7 +12,7 @@ describe.each`
 `('test codegen', ({ extension, env_test_content }: { extension: string; env_test_content: string }) => {
   let project_root: string;
   beforeAll(() => {
-    project_root = path.join(process.cwd(), fs.mkdtempSync('rnuc-jest'));
+    project_root = path.join(process.cwd(), fs.mkdtempSync('rncu-jest'));
     for (const file_path of files_to_assert) {
       const { dir } = path.parse(file_path);
       const folder = path.join(project_root, dir);

@@ -19,7 +19,7 @@
     "ios/UltimateConfig.xcodeproj/project.pbxproj",
     "android/src",
     "android/build.gradle",
-    "android/rnuc.gradle",
+    "android/rncu.gradle",
     "react-native-config-ultimate.podspec"
   ],
   "scripts": {
@@ -32,7 +32,7 @@
     "format": "prettier --write src/**/*.ts index.ts"
   },
   "bin": {
-    "rnuc": "./bin.js"
+    "rncu": "./bin.js"
   },
   "repository": {
     "type": "git",

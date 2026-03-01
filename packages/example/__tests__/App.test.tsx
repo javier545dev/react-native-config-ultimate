@@ -18,7 +18,7 @@ import App from '../App';
 // In real apps, mock this in jest.config.js using `moduleNameMapper` or in
 // a __mocks__ folder. Here we do it inline for clarity.
 //
-// The shape must match what rnuc generates — i.e. the keys from your .env.
+// The shape must match what rncu generates — i.e. the keys from your .env.
 // ---------------------------------------------------------------------------
 jest.mock('react-native-config-ultimate', () => ({
   HELLO: 'world',

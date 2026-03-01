@@ -23,7 +23,7 @@ const cli: () => Promise<void> = require('./cli').default;
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 function set_argv(...args: string[]): void {
-  process.argv = ['node', 'rnuc', ...args];
+  process.argv = ['node', 'rncu', ...args];
 }
 
 /** Grab the handler registered for a given chokidar event. */
@@ -93,10 +93,9 @@ describe('cli', () => {
     it('loads and passes RC file when it exists', async () => {
       set_argv('.env');
       mock_exists_sync.mockImplementation((p: string) =>
-        p.endsWith('.rnucrc.js')
+        p.endsWith('.rncurc.js')
       );
-      // require() of a non-existent file will throw — that is the expected
-      // behavior when .rnucrc.js is declared to exist but can't be resolved.
+      // behavior when .rncurc.js is declared to exist but can't be resolved.
       await expect(cli()).rejects.toThrow();
     });
 
@@ -119,10 +118,10 @@ describe('cli', () => {
       );
     });
 
-    it('also watches .rnucrc.js when it exists', async () => {
+    it('also watches .rncurc.js when it exists', async () => {
       set_argv('.env', '--watch');
       mock_exists_sync.mockImplementation((p: string) =>
-        p.endsWith('.rnucrc.js')
+        p.endsWith('.rncurc.js')
       );
       // Suppress require() failure for missing rc file in initial run
       mock_main.mockResolvedValue(undefined);
@@ -132,7 +131,7 @@ describe('cli', () => {
         // ignore require error for non-existent RC in test env
       }
       const watched_files = mock_chokidar_watch.mock.calls[0]?.[0] as string[];
-      expect(watched_files.some((f) => f.endsWith('.rnucrc.js'))).toBe(true);
+      expect(watched_files.some((f) => f.endsWith('.rncurc.js'))).toBe(true);
     });
 
     it('runs main once immediately on start', async () => {

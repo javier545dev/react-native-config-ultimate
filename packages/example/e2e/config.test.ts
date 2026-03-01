@@ -15,7 +15,7 @@
  *
  *   3. Generate native config files with your env:
  *        cd packages/example
- *        npx rnuc .env
+ *        npx rncu .env
  *
  *   4. Build the app:
  *        iOS:     npx detox build --configuration ios.sim.debug
@@ -91,11 +91,11 @@ describe('Config Display', () => {
 // This describe block shows the pattern for testing env switching.
 // In practice, you run detox with different builds:
 //
-//   Build 1: npx rnuc .env.staging  → detox build → detox test --config staging
-//   Build 2: npx rnuc .env.prod     → detox build → detox test --config prod
+//   Build 1: npx rncu .env.staging  → detox build → detox test --config staging
+//   Build 2: npx rncu .env.prod     → detox build → detox test --config prod
 //
 // You can also use detox's `appLaunchArgs` to pass env-specific flags if
-// your native code reads them, but for rnuc the switch happens at build time.
+// your native code reads them, but for rncu the switch happens at build time.
 //
 describe('Pattern: environment-specific assertions', () => {
   beforeAll(async () => {
@@ -108,12 +108,12 @@ describe('Pattern: environment-specific assertions', () => {
 
   it('should show config values that match the built .env file', async () => {
     // This test is intentionally generic — the actual values depend on
-    // which .env file you used when running `npx rnuc`.
+    // which .env file you used when running `npx rncu`.
     //
-    // For a staging build (npx rnuc .env.staging where APP_ENV=staging):
+    // For a staging build (npx rncu .env.staging where APP_ENV=staging):
     //   await expect(element(by.text('"APP_ENV":"staging"'))).toBeVisible();
     //
-    // For a production build (npx rnuc .env.production where APP_ENV=production):
+    // For a production build (npx rncu .env.production where APP_ENV=production):
     //   await expect(element(by.text('"APP_ENV":"production"'))).toBeVisible();
     //
     // Generic assertion: the config section always renders

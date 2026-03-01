@@ -11,9 +11,12 @@
     "test:e2e:build:android": "detox build --configuration android.emu.debug",
     "test:e2e:ios": "detox test --configuration ios.sim.debug",
     "test:e2e:android": "detox test --configuration android.emu.debug",
+    "maestro:install": "curl -Ls 'https://get.maestro.mobile.dev' | bash",
+    "maestro:install:brew": "brew install maestro",
     "test:maestro": "maestro test .maestro/",
+    "test:maestro:flow": "maestro test",
     "lint": "eslint .",
-    "rnuc": "npx rnuc"
+    "rncu": "npx rncu"
   },
   "dependencies": {
     "react": "19.2.4",
@@ -42,5 +45,9 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "_maestro": {
+    "note": "Maestro is not distributed via npm. Install it with: npm run maestro:install (or maestro:install:brew on macOS). See https://maestro.mobile.dev",
+    "version": ">=1.36.0"
   }
 }

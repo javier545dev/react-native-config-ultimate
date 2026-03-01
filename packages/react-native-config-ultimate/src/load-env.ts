@@ -48,7 +48,7 @@ export default function load_env(config_paths: string | string[]): EnvData {
 
   if (paths.length === 0) {
     throw new Error(
-      'No env file specified. Usage: rnuc <env-file> [env-file2 ...]'
+      'No env file specified. Usage: rncu <env-file> [env-file2 ...]'
     );
   }
 

@@ -5,7 +5,7 @@
 # WHAT IT TESTS:
 #   Simulates a full environment switch workflow:
 #     1. App starts with .env.staging → verifies staging values
-#     2. Re-runs rnuc with .env.production → rebuild → verifies prod values
+#     2. Re-runs rncu with .env.production → rebuild → verifies prod values
 #
 # NOTE:
 #   This flow requires TWO separate test runs (you rebuild between them).
@@ -16,7 +16,7 @@
 #   - .env.staging file with: APP_ENV=staging
 #   - .env.production file with: APP_ENV=production
 #   - App built with the target env:
-#       npx rnuc .env.staging && npx react-native run-ios
+#       npx rncu .env.staging && npx react-native run-ios
 #
 # RUN (after building with staging env):
 #   maestro test .maestro/02_env_switching.yaml --env ENV=staging

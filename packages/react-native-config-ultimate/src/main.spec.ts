@@ -14,12 +14,12 @@ const main: (...args: unknown[]) => Promise<void> = require('./main').default;
 
 
 export const files_to_assert = [
-  'ios/rnuc.xcconfig',
-  'node_modules/react-native-ultimate-config/ios/ConfigValues.h',
-  'node_modules/react-native-ultimate-config/android/rnuc.yaml',
-  'node_modules/react-native-ultimate-config/index.d.ts',
-  'node_modules/react-native-ultimate-config/index.web.js',
-  'node_modules/react-native-ultimate-config/override.js',
+  'ios/rncu.xcconfig',
+  'node_modules/react-native-config-ultimate/ios/ConfigValues.h',
+  'node_modules/react-native-config-ultimate/android/rncu.yaml',
+  'node_modules/react-native-config-ultimate/index.d.ts',
+  'node_modules/react-native-config-ultimate/index.web.js',
+  'node_modules/react-native-config-ultimate/override.js',
 ];
 
 describe('main', () => {
@@ -39,7 +39,7 @@ describe('main', () => {
     mock_render_env.mockReturnValueOnce({ hello: 'world' });
     await main(
       'project',
-      'project/node_modules/react-native-ultimate-config',
+      'project/node_modules/react-native-config-ultimate',
       'file'
     );
     expect(mock_load_env).toHaveBeenCalledWith('file');
@@ -48,7 +48,7 @@ describe('main', () => {
     expect(mock_flatten).toHaveBeenCalledWith({ data: true }, 'web');
     expect(mock_render_env).toHaveBeenCalledWith(
       'project',
-      'project/node_modules/react-native-ultimate-config',
+      'project/node_modules/react-native-config-ultimate',
       {
         ios: { data: true, ios: true },
         android: { data: true, android: true },
@@ -65,7 +65,7 @@ describe('main', () => {
     mock_render_env.mockReturnValueOnce({});
     await main(
       'project',
-      'project/node_modules/react-native-ultimate-config',
+      'project/node_modules/react-native-config-ultimate',
       ['.env.base', '.env.staging']
     );
     expect(mock_load_env).toHaveBeenCalledWith(['.env.base', '.env.staging']);
@@ -76,7 +76,7 @@ describe('main', () => {
       mock_load_env.mockReturnValueOnce({ data: true });
       await main(
         'project',
-        'project/node_modules/react-native-ultimate-config',
+        'project/node_modules/react-native-config-ultimate',
         'file',
         { on_env }
       );
@@ -95,7 +95,7 @@ describe('main', () => {
       mock_load_env.mockReturnValueOnce({ data: true, key1: 'bye' });
       await main(
         'project',
-        'project/node_modules/react-native-ultimate-config',
+        'project/node_modules/react-native-config-ultimate',
         'file',
         { on_env }
       );
@@ -114,7 +114,7 @@ describe('main', () => {
       mock_render_env.mockReturnValueOnce({});
       await main(
         'project',
-        'project/node_modules/react-native-ultimate-config',
+        'project/node_modules/react-native-config-ultimate',
         'file',
         { schema }
       );
@@ -127,7 +127,7 @@ describe('main', () => {
       mock_render_env.mockReturnValueOnce({});
       await main(
         'project',
-        'project/node_modules/react-native-ultimate-config',
+        'project/node_modules/react-native-config-ultimate',
         'file'
       );
       expect(mock_validate_env).not.toHaveBeenCalled();
@@ -141,7 +141,7 @@ describe('main', () => {
       mock_render_env.mockReturnValueOnce({});
       await main(
         'project',
-        'project/node_modules/react-native-ultimate-config',
+        'project/node_modules/react-native-config-ultimate',
         'file',
         { on_env, schema }
       );
@@ -161,7 +161,7 @@ describe('main', () => {
       await expect(
         main(
           'project',
-          'project/node_modules/react-native-ultimate-config',
+          'project/node_modules/react-native-config-ultimate',
           'file',
           { schema }
         )

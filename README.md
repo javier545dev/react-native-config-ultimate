@@ -46,7 +46,7 @@ _Config that works_
 3. initialize env
    | npm | yarn |
    |-|-|
-   |`npx rnuc .env`|`yarn rnuc .env`|
+   |`npx rncu .env`|`yarn rncu .env`|
 4. build! `react-native run-{ios,android}`
 
 ## ☝❗Approach to versioning and breaking changes
@@ -54,7 +54,7 @@ _Config that works_
 This library is using [semver](https://semver.org/) and heavily relying on codegeneration. Many new features and/or bugfixes will require these files to be regenerated. Changes to codegenerated files will not be considered breaking
 unless they affect behavior of API or CLI.
 
-Therefore every time this library is updated all files MUST be regenerated using `rnuc` command.
+Therefore every time this library is updated all files MUST be regenerated using `rncu` command.
 
 ## Table of contents
 
@@ -80,7 +80,7 @@ Therefore every time this library is updated all files MUST be regenerated using
 1. [Hooks](./docs/api.md#hooks)
 1. [Monorepo support](./docs/monorepo-tips.md) (yarn workspaces or lerna)
 1. **[New Architecture](./docs/api.md#new-architecture)** — TurboModules support (RN 0.68+), fully backward-compatible with old arch
-1. **[Multi-env file merging](./docs/api.md#multi-env-file-merging)** — `rnuc .env.base .env.staging` (v7+)
+1. **[Multi-env file merging](./docs/api.md#multi-env-file-merging)** — `rncu .env.base .env.staging` (v7+)
 1. **[Dotenv variable expansion](./docs/api.md#dotenv-variable-expansion)** — `API_URL=$BASE_URL/v1` (v7+)
 1. **[Schema validation](./docs/api.md#schema-validation)** — fail at build time on missing or invalid vars (v7+)
 1. Unit tested with jest (83 tests)

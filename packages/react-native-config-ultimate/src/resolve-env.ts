@@ -2,7 +2,7 @@ export type EnvData = Record<string, unknown>;
 
 /**
  * Schema definition for a single environment variable.
- * Used in `.rnucrc.js` to validate env vars at build time.
+ * Used in `.rncurc.js` to validate env vars at build time.
  *
  * @example
  * module.exports = {

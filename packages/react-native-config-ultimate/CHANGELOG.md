@@ -14,22 +14,22 @@
 
 * Requires **React Native ≥ 0.68** for New Architecture (TurboModules). Old Architecture (Bridge) is still fully supported down to RN 0.60.
 * Requires **Node.js ≥ 16**.
-* The CLI no longer sets `process.env` as a side effect when loading dotenv files (replaced `dotenv.config()` with `dotenv.parse()` + `dotenv-expand`). If your `.rnucrc.js` hook relied on `process.env` being populated by `rnuc`, move that logic into the `on_env` hook itself.
+* The CLI no longer sets `process.env` as a side effect when loading dotenv files (replaced `dotenv.config()` with `dotenv.parse()` + `dotenv-expand`). If your `.rncurc.js` hook relied on `process.env` being populated by `rncu`, move that logic into the `on_env` hook itself.
 
 ### Features
 
 * **New Architecture (TurboModules)** — full Codegen spec (`NativeUltimateConfig.ts`) for RN 0.68+. Backward-compatible with old Bridge architecture via `NativeModules.UltimateConfig`. No API changes required.
-* **Multi-env file merging** — pass multiple files to `rnuc`; they are merged left-to-right, last file wins for conflicting keys:
+* **Multi-env file merging** — pass multiple files to `rncu`; they are merged left-to-right, last file wins for conflicting keys:
   ```bash
-  npx rnuc .env.base .env.staging
-  npx rnuc .env.base .env.local
+  npx rncu .env.base .env.staging
+  npx rncu .env.base .env.local
   ```
 * **Dotenv variable expansion** — `$VAR` references are expanded automatically, including cross-file references when merging:
   ```env
   BASE_URL=https://api.example.com
   API_URL=$BASE_URL/v1   # → https://api.example.com/v1
   ```
-* **Schema validation** — define a `schema` in `.rnucrc.js` to validate env vars at build time. Build fails immediately with all errors listed at once:
+* **Schema validation** — define a `schema` in `.rncurc.js` to validate env vars at build time. Build fails immediately with all errors listed at once:
   ```js
   module.exports = {
     schema: {
@@ -282,14 +282,14 @@ UltimateConfigModule.setBuildConfig(BuildConfig.class); // expose
 ### ⚠ BREAKING CHANGES
 
 * this change introduces heavier codegeneration and from
-now on generated files must be regenerated with `rnuc` command whenever
+now on generated files must be regenerated with `rncu` command whenever
 library is updated.
 
 Migration notes:
 
-1. remove file `android/app/rnuc.properties`
-2. remove entry `rnuc.properties` from `.gitignore`
-3. regenerate configs with `yarn rnuc ...` or `npm run rnuc ...`
+1. remove file `android/app/rncu.properties`
+2. remove entry `rncu.properties` from `.gitignore`
+3. regenerate configs with `yarn rncu ...` or `npm run rncu ...`
 
 ### Features
 

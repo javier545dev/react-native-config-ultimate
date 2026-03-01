@@ -43,7 +43,7 @@ def buildRootConfig() {
         return config
     } else {
         println "No flavor mapping detected. Reading injected file"
-        def cfg = readYaml(Paths.get(buildscript.sourceFile.getParent(), "rnuc.yaml"))
+        def cfg = readYaml(Paths.get(buildscript.sourceFile.getParent(), "rncu.yaml"))
         return cfg
     }
 }
@@ -101,9 +101,9 @@ android {
         println "config per flavor ${flavorName} ${cfg}"
         def keySet = cfg.keySet().collect()
         println "all keys ${keySet}"
-        def rnucKeys = java.lang.String.join(",", keySet)
-        println "all keys as string ${rnucKeys}"
-        variant.buildConfigField "String", "__RNUC_KEYS", "\"${rnucKeys}\""
+        def rncuKeys = java.lang.String.join(",", keySet)
+        println "all keys as string ${rncuKeys}"
+        variant.buildConfigField "String", "__RNCU_KEYS", "\"${rncuKeys}\""
         variant.mergedFlavor.manifestPlaceholders.putAll(cfg)
 
         cfg.each { k,v -> 

@@ -1,6 +1,6 @@
 # Codegen
 index.d.ts
-android/rnuc.yaml
+android/rncu.yaml
 ios/ConfigValues.h
 override.js
 index.web.js

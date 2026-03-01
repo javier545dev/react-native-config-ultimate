@@ -23,7 +23,7 @@ For advanced setup please refer to [cookbook](./cookbook.md)
 
    ```
    # react-native-ultimate-config
-   rnuc.xcconfig
+   rncu.xcconfig
    ```
 
 1. Generate files
@@ -32,7 +32,7 @@ For advanced setup please refer to [cookbook](./cookbook.md)
 
    | npm                  | yarn              |
    | -------------------- | ----------------- |
-   | `npx rnuc .env`      | `yarn rnuc .env`  |
+   | `npx rncu .env`      | `yarn rncu .env`  |
 
 1. Configure native projects (one-off setup)
 
@@ -45,7 +45,7 @@ For advanced setup please refer to [cookbook](./cookbook.md)
          ![drag and drop](./quickstart.assets/ios.1.png)
          ![drag and drop](./quickstart.assets/ios.2.png)
       1. go to project settings
-      1. set `rnuc.config` as root configuration for both "Debug" and "Release"
+      1. set `rncu.config` as root configuration for both "Debug" and "Release"
          ![set](./quickstart.assets/ios.3.png)
          ![set](./quickstart.assets/ios.4.png)
 
@@ -58,11 +58,11 @@ For advanced setup please refer to [cookbook](./cookbook.md)
          (before the `android {}` block):
 
          ```gradle
-         apply from: "../../node_modules/react-native-ultimate-config/android/rnuc.gradle"
+         apply from: "../../node_modules/react-native-ultimate-config/android/rncu.gradle"
          ```
 
          > **Note:** In React Native ≥ 0.71 `react.gradle` was removed. Do **not**
-         > add `rnuc.gradle` after `react.gradle` — just add it at the top level of
+         > add `rncu.gradle` after `react.gradle` — just add it at the top level of
          > `android/app/build.gradle`.
 
       2. expose `BuildConfig` to the library
@@ -114,7 +114,7 @@ For advanced setup please refer to [cookbook](./cookbook.md)
          ```
 
 1. save changes made to native projects `.xcodeproj` file and `build.gradle`.
-   **DO NOT COMMMIT** `rnuc.*` files.
+   **DO NOT COMMMIT** `rncu.*` files.
 
 1. Configure web projects (optional, one-off setup)
 
@@ -126,5 +126,5 @@ For advanced setup please refer to [cookbook](./cookbook.md)
    - **Browserify** - No configuration needed.
    
 1. from now on every time you need to switch environment just run
-   `npx rnuc <dotenv file>` or `yarn rnuc <dotenv file>` and rerun your native project (with
+   `npx rncu <dotenv file>` or `yarn rncu <dotenv file>` and rerun your native project (with
    `react-native run-{ios,android}`) or web project (with your web bundler of choice)

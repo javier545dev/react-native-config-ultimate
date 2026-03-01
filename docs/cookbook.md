@@ -18,7 +18,7 @@ typical tasks
 ## Application name
 
 1. Declare env variable `APP_NAME=RNUC Demo`
-1. Initialize config `yarn rnuc .env`
+1. Initialize config `yarn rncu .env`
 1. Configure native projects
 
 ### iOS
@@ -65,7 +65,7 @@ typical tasks
 ## Bundle identifier
 
 1. Declare env variable `BUNDLE_ID=com.awesomern.app`
-1. Initialize config `yarn rnuc .env`
+1. Initialize config `yarn rncu .env`
 1. Configure native projects
 
 ### ios
@@ -168,14 +168,14 @@ phase in a scheme.
     RN_ROOT_DIR=$(dirname "$PROJECT_DIR")
 
     cd "$RN_ROOT_DIR"
-    yarn run rnuc ".env.yaml"
+    yarn run rncu ".env.yaml"
     #or
-    #npm run rnuc ".env.yaml"
+    #npm run rncu ".env.yaml"
     ```
 
     ![add pre-action](./cookbook.assets/paste-code.png)
 
-1.  you can now duplicate scheme per every environment you use and change name of the file that is used for `rnuc` command.
+1.  you can now duplicate scheme per every environment you use and change name of the file that is used for `rncu` command.
 
 ## Using multiple flavors (android)
 
@@ -219,7 +219,7 @@ Assuming you want to support multiple flavors of the app: "dev" and "staging".
 
 ## Generate fastlane dotenv
 
-1. Create rc file `touch .rnucrc.js`
+1. Create rc file `touch .rncurc.js`
 1. Add hook code:
 
    ```js
@@ -248,7 +248,7 @@ over-the-air deploys with services like codepush.
 This can be achieved with rc config: `js_override`:
 
 ```js
-// rnuc.rc
+// rncu.rc
 module.exports = {
   js_override: true,
 };

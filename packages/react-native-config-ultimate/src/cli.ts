@@ -7,7 +7,7 @@ import type { RC } from './resolve-env';
 
 /**
  * Load the RC file fresh on every call (clears require cache so
- * changes to .rnucrc.js are picked up during --watch mode).
+ * changes to .rncurc.js are picked up during --watch mode).
  */
 function load_rc(rc_file: string): RC | undefined {
   if (!fs.existsSync(rc_file)) return undefined;
@@ -17,11 +17,11 @@ function load_rc(rc_file: string): RC | undefined {
 }
 
 function log(msg: string): void {
-  process.stdout.write(`[rnuc] ${msg}\n`);
+  process.stdout.write(`[rncu] ${msg}\n`);
 }
 
 function log_err(msg: string): void {
-  process.stderr.write(`[rnuc] ✗ ${msg}\n`);
+  process.stderr.write(`[rncu] ✗ ${msg}\n`);
 }
 
 export default async function cli(): Promise<void> {
@@ -34,8 +34,8 @@ export default async function cli(): Promise<void> {
     .option('libRoot', {
       type: 'string',
       description:
-        'Root directory of react-native-ultimate-config ' +
-        '(defaults to <projectRoot>/node_modules/react-native-ultimate-config)',
+        'Root directory of react-native-config-ultimate ' +
+        '(defaults to <projectRoot>/node_modules/react-native-config-ultimate)',
     })
     .option('watch', {
       alias: 'w',
@@ -56,14 +56,14 @@ export default async function cli(): Promise<void> {
     path.join(
       project_root,
       'node_modules',
-      'react-native-ultimate-config'
+      'react-native-config-ultimate'
     );
 
   // Accept one or more positional env file paths.
   // Multiple files are merged left-to-right (last file wins for conflicting keys).
   const env_files = argv._.map(String);
 
-  const rc_file = path.resolve(project_root, '.rnucrc.js');
+  const rc_file = path.resolve(project_root, '.rncurc.js');
 
   // Helper: run the full pipeline once, returning duration in ms.
   // Never throws — errors are caught and logged so watch mode stays alive.
@@ -107,7 +107,7 @@ export default async function cli(): Promise<void> {
 
   log(
     `watching: ${files_to_watch.join(', ')}\n` +
-      `[rnuc] ⚠  native vars (xcconfig/BuildConfig) require a full rebuild to take effect`
+      `[rncu] ⚠  native vars (xcconfig/BuildConfig) require a full rebuild to take effect`
   );
 
   watcher.on('change', (p) => void run(p));

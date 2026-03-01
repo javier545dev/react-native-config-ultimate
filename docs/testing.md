@@ -120,7 +120,7 @@ curl -Ls "https://get.maestro.mobile.dev" | bash
 cd packages/example
 
 # Generate native config files
-npx rnuc .env
+npx rncu .env
 
 # Launch the app in a simulator
 npx react-native run-ios     # iOS
@@ -190,7 +190,7 @@ gem install xcpretty
 cd packages/example
 
 # 1. Generate native config
-npx rnuc .env
+npx rncu .env
 
 # 2. Install iOS pods
 cd ios && pod install && cd ..
@@ -243,12 +243,12 @@ separately:
 
 ```bash
 # Build + test with staging env
-npx rnuc .env.staging
+npx rncu .env.staging
 npm run test:e2e:build:ios
 npx detox test --configuration ios.sim.debug
 
 # Build + test with production env
-npx rnuc .env.production
+npx rncu .env.production
 npm run test:e2e:build:ios
 npx detox test --configuration ios.sim.debug
 ```
@@ -281,7 +281,7 @@ npx detox test --configuration ios.sim.debug
 
 - name: Run Maestro flows
   run: |
-    npx rnuc .env
+    npx rncu .env
     npx react-native run-ios --simulator "iPhone 15"
     maestro test .maestro/
 ```
@@ -298,7 +298,7 @@ jobs:
         with: { node-version: 22 }
       - run: gem install xcpretty
       - run: npm install
-      - run: cd packages/example && npx rnuc .env
+      - run: cd packages/example && npx rncu .env
       - run: cd packages/example/ios && pod install
       - run: cd packages/example && npm run test:e2e:build:ios
       - run: cd packages/example && npm run test:e2e:ios

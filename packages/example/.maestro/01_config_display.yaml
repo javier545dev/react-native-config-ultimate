@@ -12,7 +12,7 @@
 #
 #   2. Generate native config files:
 #        cd packages/example
-#        npx rnuc .env
+#        npx rncu .env
 #
 #   3. Build and launch the app in a simulator/emulator:
 #        iOS:     npx react-native run-ios

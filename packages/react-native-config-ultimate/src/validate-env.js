@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validate_env = validate_env;
 /**
- * Validate env data against a schema defined in `.rnucrc.js`.
+ * Validate env data against a schema defined in `.rncurc.js`.
  * Called after `on_env` so the hook can add/transform vars before validation.
  *
  * Throws with a human-readable error listing ALL failures at once

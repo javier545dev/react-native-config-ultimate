@@ -7,7 +7,7 @@ import type { RC } from './resolve-env';
 import type { FileMap } from './write-env';
 
 const code_file_name = 'ConfigValues';
-const config_file_name = 'rnuc';
+const config_file_name = 'rncu';
 
 function is_string(value: unknown): boolean {
   return typeof value === 'string';
@@ -78,8 +78,8 @@ export default function render_env(
       'ConfigValues.h',
       ios
     ),
-    [path.join(lib_root, 'android', 'rnuc.yaml')]: render_template(
-      'rnuc.yaml',
+    [path.join(lib_root, 'android', 'rncu.yaml')]: render_template(
+      'rncu.yaml',
       android
     ),
   };
@@ -87,7 +87,7 @@ export default function render_env(
   // apps will contain this folder, but some react-native-web apps may not.
   if (fs.existsSync(path.join(project_root, 'ios'))) {
     map[path.join(project_root, 'ios', `${config_file_name}.xcconfig`)] =
-      render_template('rnuc.xcconfig', ios);
+      render_template('rncu.xcconfig', ios);
   }
   if (rc && typeof rc.js_override === 'boolean' && rc.js_override) {
     map[path.join(lib_root, 'override.js')] = render_template('override.js', {

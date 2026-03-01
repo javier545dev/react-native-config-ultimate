@@ -13,9 +13,9 @@ import type { EnvConfig } from './flatten';
  *   load → resolve (on_env hook) → validate (schema) → flatten → render → write
  *
  * @param project_root  Root of the React Native project
- * @param lib_root      Root of the react-native-ultimate-config install
+ * @param lib_root      Root of the react-native-config-ultimate install
  * @param env_file      Path(s) to env file(s). Multiple files are merged (last wins).
- * @param rc            Optional RC config from `.rnucrc.js`
+ * @param rc            Optional RC config from `.rncurc.js`
  */
 export default async function main(
   project_root: string,
