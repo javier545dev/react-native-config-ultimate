@@ -1,0 +1,61 @@
+# ============================================================================
+# Maestro E2E — Config Display
+# ============================================================================
+#
+# WHAT IT TESTS:
+#   Verifies that react-native-config-ultimate correctly delivers .env values
+#   to the running React Native app on both iOS and Android.
+#
+# PREREQUISITES:
+#   1. Install Maestro CLI:
+#        curl -Ls "https://get.maestro.mobile.dev" | bash
+#
+#   2. Generate native config files:
+#        cd packages/example
+#        npx rnuc .env
+#
+#   3. Build and launch the app in a simulator/emulator:
+#        iOS:     npx react-native run-ios
+#        Android: npx react-native run-android
+#
+# RUN:
+#   maestro test .maestro/01_config_display.yaml
+#
+# RUN ALL FLOWS:
+#   maestro test .maestro/
+# ============================================================================
+
+appId: com.example   # ← replace with your actual bundle ID / app package
+
+---
+
+- launchApp:
+    clearState: true   # start with a fresh app state on each run
+
+# ── Verify the Config section is visible ────────────────────────────────────
+- assertVisible:
+    id: "section-title-config"    # matches testID in App.tsx
+
+- assertVisible:
+    text: "Config"
+
+# ── Verify the config value from .env is present ────────────────────────────
+#
+# The app renders JSON.stringify(config), so for:
+#   .env:  HELLO=world
+#
+# The visible text will contain:  "HELLO":"world"
+- assertVisible:
+    text: "HELLO"
+
+- assertVisible:
+    text: "world"
+
+# ── Scroll to verify rest of the app renders ────────────────────────────────
+- scrollUntilVisible:
+    element:
+      text: "Step One"
+    direction: DOWN
+
+- assertVisible:
+    text: "Step One"

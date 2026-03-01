@@ -62,6 +62,7 @@ Therefore every time this library is updated all files MUST be regenerated using
 1. [Mission 🥾](#mission)
 1. [Quickstart Guide 🏃](./docs/quickstart.md)
 1. [API 🧰](./docs/api.md)
+1. [Testing Guide 🧪](./docs/testing.md)
 1. [Changelog 📓](./packages/react-native-ultimate-config/CHANGELOG.md)
 1. [Cookbook 🥦](./docs/cookbook.md)
 1. [Troubleshooting 🎱](./docs/troubleshooting.md)

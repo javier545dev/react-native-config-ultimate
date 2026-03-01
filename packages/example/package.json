@@ -7,6 +7,11 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
+    "test:e2e:build:ios": "detox build --configuration ios.sim.debug",
+    "test:e2e:build:android": "detox build --configuration android.emu.debug",
+    "test:e2e:ios": "detox test --configuration ios.sim.debug",
+    "test:e2e:android": "detox test --configuration android.emu.debug",
+    "test:maestro": "maestro test .maestro/",
     "lint": "eslint .",
     "rnuc": "npx rnuc"
   },
@@ -16,6 +21,8 @@
     "react-native-config-ultimate": "*"
   },
   "devDependencies": {
+    "@types/detox": "^20.0.0",
+    "detox": "^20.0.0",
     "@babel/core": "^7.25.0",
     "@babel/preset-env": "^7.25.0",
     "@babel/runtime": "^7.25.0",

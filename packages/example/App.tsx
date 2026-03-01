@@ -24,7 +24,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import config from 'react-native-ultimate-config';
+import config from 'react-native-config-ultimate';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -32,9 +32,11 @@ type SectionProps = PropsWithChildren<{
 
 function Section({children, title}: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  const sectionId = title.toLowerCase().replace(/\s+/g, '-');
   return (
-    <View style={styles.sectionContainer}>
+    <View style={styles.sectionContainer} testID={`section-${sectionId}`}>
       <Text
+        testID={`section-title-${sectionId}`}
         style={[
           styles.sectionTitle,
           {
@@ -44,6 +46,7 @@ function Section({children, title}: SectionProps): React.JSX.Element {
         {title}
       </Text>
       <Text
+        testID={`section-body-${sectionId}`}
         style={[
           styles.sectionDescription,
           {
@@ -82,7 +85,7 @@ function App(): React.JSX.Element {
             paddingBottom: safePadding,
           }}>
           <Section title="Config">
-            {JSON.stringify(config)}
+            <Text testID="config-values">{JSON.stringify(config)}</Text>
           </Section>
           <Section title="Step One">
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
