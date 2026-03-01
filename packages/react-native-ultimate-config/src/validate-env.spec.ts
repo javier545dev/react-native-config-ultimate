@@ -1,0 +1,164 @@
+import { validate_env } from './validate-env';
+import type { Schema } from './resolve-env';
+
+describe('validate-env', () => {
+  describe('required fields', () => {
+    it('throws when a required var is missing', () => {
+      const schema: Schema = { API_KEY: { type: 'string', required: true } };
+      expect(() => validate_env({}, schema)).toThrow('Missing required env var: API_KEY');
+    });
+
+    it('throws when a required var is an empty string', () => {
+      const schema: Schema = { API_KEY: { type: 'string', required: true } };
+      expect(() => validate_env({ API_KEY: '' }, schema)).toThrow(
+        'Missing required env var: API_KEY'
+      );
+    });
+
+    it('throws when a required var is null', () => {
+      const schema: Schema = { API_KEY: { type: 'string', required: true } };
+      expect(() => validate_env({ API_KEY: null }, schema)).toThrow(
+        'Missing required env var: API_KEY'
+      );
+    });
+
+    it('does not throw when a required var is present', () => {
+      const schema: Schema = { API_KEY: { type: 'string', required: true } };
+      expect(() => validate_env({ API_KEY: 'my-key' }, schema)).not.toThrow();
+    });
+
+    it('does not throw when an optional var is missing', () => {
+      const schema: Schema = { DEBUG: { type: 'boolean', required: false } };
+      expect(() => validate_env({}, schema)).not.toThrow();
+    });
+
+    it('does not throw when required is not specified and var is missing', () => {
+      const schema: Schema = { DEBUG: { type: 'boolean' } };
+      expect(() => validate_env({}, schema)).not.toThrow();
+    });
+  });
+
+  describe('type validation', () => {
+    describe('number', () => {
+      it('accepts valid number strings', () => {
+        const schema: Schema = { TIMEOUT: { type: 'number' } };
+        expect(() => validate_env({ TIMEOUT: '3000' }, schema)).not.toThrow();
+        expect(() => validate_env({ TIMEOUT: '0' }, schema)).not.toThrow();
+        expect(() => validate_env({ TIMEOUT: '-1' }, schema)).not.toThrow();
+        expect(() => validate_env({ TIMEOUT: '3.14' }, schema)).not.toThrow();
+      });
+
+      it('throws for non-numeric strings', () => {
+        const schema: Schema = { TIMEOUT: { type: 'number' } };
+        expect(() => validate_env({ TIMEOUT: 'fast' }, schema)).toThrow(
+          'TIMEOUT must be a number, got "fast"'
+        );
+        expect(() => validate_env({ TIMEOUT: 'abc' }, schema)).toThrow(
+          'TIMEOUT must be a number'
+        );
+      });
+
+      it('accepts actual number values', () => {
+        const schema: Schema = { TIMEOUT: { type: 'number' } };
+        expect(() => validate_env({ TIMEOUT: 3000 }, schema)).not.toThrow();
+      });
+    });
+
+    describe('boolean', () => {
+      it('accepts valid boolean strings', () => {
+        const schema: Schema = { DEBUG: { type: 'boolean' } };
+        for (const v of ['true', 'false', '1', '0', 'TRUE', 'FALSE']) {
+          expect(() => validate_env({ DEBUG: v }, schema)).not.toThrow();
+        }
+      });
+
+      it('throws for invalid boolean strings', () => {
+        const schema: Schema = { DEBUG: { type: 'boolean' } };
+        expect(() => validate_env({ DEBUG: 'yes' }, schema)).toThrow(
+          'DEBUG must be a boolean (true/false/1/0), got "yes"'
+        );
+        expect(() => validate_env({ DEBUG: 'enabled' }, schema)).toThrow(
+          'DEBUG must be a boolean'
+        );
+      });
+    });
+
+    describe('string', () => {
+      it('accepts any non-empty value as string', () => {
+        const schema: Schema = { NAME: { type: 'string' } };
+        expect(() => validate_env({ NAME: 'hello' }, schema)).not.toThrow();
+        expect(() => validate_env({ NAME: '123' }, schema)).not.toThrow();
+        expect(() => validate_env({ NAME: 'true' }, schema)).not.toThrow();
+      });
+    });
+  });
+
+  describe('pattern validation', () => {
+    it('accepts values matching the pattern', () => {
+      const schema: Schema = {
+        ENV: { type: 'string', pattern: '^(dev|staging|prod)$' },
+      };
+      expect(() => validate_env({ ENV: 'dev' }, schema)).not.toThrow();
+      expect(() => validate_env({ ENV: 'staging' }, schema)).not.toThrow();
+      expect(() => validate_env({ ENV: 'prod' }, schema)).not.toThrow();
+    });
+
+    it('throws for values not matching the pattern', () => {
+      const schema: Schema = {
+        ENV: { type: 'string', pattern: '^(dev|staging|prod)$' },
+      };
+      expect(() => validate_env({ ENV: 'production' }, schema)).toThrow(
+        'ENV does not match pattern /^(dev|staging|prod)$/, got "production"'
+      );
+    });
+
+    it('pattern validation is skipped for missing optional vars', () => {
+      const schema: Schema = {
+        ENV: { type: 'string', pattern: '^(dev|staging|prod)$' },
+      };
+      expect(() => validate_env({}, schema)).not.toThrow();
+    });
+  });
+
+  describe('multiple errors', () => {
+    it('reports all validation errors at once, not just the first', () => {
+      const schema: Schema = {
+        API_KEY: { type: 'string', required: true },
+        TIMEOUT: { type: 'number', required: true },
+        ENV: { type: 'string', pattern: '^(dev|staging|prod)$' },
+      };
+      let error: Error | undefined;
+      try {
+        validate_env({ TIMEOUT: 'fast', ENV: 'production' }, schema);
+      } catch (e) {
+        error = e as Error;
+      }
+      expect(error).toBeDefined();
+      expect(error?.message).toContain('Missing required env var: API_KEY');
+      expect(error?.message).toContain('TIMEOUT must be a number');
+      expect(error?.message).toContain('ENV does not match pattern');
+    });
+  });
+
+  describe('does not throw for valid env', () => {
+    it('passes a complete valid env without error', () => {
+      const schema: Schema = {
+        API_KEY: { type: 'string', required: true },
+        TIMEOUT_MS: { type: 'number', required: true },
+        DEBUG: { type: 'boolean', required: false },
+        ENV_NAME: { type: 'string', required: true, pattern: '^(dev|staging|prod)$' },
+      };
+      expect(() =>
+        validate_env(
+          {
+            API_KEY: 'secret-key',
+            TIMEOUT_MS: '5000',
+            ENV_NAME: 'staging',
+            // DEBUG intentionally omitted (optional)
+          },
+          schema
+        )
+      ).not.toThrow();
+    });
+  });
+});

@@ -84,6 +84,7 @@
   },
   "dependencies": {
     "dotenv": "^16",
+    "dotenv-expand": "^12.0.3",
     "handlebars": "^4.7.7",
     "js-yaml": "^4",
     "yargs": "^17"

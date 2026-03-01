@@ -17,7 +17,7 @@ export default async function cli(): Promise<void> {
         'Root directory of react-native-ultimate-config ' +
         '(defaults to <projectRoot>/node_modules/react-native-ultimate-config)',
     })
-    .usage('Usage: $0 <env-file> [options]')
+    .usage('Usage: $0 <env-file> [env-file2 ...] [options]')
     .help()
     .parseAsync();
 
@@ -29,14 +29,18 @@ export default async function cli(): Promise<void> {
       'node_modules',
       'react-native-ultimate-config'
     );
-  const env_file = String(argv._[0] ?? '');
+
+  // Accept one or more positional env file paths.
+  // Multiple files are merged left-to-right (last file wins for conflicting keys).
+  // Example: rnuc .env.base .env.staging
+  const env_files = argv._.map(String);
 
   const rc_file = path.resolve(project_root, '.rnucrc.js');
   if (fs.existsSync(rc_file)) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
     const rc = require(rc_file) as RC;
-    await main(project_root, lib_root, env_file, rc);
+    await main(project_root, lib_root, env_files, rc);
   } else {
-    await main(project_root, lib_root, env_file);
+    await main(project_root, lib_root, env_files);
   }
 }
