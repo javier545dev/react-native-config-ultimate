@@ -66,7 +66,7 @@ Therefore every time this library is updated all files MUST be regenerated using
 1. [Testing Guide 🧪](./docs/testing.md)
 1. [Cookbook 🥦](./docs/cookbook.md)
 1. [Troubleshooting 🎱](./docs/troubleshooting.md)
-1. [Contributor notes](./docs/contributor-notes.md)
+1. [Contributing 🤝](./CONTRIBUTING.md)
 1. [Alternatives](./docs/alternatives.md)
 
 ## Features
