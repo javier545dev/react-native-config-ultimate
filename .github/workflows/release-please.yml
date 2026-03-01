@@ -29,10 +29,11 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      packages: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js for npm
         uses: actions/setup-node@v4
         with:
           node-version: "22.x"
@@ -56,3 +57,18 @@ jobs:
         working-directory: packages/react-native-config-ultimate
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@javier545dev"
+
+      - name: Publish to GitHub Packages
+        run: |
+          npm pkg set name="@javier545dev/react-native-config-ultimate"
+          npm publish --access public
+        working-directory: packages/react-native-config-ultimate
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
