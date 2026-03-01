@@ -3,57 +3,51 @@
   "title": "React Native Config Ultimate",
   "version": "0.0.7",
   "description": "Config that works. A community-maintained fork of react-native-ultimate-config.",
-  "main": "index.js",
-  "module": "index.js",
-  "react-native": "index.js",
-  "source": "index.ts",
-  "browser": "index.web.js",
-  "types": "index.d.ts",
+  "main": "./lib/commonjs/index.js",
+  "module": "./lib/module/index.js",
+  "types": "./lib/typescript/src/index.d.ts",
+  "react-native": "./src/index.ts",
+  "source": "./src/index.ts",
   "exports": {
     ".": {
-      "react-native": "./index.js",
-      "import": "./index.js",
-      "require": "./index.js",
-      "default": "./index.js"
-    }
+      "react-native": "./src/index.ts",
+      "source": "./src/index.ts",
+      "types": "./lib/typescript/src/index.d.ts",
+      "default": "./lib/module/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "bin.js",
-    "index.js",
-    "index.d.ts",
-    "index.web.js",
-    "src/*.js",
-    "!src/*.spec.js",
-    "src/NativeUltimateConfig.ts",
-    "src/templates",
-    "override.js",
-    "ios/UltimateConfig.{h,mm}",
-    "ios/ConfigValues.h",
-    "ios/UltimateConfig.xcodeproj/project.pbxproj",
-    "android/src",
-    "android/build.gradle",
-    "android/rncu.gradle",
-    "react-native-config-ultimate.podspec"
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "*.podspec",
+    "!src/**/*.spec.ts",
+    "!src/test_outputs",
+    "!ios/build",
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
   ],
   "scripts": {
-    "build": "tsc",
+    "example": "yarn workspace react-native-config-ultimate-example",
+    "build": "bob build && node -e \"const fs=require('fs');const f='lib/commonjs/cli.js';const c=fs.readFileSync(f,'utf8');if(!c.startsWith('#!')){fs.writeFileSync(f,'#!/usr/bin/env node\\n'+c)}\"",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "prepare": "npm run build",
+    "prepack": "printf '#error \"react-native-config-ultimate: ConfigValues.h not generated. Run: npx rncu .env from your project root before building iOS.\\n\"' > ios/ConfigValues.h",
     "typecheck": "tsc --noEmit",
-    "pretest": "tsc",
     "test": "jest",
-    "prepack": "printf '#error \"react-native-config-ultimate: ConfigValues.h not generated. Run: npx rncu .env from your project root before building iOS.\\n\"' > ios/ConfigValues.h && echo 'module.exports = {};' > override.js",
-    "lint": "eslint src/**/*.ts index.ts --max-warnings=0",
-    "format": "prettier --write src/**/*.ts index.ts"
+    "lint": "eslint \"src/**/*.{js,ts,tsx}\" --max-warnings=0"
   },
   "bin": {
-    "rncu": "./bin.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/javier545dev/react-native-config-ultimate.git"
-  },
-  "homepage": "https://github.com/javier545dev/react-native-config-ultimate#readme",
-  "bugs": {
-    "url": "https://github.com/javier545dev/react-native-config-ultimate/issues"
+    "rncu": "./lib/commonjs/cli.js"
   },
   "keywords": [
     "react-native",
@@ -76,6 +70,10 @@
     "new-architecture",
     "turbomodules"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javier545dev/react-native-config-ultimate.git"
+  },
   "author": {
     "name": "Javier Fuentes",
     "email": "javierfuentes545@gmail.com"
@@ -88,26 +86,40 @@
     }
   ],
   "license": "MIT",
-  "peerDependencies": {
-    "react-native": ">=0.73.0 <1.0.x"
+  "bugs": {
+    "url": "https://github.com/javier545dev/react-native-config-ultimate/issues"
+  },
+  "homepage": "https://github.com/javier545dev/react-native-config-ultimate#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.3.2",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.35.0",
+    "@react-native/babel-preset": "0.83.0",
+    "@react-native/eslint-config": "0.83.0",
     "@types/jest": "^29.5.0",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.0.0",
+    "@types/react": "^19.2.0",
     "@types/yargs": "^17.0.35",
-    "@typescript-eslint/eslint-plugin": "^8.20.0",
-    "@typescript-eslint/parser": "^8.20.0",
-    "eslint": "^9.17.0",
+    "del-cli": "^6.0.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "jest": "^29.7.0",
     "prettier": "^3.4.2",
-    "react": "^19.0.0",
-    "react-native": "0.79.5",
+    "react": "19.2.0",
+    "react-native": "0.83.0",
+    "react-native-builder-bob": "^0.40.18",
     "ts-jest": "^29.2.0",
-    "typescript": "^5.5.4"
+    "turbo": "^2.5.6",
+    "typescript": "^5.9.2"
   },
-  "engines": {
-    "node": ">= 18.0.0"
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
   },
   "dependencies": {
     "chokidar": "4.0.3",
@@ -117,6 +129,19 @@
     "js-yaml": "^4",
     "yargs": "^17"
   },
+  "workspaces": [
+    "example"
+  ],
+  "packageManager": "yarn@4.11.0",
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
   "codegenConfig": {
     "name": "RNUltimateConfigSpec",
     "type": "modules",
@@ -124,5 +149,12 @@
     "android": {
       "javaPackageName": "com.reactnativeultimateconfig"
     }
+  },
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false
   }
 }

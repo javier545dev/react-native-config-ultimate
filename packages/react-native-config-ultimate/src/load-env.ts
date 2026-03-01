@@ -66,7 +66,8 @@ export default function load_env(config_paths: string | string[]): EnvData {
   // YAML or mixed: load each file individually and shallow-merge.
   const merged: EnvData = {};
   for (let i = 0; i < paths.length; i++) {
-    const p = paths[i];
+    const p = paths[i] as string;
+    if (!p) continue;
     if (formats[i] === 'yaml') {
       Object.assign(merged, read_yaml(p));
     } else {

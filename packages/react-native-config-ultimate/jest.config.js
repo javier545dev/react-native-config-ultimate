@@ -3,7 +3,7 @@ module.exports = {
   coverageDirectory: "coverage",
   coverageReporters: ["json", "text", "lcov", "clover"],
   testEnvironment: "node",
-  testPathIgnorePatterns: ["/node_modules/", "example", "test_outputs", "e2e"],
+  testPathIgnorePatterns: ["/node_modules/", "/lib/", "example", "test_outputs", "e2e"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
     "^.+\\.tsx?$": ["ts-jest", {

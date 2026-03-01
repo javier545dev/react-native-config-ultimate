@@ -9,8 +9,7 @@
  * - getAll() returns all config values as a JSON-encoded string, which Codegen handles perfectly
  * - This gives us a working TurboModule binding for New Architecture
  */
-import type { TurboModule } from 'react-native/Libraries/TurboModule/RCTExport';
-import { TurboModuleRegistry } from 'react-native';
+import { TurboModuleRegistry, type TurboModule } from 'react-native';
 
 export interface Spec extends TurboModule {
   // Returns all config values as a JSON-encoded string.

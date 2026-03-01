@@ -24,7 +24,7 @@ export default function write_env(files: FileMap): void {
       // Ensure the destination directory exists (handles first-run and hoisted workspaces).
       fs.mkdirSync(path.dirname(dest), { recursive: true });
       const tmp = path.join(tmp_dir, `rncu_${Date.now()}_${Math.random().toString(36).slice(2)}`);
-      fs.writeFileSync(tmp, files[dest], 'utf8');
+      fs.writeFileSync(tmp, files[dest] as string, 'utf8');
       pending.push({ tmp, dest });
     }
   } catch (err) {
