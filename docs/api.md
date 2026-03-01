@@ -19,10 +19,12 @@ Table of contents
    1. [Build settings](#build-settings)
    1. [Info.plist](#infoplist)
    1. [Objective-C](#objective-c)
+   1. [Swift](#swift)
 1. [Android](#android)
    1. [build.gradle](#buildgradle)
    1. [AndroidManifest.xml](#androidmanifestxml)
    1. [Java](#java)
+   1. [Kotlin](#kotlin)
 1. [Note about types](#note-about-types)
 
 ## Files
@@ -292,12 +294,105 @@ update info plist and observe app name changed:
 ![update app name](./api.assets/ios.info.1.png)
 ![update app name](./api.assets/ios.info.2.png)
 
-### Objective-c
+### Objective-C
 
 ```objc
 #import <react-native-ultimate-config/ConfigValues.h>
-...
-NSLog(APP_NAME);
+
+// Access variables directly
+NSLog(@"App name: %@", APP_NAME);
+NSLog(@"API URL: %@", API_URL);
+
+// Use in conditionals
+if ([DEBUG isEqualToString:@"true"]) {
+    NSLog(@"Debug mode enabled");
+}
+```
+
+### Swift
+
+To access config values in Swift, you need to create a bridging header or access them through the generated constants.
+
+#### Option 1: Using Bridging Header (Recommended)
+
+1. Create or update your bridging header (`YourApp-Bridging-Header.h`):
+
+```objc
+#import <react-native-ultimate-config/ConfigValues.h>
+```
+
+2. Access values in Swift:
+
+```swift
+import Foundation
+
+class MyService {
+    func configure() {
+        // Access string values
+        let appName = APP_NAME as String
+        let apiUrl = API_URL as String
+        
+        print("App: \(appName)")
+        print("API: \(apiUrl)")
+        
+        // Use in your code
+        configureNetwork(baseUrl: apiUrl)
+    }
+}
+```
+
+#### Option 2: Create a Swift wrapper
+
+Create a type-safe Swift wrapper for your config values:
+
+```swift
+// Config.swift
+import Foundation
+
+struct Config {
+    static var appName: String {
+        return APP_NAME as String
+    }
+    
+    static var apiUrl: String {
+        return API_URL as String
+    }
+    
+    static var debug: Bool {
+        return (DEBUG as? String)?.lowercased() == "true"
+    }
+    
+    static var timeout: Int {
+        return Int(TIMEOUT_MS as? String ?? "5000") ?? 5000
+    }
+}
+
+// Usage
+let url = Config.apiUrl
+if Config.debug {
+    print("Debug mode")
+}
+```
+
+#### Option 3: Access via Info.plist
+
+Since all values are exposed to Build Settings, they're available in Info.plist. Add your variables to Info.plist and access them via Bundle:
+
+```swift
+// In Info.plist, add: APP_NAME = $(APP_NAME)
+
+extension Bundle {
+    var appName: String {
+        return infoDictionary?["APP_NAME"] as? String ?? ""
+    }
+    
+    var apiUrl: String {
+        return infoDictionary?["API_URL"] as? String ?? ""
+    }
+}
+
+// Usage
+let appName = Bundle.main.appName
 ```
 
 ## Android
@@ -346,7 +441,7 @@ They are accessible as:
 
 ### Java
 
-All variables are exposed via `BuilConfig`. They are accessible as:
+All variables are exposed via `BuildConfig`. They are accessible as:
 
 ```java
 package com.example;
@@ -357,10 +452,6 @@ import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
 
-  /**
-   * Returns the name of the main component registered from JavaScript. This is used to schedule
-   * rendering of the component.
-   */
   @Override
   protected String getMainComponentName() {
     return "example";
@@ -369,11 +460,100 @@ public class MainActivity extends ReactActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Log.d("onCreate", BuildConfig.APP_NAME);
+    
+    // Access config values
+    Log.d("Config", "App name: " + BuildConfig.APP_NAME);
+    Log.d("Config", "API URL: " + BuildConfig.API_URL);
+    
+    // Use in conditionals
+    if (BuildConfig.DEBUG) {
+      Log.d("Config", "Debug mode enabled");
+    }
   }
+}
+```
 
+### Kotlin
+
+All variables are exposed via `BuildConfig` and can be accessed directly in Kotlin:
+
+```kotlin
+package com.example
+
+import android.os.Bundle
+import android.util.Log
+import com.facebook.react.ReactActivity
+
+class MainActivity : ReactActivity() {
+
+    override fun getMainComponentName(): String = "example"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // Access config values
+        Log.d("Config", "App name: ${BuildConfig.APP_NAME}")
+        Log.d("Config", "API URL: ${BuildConfig.API_URL}")
+        
+        // Use in conditionals
+        if (BuildConfig.DEBUG) {
+            Log.d("Config", "Debug mode enabled")
+        }
+    }
+}
+```
+
+#### Type-safe Kotlin wrapper (Optional)
+
+Create a type-safe wrapper for cleaner access:
+
+```kotlin
+// Config.kt
+package com.example
+
+object Config {
+    val appName: String
+        get() = BuildConfig.APP_NAME
+    
+    val apiUrl: String
+        get() = BuildConfig.API_URL
+    
+    val debug: Boolean
+        get() = BuildConfig.DEBUG
+    
+    val timeoutMs: Int
+        get() = BuildConfig.TIMEOUT_MS.toIntOrNull() ?: 5000
 }
 
+// Usage
+class MyService {
+    fun configure() {
+        val url = Config.apiUrl
+        
+        if (Config.debug) {
+            Log.d("MyService", "Debug mode - using $url")
+        }
+    }
+}
+```
+
+#### Access in Jetpack Compose
+
+```kotlin
+@Composable
+fun AppInfo() {
+    Column {
+        Text(text = "App: ${BuildConfig.APP_NAME}")
+        Text(text = "Version: ${BuildConfig.VERSION_NAME}")
+        
+        if (BuildConfig.DEBUG) {
+            Text(
+                text = "Debug Mode",
+                color = Color.Red
+            )
+        }
+    }
+}
 ```
 
 ## Web
@@ -397,8 +577,10 @@ If yaml file is used for configuration then it is possible to pick up types of v
 | place               | types available | notes                                                                                                                                                                                    |
 | ------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | javascript          | yes             | -                                                                                                                                                                                        |
-| infoplist           | no              | -                                                                                                                                                                                        |
+| infoplist           | no              | all values are strings                                                                                                                                                                   |
 | objective-c         | yes             | -                                                                                                                                                                                        |
+| swift               | yes             | requires bridging header or wrapper                                                                                                                                                      |
 | build.gradle        | yes             | -                                                                                                                                                                                        |
 | AndroidManifest.xml | yes\*           | floating point values are available as `@string` resources since there are no such type available in resources: https://developer.android.com/guide/topics/resources/available-resources |
 | Java                | yes             | -                                                                                                                                                                                        |
+| Kotlin              | yes             | same as Java, via BuildConfig                                                                                                                                                            |
