@@ -1,12 +1,33 @@
-name: Publish to npm
+name: Release Please
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: node
+          package-name: react-native-config-ultimate
+          path: packages/react-native-config-ultimate
+          changelog-path: CHANGELOG.md
+          include-component-in-tag: false
+
   publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,7 +55,7 @@ jobs:
         run: cp LICENSE README.md packages/react-native-config-ultimate/
 
       - name: Publish to npm
-        run: npm publish --access public
+        run: npm publish --access public --provenance
         working-directory: packages/react-native-config-ultimate
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
