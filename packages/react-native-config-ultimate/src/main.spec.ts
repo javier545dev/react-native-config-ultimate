@@ -12,7 +12,6 @@ jest.doMock('./validate-env', () => ({ validate_env: mock_validate_env }));
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const main: (...args: unknown[]) => Promise<void> = require('./main').default;
 
-
 export const files_to_assert = [
   'ios/rncu.xcconfig',
   'node_modules/react-native-config-ultimate/ios/ConfigValues.h',
@@ -37,11 +36,7 @@ describe('main', () => {
     mock_flatten.mockReturnValueOnce({ data: true, android: true });
     mock_flatten.mockReturnValueOnce({ data: true, web: true });
     mock_render_env.mockReturnValueOnce({ hello: 'world' });
-    await main(
-      'project',
-      'project/node_modules/react-native-config-ultimate',
-      'file'
-    );
+    await main('project', 'project/node_modules/react-native-config-ultimate', 'file');
     expect(mock_load_env).toHaveBeenCalledWith('file');
     expect(mock_flatten).toHaveBeenCalledWith({ data: true }, 'ios');
     expect(mock_flatten).toHaveBeenCalledWith({ data: true }, 'android');
@@ -63,23 +58,19 @@ describe('main', () => {
     mock_load_env.mockReturnValueOnce({ data: true });
     mock_flatten.mockReturnValue({});
     mock_render_env.mockReturnValueOnce({});
-    await main(
-      'project',
-      'project/node_modules/react-native-config-ultimate',
-      ['.env.base', '.env.staging']
-    );
+    await main('project', 'project/node_modules/react-native-config-ultimate', [
+      '.env.base',
+      '.env.staging',
+    ]);
     expect(mock_load_env).toHaveBeenCalledWith(['.env.base', '.env.staging']);
   });
   describe('rc.on_env', () => {
     it('invoke rc hook with config before flattening', async () => {
       const on_env = jest.fn();
       mock_load_env.mockReturnValueOnce({ data: true });
-      await main(
-        'project',
-        'project/node_modules/react-native-config-ultimate',
-        'file',
-        { on_env }
-      );
+      await main('project', 'project/node_modules/react-native-config-ultimate', 'file', {
+        on_env,
+      });
       expect(on_env).toHaveBeenCalledWith({ data: true });
       expect(mock_flatten).toHaveBeenCalledWith({ data: true }, 'ios');
       expect(mock_flatten).toHaveBeenCalledWith({ data: true }, 'android');
@@ -93,12 +84,9 @@ describe('main', () => {
         return { ...rest, key2: 'hello' };
       });
       mock_load_env.mockReturnValueOnce({ data: true, key1: 'bye' });
-      await main(
-        'project',
-        'project/node_modules/react-native-config-ultimate',
-        'file',
-        { on_env }
-      );
+      await main('project', 'project/node_modules/react-native-config-ultimate', 'file', {
+        on_env,
+      });
       expect(on_env).toHaveBeenCalledWith({ data: true, key1: 'bye' });
       expect(mock_flatten).toHaveBeenCalledWith({ data: true, key2: 'hello' }, 'ios');
       expect(mock_flatten).toHaveBeenCalledWith({ data: true, key2: 'hello' }, 'android');
@@ -112,12 +100,9 @@ describe('main', () => {
       mock_load_env.mockReturnValueOnce({ API_KEY: 'secret' });
       mock_flatten.mockReturnValue({});
       mock_render_env.mockReturnValueOnce({});
-      await main(
-        'project',
-        'project/node_modules/react-native-config-ultimate',
-        'file',
-        { schema }
-      );
+      await main('project', 'project/node_modules/react-native-config-ultimate', 'file', {
+        schema,
+      });
       expect(mock_validate_env).toHaveBeenCalledWith({ API_KEY: 'secret' }, schema);
     });
 
@@ -125,11 +110,7 @@ describe('main', () => {
       mock_load_env.mockReturnValueOnce({ data: true });
       mock_flatten.mockReturnValue({});
       mock_render_env.mockReturnValueOnce({});
-      await main(
-        'project',
-        'project/node_modules/react-native-config-ultimate',
-        'file'
-      );
+      await main('project', 'project/node_modules/react-native-config-ultimate', 'file');
       expect(mock_validate_env).not.toHaveBeenCalled();
     });
 
@@ -139,17 +120,12 @@ describe('main', () => {
       mock_load_env.mockReturnValueOnce({});
       mock_flatten.mockReturnValue({});
       mock_render_env.mockReturnValueOnce({});
-      await main(
-        'project',
-        'project/node_modules/react-native-config-ultimate',
-        'file',
-        { on_env, schema }
-      );
+      await main('project', 'project/node_modules/react-native-config-ultimate', 'file', {
+        on_env,
+        schema,
+      });
       // validate_env receives the HOOK output, not the raw env
-      expect(mock_validate_env).toHaveBeenCalledWith(
-        { INJECTED_KEY: 'from-hook' },
-        schema
-      );
+      expect(mock_validate_env).toHaveBeenCalledWith({ INJECTED_KEY: 'from-hook' }, schema);
     });
 
     it('propagates validation error thrown by validate_env', async () => {
@@ -159,12 +135,7 @@ describe('main', () => {
         throw new Error('❌ validation failed: Missing required env var: API_KEY');
       });
       await expect(
-        main(
-          'project',
-          'project/node_modules/react-native-config-ultimate',
-          'file',
-          { schema }
-        )
+        main('project', 'project/node_modules/react-native-config-ultimate', 'file', { schema })
       ).rejects.toThrow('Missing required env var: API_KEY');
     });
   });

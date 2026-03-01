@@ -22,9 +22,7 @@ const write_env: (env: Record<string, string>) => void = require('./write-env').
 
 /** Returns the temp file path used for a given destination. */
 function tmp_for(dest: string): string {
-  const rename_call = mockRenameSync.mock.calls.find(
-    ([, d]: [string, string]) => d === dest
-  );
+  const rename_call = mockRenameSync.mock.calls.find(([, d]: [string, string]) => d === dest);
   return rename_call?.[0] as string;
 }
 
@@ -44,7 +42,11 @@ describe('write-env', () => {
 
     // Phase 1: content written to a temp path under /tmp
     expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
-    const [tmp_path, content, encoding] = mockWriteFileSync.mock.calls[0] as [string, string, string];
+    const [tmp_path, content, encoding] = mockWriteFileSync.mock.calls[0] as [
+      string,
+      string,
+      string,
+    ];
     expect(tmp_path).toMatch(/^\/tmp\/rncu_/);
     expect(content).toBe('world');
     expect(encoding).toBe('utf8');
@@ -69,7 +71,9 @@ describe('write-env', () => {
 
   it('falls back to copyFileSync + unlinkSync when renameSync fails (cross-device)', () => {
     // Simulate cross-device rename error (e.g. /tmp on different device)
-    mockRenameSync.mockImplementation(() => { throw new Error('EXDEV'); });
+    mockRenameSync.mockImplementation(() => {
+      throw new Error('EXDEV');
+    });
 
     write_env({ hello: 'world' });
 
@@ -78,20 +82,26 @@ describe('write-env', () => {
   });
 
   it('throws a descriptive error if copyFileSync also fails', () => {
-    mockRenameSync.mockImplementation(() => { throw new Error('EXDEV'); });
-    mockCopyFileSync.mockImplementation(() => { throw new Error('EACCES: permission denied'); });
+    mockRenameSync.mockImplementation(() => {
+      throw new Error('EXDEV');
+    });
+    mockCopyFileSync.mockImplementation(() => {
+      throw new Error('EACCES: permission denied');
+    });
 
-    expect(() => write_env({ hello: 'world' })).toThrow(
-      /Failed to write output files/
-    );
+    expect(() => write_env({ hello: 'world' })).toThrow(/Failed to write output files/);
     expect(() => write_env({ hello: 'world' })).toThrow('hello');
   });
 
   it('cleans up temp files when Phase 1 write fails', () => {
     // First write succeeds, second fails mid-write
     mockWriteFileSync
-      .mockImplementationOnce(() => { /* success */ })
-      .mockImplementationOnce(() => { throw new Error('ENOSPC: no space left'); });
+      .mockImplementationOnce(() => {
+        /* success */
+      })
+      .mockImplementationOnce(() => {
+        throw new Error('ENOSPC: no space left');
+      });
 
     expect(() => write_env({ hello: 'world', hey: 'you' })).toThrow(
       /Failed to prepare output files/

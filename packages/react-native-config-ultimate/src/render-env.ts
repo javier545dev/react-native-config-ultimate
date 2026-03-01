@@ -60,11 +60,7 @@ function get_compiled_template(template_name: string): HandlebarsTemplateDelegat
   const cached = template_cache.get(template_name);
   if (cached) return cached;
 
-  const template_path = path.join(
-    __dirname,
-    'templates',
-    `${template_name}.handlebars`
-  );
+  const template_path = path.join(__dirname, 'templates', `${template_name}.handlebars`);
   const compiled = handlebars.compile(fs.readFileSync(template_path, 'utf8'));
   template_cache.set(template_name, compiled);
   return compiled;
@@ -92,21 +88,17 @@ export default function render_env(
   const map: FileMap = {
     [path.join(lib_root, 'index.d.ts')]: render_template('index.d.ts', ios),
     [path.join(lib_root, 'index.web.js')]: render_template('index.web.js', web),
-    [path.join(lib_root, 'ios', `${code_file_name}.h`)]: render_template(
-      'ConfigValues.h',
-      ios
-    ),
-    [path.join(lib_root, 'android', 'rncu.yaml')]: render_template(
-      'rncu.yaml',
-      android
-    ),
+    [path.join(lib_root, 'ios', `${code_file_name}.h`)]: render_template('ConfigValues.h', ios),
+    [path.join(lib_root, 'android', 'rncu.yaml')]: render_template('rncu.yaml', android),
   };
 
   // Only write xcconfig if the project has an ios folder.
   // All RN apps have it; some react-native-web apps may not.
   if (fs.existsSync(path.join(project_root, 'ios'))) {
-    map[path.join(project_root, 'ios', `${config_file_name}.xcconfig`)] =
-      render_template('rncu.xcconfig', ios);
+    map[path.join(project_root, 'ios', `${config_file_name}.xcconfig`)] = render_template(
+      'rncu.xcconfig',
+      ios
+    );
   }
 
   const js_override = rc && typeof rc.js_override === 'boolean' && rc.js_override;

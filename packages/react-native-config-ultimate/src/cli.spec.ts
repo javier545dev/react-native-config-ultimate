@@ -27,12 +27,8 @@ function set_argv(...args: string[]): void {
 }
 
 /** Grab the handler registered for a given chokidar event. */
-function get_watcher_handler(
-  event: string
-): ((p: string) => Promise<void>) | undefined {
-  const call = (mock_watcher_on.mock.calls as [string, unknown][]).find(
-    ([ev]) => ev === event
-  );
+function get_watcher_handler(event: string): ((p: string) => Promise<void>) | undefined {
+  const call = (mock_watcher_on.mock.calls as [string, unknown][]).find(([ev]) => ev === event);
   return call?.[1] as ((p: string) => Promise<void>) | undefined;
 }
 
@@ -43,9 +39,7 @@ describe('cli', () => {
   const stdin_resume_spy = jest
     .spyOn(process.stdin, 'resume')
     .mockImplementation(() => process.stdin);
-  const process_on_spy = jest
-    .spyOn(process, 'on')
-    .mockImplementation(() => process);
+  const process_on_spy = jest.spyOn(process, 'on').mockImplementation(() => process);
 
   beforeEach(() => {
     mock_main.mockReset().mockResolvedValue(undefined);
@@ -145,9 +139,7 @@ describe('cli', () => {
     it('registers change and add event handlers', async () => {
       set_argv('.env', '--watch');
       await cli();
-      const events = (mock_watcher_on.mock.calls as [string, unknown][]).map(
-        ([ev]) => ev
-      );
+      const events = (mock_watcher_on.mock.calls as [string, unknown][]).map(([ev]) => ev);
       expect(events).toContain('change');
       expect(events).toContain('add');
     });
@@ -209,9 +201,9 @@ describe('cli', () => {
     it('registers a SIGINT handler for graceful shutdown', async () => {
       set_argv('.env', '--watch');
       await cli();
-      const sigint_call = (
-        process_on_spy.mock.calls as [string, unknown][]
-      ).find(([event]) => event === 'SIGINT');
+      const sigint_call = (process_on_spy.mock.calls as [string, unknown][]).find(
+        ([event]) => event === 'SIGINT'
+      );
       expect(sigint_call).toBeDefined();
     });
 

@@ -43,8 +43,7 @@ function validate_env(env, schema) {
         if (field.type === 'number' && isNaN(Number(value))) {
             errors.push(`${key} must be a number, got "${value}"`);
         }
-        if (field.type === 'boolean' &&
-            !['true', 'false', '1', '0'].includes(value.toLowerCase())) {
+        if (field.type === 'boolean' && !['true', 'false', '1', '0'].includes(value.toLowerCase())) {
             errors.push(`${key} must be a boolean (true/false/1/0), got "${value}"`);
         }
         const pattern = compiled_patterns.get(key);

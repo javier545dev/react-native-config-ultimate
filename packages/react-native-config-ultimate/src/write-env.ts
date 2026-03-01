@@ -30,7 +30,11 @@ export default function write_env(files: FileMap): void {
   } catch (err) {
     // Clean up any temp files we already created.
     for (const { tmp } of pending) {
-      try { fs.unlinkSync(tmp); } catch { /* ignore */ }
+      try {
+        fs.unlinkSync(tmp);
+      } catch {
+        /* ignore */
+      }
     }
     throw new Error(
       `[rncu] Failed to prepare output files: ${err instanceof Error ? err.message : String(err)}`
@@ -53,15 +57,18 @@ export default function write_env(files: FileMap): void {
         rename_errors.push(
           `${dest}: ${copy_err instanceof Error ? copy_err.message : String(copy_err)}`
         );
-        try { fs.unlinkSync(tmp); } catch { /* ignore */ }
+        try {
+          fs.unlinkSync(tmp);
+        } catch {
+          /* ignore */
+        }
       }
     }
   }
 
   if (rename_errors.length > 0) {
     throw new Error(
-      `[rncu] Failed to write output files:\n` +
-        rename_errors.map((e) => `  • ${e}`).join('\n')
+      `[rncu] Failed to write output files:\n` + rename_errors.map((e) => `  • ${e}`).join('\n')
     );
   }
 }

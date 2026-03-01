@@ -21,9 +21,7 @@ describe('load-env', () => {
     mockExpand.mockReset();
     mockYaml.mockReset();
     // Default expand: return parsed as-is (no expansion side effects)
-    mockExpand.mockImplementation(
-      (input: { parsed: Record<string, string> }) => input
-    );
+    mockExpand.mockImplementation((input: { parsed: Record<string, string> }) => input);
   });
 
   describe('dotenv format', () => {
@@ -103,17 +101,14 @@ describe('load-env', () => {
       extension
       ${'yml'}
       ${'yaml'}
-    `(
-      "reads yaml when extension is '.$extension'",
-      ({ extension }: { extension: string }) => {
-        mockReadFileSync.mockReturnValueOnce(Buffer.from('data'));
-        mockYaml.mockReturnValueOnce({ hello: 'world' });
-        const result = load_env(`hello.${extension}`);
-        expect(mockReadFileSync).toHaveBeenCalledWith(`hello.${extension}`);
-        expect(mockYaml).toHaveBeenCalledWith('data');
-        expect(result).toEqual({ hello: 'world' });
-      }
-    );
+    `("reads yaml when extension is '.$extension'", ({ extension }: { extension: string }) => {
+      mockReadFileSync.mockReturnValueOnce(Buffer.from('data'));
+      mockYaml.mockReturnValueOnce({ hello: 'world' });
+      const result = load_env(`hello.${extension}`);
+      expect(mockReadFileSync).toHaveBeenCalledWith(`hello.${extension}`);
+      expect(mockYaml).toHaveBeenCalledWith('data');
+      expect(result).toEqual({ hello: 'world' });
+    });
 
     it('merges multiple yaml files, last file wins for conflicts', () => {
       mockReadFileSync
@@ -155,9 +150,7 @@ describe('load-env', () => {
 
   describe('edge cases', () => {
     it('throws when no files are provided', () => {
-      expect(() => load_env([])).toThrow(
-        'No env file specified'
-      );
+      expect(() => load_env([])).toThrow('No env file specified');
     });
   });
 

@@ -16,9 +16,7 @@ function detect_format(config_path: string): FileFormat {
 function read_yaml(config_path: string): EnvData {
   const data = yaml.load(fs.readFileSync(config_path).toString());
   if (typeof data === 'undefined' || data === null || typeof data !== 'object') {
-    throw new Error(
-      `Expected to read object from ${config_path}, but got '${data}'`
-    );
+    throw new Error(`Expected to read object from ${config_path}, but got '${data}'`);
   }
   return data as EnvData;
 }
@@ -47,9 +45,7 @@ export default function load_env(config_paths: string | string[]): EnvData {
   const paths = Array.isArray(config_paths) ? config_paths : [config_paths];
 
   if (paths.length === 0) {
-    throw new Error(
-      'No env file specified. Usage: rncu <env-file> [env-file2 ...]'
-    );
+    throw new Error('No env file specified. Usage: rncu <env-file> [env-file2 ...]');
   }
 
   const formats = paths.map(detect_format);

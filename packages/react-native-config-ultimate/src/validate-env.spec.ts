@@ -53,9 +53,7 @@ describe('validate-env', () => {
         expect(() => validate_env({ TIMEOUT: 'fast' }, schema)).toThrow(
           'TIMEOUT must be a number, got "fast"'
         );
-        expect(() => validate_env({ TIMEOUT: 'abc' }, schema)).toThrow(
-          'TIMEOUT must be a number'
-        );
+        expect(() => validate_env({ TIMEOUT: 'abc' }, schema)).toThrow('TIMEOUT must be a number');
       });
 
       it('accepts actual number values', () => {
@@ -77,9 +75,7 @@ describe('validate-env', () => {
         expect(() => validate_env({ DEBUG: 'yes' }, schema)).toThrow(
           'DEBUG must be a boolean (true/false/1/0), got "yes"'
         );
-        expect(() => validate_env({ DEBUG: 'enabled' }, schema)).toThrow(
-          'DEBUG must be a boolean'
-        );
+        expect(() => validate_env({ DEBUG: 'enabled' }, schema)).toThrow('DEBUG must be a boolean');
       });
     });
 

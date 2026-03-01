@@ -67,11 +67,7 @@ export default async function cli(): Promise<void> {
   const lib_root: string = (() => {
     if (argv.libRoot) return argv.libRoot;
 
-    const conventional = path.join(
-      project_root,
-      'node_modules',
-      'react-native-config-ultimate'
-    );
+    const conventional = path.join(project_root, 'node_modules', 'react-native-config-ultimate');
 
     // If the directory already exists at the conventional location, use it.
     // This handles standard installs and the integration test temp-dir setup.
@@ -79,10 +75,9 @@ export default async function cli(): Promise<void> {
 
     // Otherwise, try require.resolve to handle hoisted workspaces.
     try {
-      const pkg_json = require.resolve(
-        'react-native-config-ultimate/package.json',
-        { paths: [project_root] }
-      );
+      const pkg_json = require.resolve('react-native-config-ultimate/package.json', {
+        paths: [project_root],
+      });
       return path.dirname(pkg_json);
     } catch {
       // Last resort: return the conventional path and let write-env create it.
@@ -135,10 +130,7 @@ export default async function cli(): Promise<void> {
   await run();
 
   // Files to watch: env files + RC file (if it exists).
-  const files_to_watch = [
-    ...env_files,
-    ...(fs.existsSync(rc_file) ? [rc_file] : []),
-  ];
+  const files_to_watch = [...env_files, ...(fs.existsSync(rc_file) ? [rc_file] : [])];
 
   const watcher = watch(files_to_watch, {
     ignoreInitial: true,

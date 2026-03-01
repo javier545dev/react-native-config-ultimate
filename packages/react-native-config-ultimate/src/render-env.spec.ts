@@ -163,9 +163,9 @@ describe('render-env', () => {
       const result = render_env(project_root, lib_root, sample_env);
       const content = result[path.join(project_root, 'ios', 'rncu.xcconfig')];
 
-      // xcconfig escapes // to /$()/ 
+      // xcconfig escapes // to /$()/
       expect(content).toContain('API_URL');
-      expect(content).toContain('/$()/'); // https:// becomes https:/$()/ 
+      expect(content).toContain('/$()/'); // https:// becomes https:/$()/
     });
   });
 });

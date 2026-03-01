@@ -36,8 +36,7 @@ export function validate_env(env: EnvData, schema: Schema): void {
 
   for (const [key, field] of Object.entries(schema)) {
     const raw = env[key];
-    const missing =
-      raw === undefined || raw === null || String(raw).trim() === '';
+    const missing = raw === undefined || raw === null || String(raw).trim() === '';
 
     if (field.required && missing) {
       errors.push(`Missing required env var: ${key}`);
@@ -52,20 +51,13 @@ export function validate_env(env: EnvData, schema: Schema): void {
       errors.push(`${key} must be a number, got "${value}"`);
     }
 
-    if (
-      field.type === 'boolean' &&
-      !['true', 'false', '1', '0'].includes(value.toLowerCase())
-    ) {
-      errors.push(
-        `${key} must be a boolean (true/false/1/0), got "${value}"`
-      );
+    if (field.type === 'boolean' && !['true', 'false', '1', '0'].includes(value.toLowerCase())) {
+      errors.push(`${key} must be a boolean (true/false/1/0), got "${value}"`);
     }
 
     const pattern = compiled_patterns.get(key);
     if (pattern && !pattern.test(value)) {
-      errors.push(
-        `${key} does not match pattern /${field.pattern}/, got "${value}"`
-      );
+      errors.push(`${key} does not match pattern /${field.pattern}/, got "${value}"`);
     }
   }
 
