@@ -1,0 +1,4 @@
+# Exclude test files from npm package
+src/*.spec.ts
+src/*.spec.js
+src/test_outputs/
