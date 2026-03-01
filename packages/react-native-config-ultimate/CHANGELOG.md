@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.0.5](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.4...v0.0.5) (2026-03-01)
+
+
+### Bug Fixes
+
+* improve build error messages when rncu has not been run ([#11](https://github.com/javier545dev/react-native-config-ultimate/issues/11)) ([770aa2a](https://github.com/javier545dev/react-native-config-ultimate/commit/770aa2a638534c00ae04a518d4b8b1547aaaafaf))
+
 ## [0.0.4](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.3...v0.0.4) (2026-03-01)
 
 
