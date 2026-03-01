@@ -24,6 +24,7 @@
     "index.web.js",
     "src/*.js",
     "!src/*.spec.js",
+    "src/NativeUltimateConfig.ts",
     "src/templates",
     "override.js",
     "ios/UltimateConfig.{h,mm}",
