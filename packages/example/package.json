@@ -11,7 +11,7 @@
     "rnuc": "$(npm bin)/rnuc"
   },
   "dependencies": {
-    "react": "18.3.1",
+    "react": "19.2.4",
     "react-native": "0.79.5",
     "react-native-ultimate-config": "*"
   },
@@ -24,13 +24,13 @@
     "@react-native/metro-config": "^0.79.5",
     "@react-native/typescript-config": "^0.79.5",
     "@types/jest": "^29.5.13",
-    "@types/react": "^18.3.1",
-    "@types/react-test-renderer": "^18.3.0",
+    "@types/react": "^19.0.0",
+    "@types/react-test-renderer": "^19.0.0",
     "babel-jest": "^29.7.0",
     "eslint": "^8.19.0",
     "jest": "^29.7.0",
     "prettier": "^2.8.8",
-    "react-test-renderer": "18.3.1",
+    "react-test-renderer": "19.2.4",
     "typescript": "5.0.4"
   },
   "jest": {
