@@ -2,17 +2,17 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "test": "lerna run --scope=react-native-ultimate-config test",
-    "pods": "lerna exec --scope=example '(cd ios; pod install)'",
-    "example:env": "lerna run --scope=example rnuc -- .env",
-    "example:start": "lerna run --scope=example start",
-    "example:ios": "lerna run --scope=example ios",
-    "example:android": "lerna run --scope=example android",
-    "example:web:env": "lerna run --scope=example-web rnuc -- .env",
-    "example:web:start": "lerna run --scope=example-web start",
+    "test": "lerna run test --scope=react-native-ultimate-config",
+    "pods": "cd packages/example/ios && pod install",
+    "example:env": "lerna run rnuc --scope=example -- -- .env",
+    "example:start": "lerna run start --scope=example",
+    "example:ios": "lerna run ios --scope=example",
+    "example:android": "lerna run android --scope=example",
+    "example:web:env": "lerna run rnuc --scope=example-web -- -- .env",
+    "example:web:start": "lerna run start --scope=example-web",
     "version": "cd packages/react-native-ultimate-config; npx standard-version"
   },
   "devDependencies": {
-    "lerna": "^3.22.1"
+    "lerna": "^9.0.4"
   }
 }
