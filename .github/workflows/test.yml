@@ -12,10 +12,27 @@ on:
 jobs:
   unittest:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
     steps:
-      - uses: actions/checkout@v2
-      - name: install dependencies
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: packages/react-native-ultimate-config/package-lock.json
+
+      - name: Install dependencies
         run: npm install
-        working-directory:  packages/react-native-ultimate-config
-      - run: npm test
-        working-directory:  packages/react-native-ultimate-config
+        working-directory: packages/react-native-ultimate-config
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+        working-directory: packages/react-native-ultimate-config
+
+      - name: Run tests
+        run: npm test
+        working-directory: packages/react-native-ultimate-config

@@ -1,12 +1,13 @@
-const resolve_env = require("./resolve-env");
+import resolve_env from './resolve-env';
+import type { EnvData } from './resolve-env';
 
-describe("resolve_env", () => {
-  const original = { original: "data" };
+describe('resolve_env', () => {
+  const original: EnvData = { original: 'data' };
   it.each`
     on_env_result | expected
     ${1}          | ${1}
-    ${""}         | ${""}
-    ${"hello"}    | ${"hello"}
+    ${''}         | ${''}
+    ${'hello'}    | ${'hello'}
     ${0}          | ${0}
     ${1}          | ${1}
     ${false}      | ${false}
@@ -15,7 +16,7 @@ describe("resolve_env", () => {
     ${undefined}  | ${original}
   `(
     "when hook returns '$on_env_result' env is resolved to '$expected'",
-    async ({ on_env_result, expected }) => {
+    async ({ on_env_result, expected }: { on_env_result: unknown; expected: unknown }) => {
       const on_env = jest.fn();
       on_env.mockReturnValueOnce(on_env_result);
       expect(await resolve_env(original, { on_env })).toEqual(expected);

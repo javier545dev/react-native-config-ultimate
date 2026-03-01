@@ -46,3 +46,7 @@ rnuc.xcconfig
 
 # Jest
 coverage
+
+# Logs
+logs/
+*.log

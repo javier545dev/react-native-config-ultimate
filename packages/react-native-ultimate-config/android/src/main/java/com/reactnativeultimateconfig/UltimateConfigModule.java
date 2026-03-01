@@ -1,20 +1,23 @@
 package com.reactnativeultimateconfig;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.module.annotations.ReactModule;
-import java.util.*;
 
-import com.reactnativeultimateconfig.UltimateConfigModule;
+import java.util.HashMap;
+import java.util.Map;
 
 @ReactModule(name = UltimateConfigModule.NAME)
 public class UltimateConfigModule extends ReactContextBaseJavaModule {
   public static final String NAME = "UltimateConfig";
 
-  private static Class _buildConfig;
-  public static void setBuildConfig(Class buildConfig) {
+  @Nullable
+  private static Class<?> _buildConfig;
+
+  public static void setBuildConfig(Class<?> buildConfig) {
     _buildConfig = buildConfig;
   }
 
@@ -28,15 +31,20 @@ public class UltimateConfigModule extends ReactContextBaseJavaModule {
     return NAME;
   }
 
-
   @Override
+  @NonNull
   public Map<String, Object> getConstants() {
     final Map<String, Object> constants = new HashMap<>();
     try {
-      Class act = _buildConfig;
-      String keys = (String)act.getField("__RNUC_KEYS").get(act);
-      for (String k: keys.split(",")) {
-        constants.put(k, act.getField(k).get(act));
+      Class<?> act = _buildConfig;
+      if (act == null) return constants;
+      String keys = (String) act.getField("__RNUC_KEYS").get(act);
+      if (keys == null || keys.isEmpty()) return constants;
+      for (String k : keys.split(",")) {
+        Object value = act.getField(k).get(act);
+        if (value != null) {
+          constants.put(k, value);
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();

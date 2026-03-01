@@ -5,3 +5,14 @@ ios/ConfigValues.h
 override.js
 index.web.js
 !src/test_outputs/*
+
+# TypeScript compiled output (in-place compilation - do not commit)
+src/cli.js
+src/main.js
+src/load-env.js
+src/render-env.js
+src/write-env.js
+src/flatten.js
+src/resolve-env.js
+src/NativeUltimateConfig.js
+index.js
