@@ -26,21 +26,13 @@ For advanced setup please refer to [cookbook](./cookbook.md)
    rnuc.xcconfig
    ```
 
-1. **ONLY FOR NPM. SKIP IF USING YARN**
-
-   create script in "package.json"
-
-   ```json
-   "rnuc": "$(npm bin)/rnuc"
-   ```
-
 1. Generate files
 
    generate env files for native projects
 
-   | npm                 | yarn             |
-   | ------------------- | ---------------- |
-   | `npm run rnuc .env` | `yarn rnuc .env` |
+   | npm                  | yarn              |
+   | -------------------- | ----------------- |
+   | `npx rnuc .env`      | `yarn rnuc .env`  |
 
 1. Configure native projects (one-off setup)
 
@@ -61,22 +53,21 @@ For advanced setup please refer to [cookbook](./cookbook.md)
       <a name="android"></a>
 
       1. apply plugin in gradle
-         Add this right after applying react's plugin:
+
+         Open `android/app/build.gradle` and add this line at the top of the file
+         (before the `android {}` block):
 
          ```gradle
          apply from: "../../node_modules/react-native-ultimate-config/android/rnuc.gradle"
          ```
 
-         Final code:
-
-         ```gradle
-         apply from: "../../node_modules/react-native/react.gradle"
-         apply from: "../../node_modules/react-native-ultimate-config/android/rnuc.gradle"
-         ```
+         > **Note:** In React Native ≥ 0.71 `react.gradle` was removed. Do **not**
+         > add `rnuc.gradle` after `react.gradle` — just add it at the top level of
+         > `android/app/build.gradle`.
 
       2. expose `BuildConfig` to the library
 
-         in `MainApplication.java` add
+         **Java** — in `MainApplication.java` add:
 
          ```java
          // import module
@@ -91,6 +82,24 @@ For advanced setup please refer to [cookbook](./cookbook.md)
             UltimateConfigModule.setBuildConfig(BuildConfig.class); // expose
          }
          ```
+
+         **Kotlin** — in `MainApplication.kt` add:
+
+         ```kotlin
+         import com.reactnativeultimateconfig.UltimateConfigModule
+
+         ...
+
+         override fun onCreate() {
+           super.onCreate()
+           ...
+           UltimateConfigModule.setBuildConfig(BuildConfig::class.java) // expose
+         }
+         ```
+
+         > **Note:** If you are using React Native's **New Architecture** (≥ 0.73),
+         > `setBuildConfig` is no longer required. The TurboModule reads values
+         > directly from `BuildConfig` via Codegen.
 
       3. If you are using ProGuard:
          in `proguard-rules.pro` add the following snippet replacing `MY_PACKAGE`
@@ -117,5 +126,5 @@ For advanced setup please refer to [cookbook](./cookbook.md)
    - **Browserify** - No configuration needed.
    
 1. from now on every time you need to switch environment just run
-   `npm run rnuc <dotenv file>` or `yarn rnuc <dotenv file>` and rerun your native project (with
+   `npx rnuc <dotenv file>` or `yarn rnuc <dotenv file>` and rerun your native project (with
    `react-native run-{ios,android}`) or web project (with your web bundler of choice)
