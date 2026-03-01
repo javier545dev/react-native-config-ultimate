@@ -1,32 +1,47 @@
-# react-native-ultimate-config
+# react-native-config-ultimate
 
 _Config that works_
 
-[![NPM](https://img.shields.io/npm/l/react-native-ultimate-config)](https://www.npmjs.com/package/react-native-ultimate-config)
-[![npm](https://img.shields.io/npm/v/react-native-ultimate-config?color=green&label=version)](https://www.npmjs.com/package/react-native-ultimate-config)
-[![npm](https://img.shields.io/npm/dw/react-native-ultimate-config?color=green)](https://www.npmjs.com/package/react-native-ultimate-config)
+[![NPM](https://img.shields.io/npm/l/react-native-config-ultimate)](https://www.npmjs.com/package/react-native-config-ultimate)
+[![npm](https://img.shields.io/npm/v/react-native-config-ultimate?color=green&label=version)](https://www.npmjs.com/package/react-native-config-ultimate)
+[![npm](https://img.shields.io/npm/dw/react-native-config-ultimate?color=green)](https://www.npmjs.com/package/react-native-config-ultimate)
+
+---
+
+> **This is a community-maintained fork** of
+> [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config)
+> originally created by [Max Komarychev](https://github.com/maxkomarychev).
+>
+> The original library has not received updates since September 2023 and does not
+> support React Native's New Architecture (TurboModules), React 19, or modern
+> tooling. This fork picks up where it left off.
+>
+> **Full credit and gratitude to Max** for the original design, architecture, and
+> years of maintenance. This project would not exist without his work.
+> The MIT license is preserved in its entirety.
+
+---
 
 ## Gradle compatibility
 
-| react-native-ultimate-config | gradle |
+| react-native-config-ultimate | gradle |
 | ---------------------------- | ------ |
-| ^3                           | <=6    |
-| ^4 – ^6                      | 7      |
 | ^7                           | 8      |
+
+> For older versions see the original package [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config).
 
 ## React Native compatibility
 
-| react-native-ultimate-config | react-native | react  | New Architecture |
+| react-native-config-ultimate | react-native | react  | New Architecture |
 | ---------------------------- | ------------ | ------ | ---------------- |
-| ^7                           | >=0.60 <1.x  | >=16   | ✅ TurboModules  |
-| ^6                           | >=0.60 <1.x  | >=16   | ❌               |
+| ^7                           | >=0.60 <1.x  | >=19   | ✅ TurboModules  |
 
 ## TL;DR usage
 
 1. install
    | npm | yarn |
    |-|-|
-   |`npm install react-native-ultimate-config` | `yarn add react-native-ultimate-config`|
+   |`npm install react-native-config-ultimate` | `yarn add react-native-config-ultimate`|
 2. [one-off setup for native projects](./docs/quickstart.md)
 3. initialize env
    | npm | yarn |
@@ -85,10 +100,10 @@ often need to exist in 3 places: ios, android and js code. Even managing things
 as simple as application name or bundle id needs to be done in 2 places:
 `Info.plist` and `AndroidManifest.xml`
 
-`react-native-ultimate-config` tries to reduce friction in managing these things
+`react-native-config-ultimate` tries to reduce friction in managing these things
 by abstracting away from nuances of native projects.
 
-With `react-native-ultimate-config` it is possible to [consume](./docs/api.md) variables in
+With `react-native-config-ultimate` it is possible to [consume](./docs/api.md) variables in
 every place of a typical react-native app:
 
 - javascript

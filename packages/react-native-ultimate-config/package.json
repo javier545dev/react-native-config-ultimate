@@ -1,8 +1,8 @@
 {
-  "name": "react-native-ultimate-config",
-  "title": "React Native Ultimate Config",
+  "name": "react-native-config-ultimate",
+  "title": "React Native Config Ultimate",
   "version": "7.0.0",
-  "description": "Config that works",
+  "description": "Config that works. A community-maintained fork of react-native-ultimate-config.",
   "main": "index.js",
   "react-native": "index.js",
   "browser": "index.web.js",
@@ -20,7 +20,7 @@
     "android/src",
     "android/build.gradle",
     "android/rnuc.gradle",
-    "react-native-ultimate-config.podspec"
+    "react-native-config-ultimate.podspec"
   ],
   "scripts": {
     "build": "tsc",
@@ -36,8 +36,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maxkomarychev/react-native-ultimate-config.git",
-    "baseUrl": "https://github.com/maxkomarychev/react-native-ultimate-config"
+    "url": "git+https://github.com/javier545dev/react-native-config-ultimate.git",
+    "baseUrl": "https://github.com/javier545dev/react-native-config-ultimate"
   },
   "keywords": [
     "react-native",
@@ -56,9 +56,16 @@
     "typescript"
   ],
   "author": {
-    "name": "Max Komarychev",
-    "email": "maxkomarychev@gmail.com"
+    "name": "Javier Fuentes",
+    "email": "javierfuentes545@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Max Komarychev",
+      "email": "maxkomarychev@gmail.com",
+      "url": "https://github.com/maxkomarychev"
+    }
+  ],
   "license": "MIT",
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",

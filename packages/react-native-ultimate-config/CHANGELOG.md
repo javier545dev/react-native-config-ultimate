@@ -1,8 +1,14 @@
-# Changelog
+# Changelog — react-native-config-ultimate
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+> **Fork notice:** This package is a community-maintained fork of
+> [`react-native-ultimate-config`](https://www.npmjs.com/package/react-native-ultimate-config)
+> by [Max Komarychev](https://github.com/maxkomarychev). The changelog below
+> continues from v7.0.0 (the first release of this fork). For history prior to
+> v7.0.0 see the [original changelog](https://github.com/maxkomarychev/react-native-ultimate-config/blob/master/packages/react-native-ultimate-config/CHANGELOG.md).
+>
+> All notable changes to this project will be documented in this file.
 
-## [7.0.0](https://github.com/maxkomarychev/react-native-ultimate-config/compare/v6.0.1...v7.0.0) (2026-02-28)
+## [7.0.0](https://github.com/javier545dev/react-native-config-ultimate/releases/tag/v7.0.0) (2026-02-28)
 
 ### ⚠ BREAKING CHANGES
 

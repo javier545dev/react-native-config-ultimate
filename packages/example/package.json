@@ -8,12 +8,12 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "rnuc": "$(npm bin)/rnuc"
+    "rnuc": "npx rnuc"
   },
   "dependencies": {
     "react": "19.2.4",
     "react-native": "0.79.5",
-    "react-native-ultimate-config": "*"
+    "react-native-config-ultimate": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",

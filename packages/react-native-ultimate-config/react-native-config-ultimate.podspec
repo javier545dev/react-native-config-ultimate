@@ -4,18 +4,21 @@ package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
 
 Pod::Spec.new do |s|
-  s.name         = "react-native-ultimate-config"
+  s.name         = "react-native-config-ultimate"
   s.version      = package["version"]
   s.summary      = package["description"]
   s.description  = <<-DESC
-                  react-native-ultimate-config
+                  react-native-config-ultimate
+                  A community-maintained fork of react-native-ultimate-config
+                  by Max Komarychev. Adds New Architecture (TurboModules),
+                  multi-env merging, dotenv expansion, schema validation,
+                  and CLI watch mode.
                    DESC
-  s.homepage     = "https://github.com/maxkomarychev/react-native-ultimate-config"
+  s.homepage     = "https://github.com/javier545dev/react-native-config-ultimate"
   s.license      = "MIT"
-  # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.authors      = { "Your Name" => "maxkomarychev@gmail.com" }
+  s.authors      = { "Javier Fuentes" => "javierfuentes545@gmail.com" }
   s.platforms    = { :ios => "11.0" }
-  s.source       = { :git => "https://github.com/maxkomarychev/react-native-ultimate-config.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/javier545dev/react-native-config-ultimate.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm}"
 
