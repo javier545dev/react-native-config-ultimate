@@ -8,6 +8,22 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.1.0](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.7...v0.1.0) (2026-03-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* Library now uses react-native-builder-bob for building
+
+### Features
+
+* migrate to react-native-builder-bob for builds ([775a749](https://github.com/javier545dev/react-native-config-ultimate/commit/775a7494f083427f13d157a21063c05d1df2e09a))
+
+
+### Bug Fixes
+
+* add react-native condition to exports for Metro 0.82+ compatibility ([d1803de](https://github.com/javier545dev/react-native-config-ultimate/commit/d1803de0b09766ed3c6b76620e28d40a215fd57b))
+
 ## [0.0.7](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.6...v0.0.7) (2026-03-01)
 
 
