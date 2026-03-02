@@ -1,7 +1,11 @@
 {
   "name": "root",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/react-native-config-ultimate",
+    "packages/example",
+    "packages/example-web"
+  ],
   "scripts": {
     "build": "lerna run build --scope=react-native-config-ultimate",
     "test": "lerna run test --scope=react-native-config-ultimate",
