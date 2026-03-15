@@ -13,6 +13,7 @@
       "react-native": "./src/index.ts",
       "source": "./src/index.ts",
       "types": "./lib/typescript/src/index.d.ts",
+      "browser": "./index.web.js",
       "default": "./lib/module/index.js"
     },
     "./package.json": "./package.json"

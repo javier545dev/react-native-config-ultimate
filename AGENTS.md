@@ -77,17 +77,23 @@ pnpm example079:setup
 pnpm example079:env       # Generate config from .env
 pnpm example079:pods      # Install iOS pods
 
-# Run apps
+# Run native apps
 pnpm example079:start     # Start Metro bundler
 pnpm example079:ios       # Run on iOS simulator
 pnpm example079:android   # Run on Android emulator
+
+# Run web (Vite + React Native Web)
+pnpm example079:web       # Start Vite dev server
+pnpm example079:web:build # Build for production
 ```
 
-#### Example Web
+#### Example Web (Standalone Vite + React Native Web)
 
 ```bash
-pnpm example:web:setup    # Build + generate env
-pnpm example:web:start    # Start web server
+pnpm example:web:setup    # Build library + generate env
+pnpm example:web:dev      # Start Vite dev server
+pnpm example:web:build    # Build for production
+pnpm example:web:preview  # Preview production build
 ```
 
 ### Updating Environment Variables

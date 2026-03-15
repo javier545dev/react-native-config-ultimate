@@ -7,14 +7,20 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "web": "vite",
+    "web:build": "vite build",
+    "web:preview": "vite preview"
   },
   "dependencies": {
     "react": "19.0.0",
+    "react-dom": "19.0.0",
     "react-native": "0.79.5",
-    "react-native-config-ultimate": "file:../react-native-config-ultimate"
+    "react-native-config-ultimate": "file:../react-native-config-ultimate",
+    "react-native-web": "~0.19.13"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
@@ -32,7 +38,8 @@
     "jest": "^29.6.3",
     "prettier": "2.8.8",
     "react-test-renderer": "19.0.0",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "vite": "^6.3.5"
   },
   "engines": {
     "node": ">=18"

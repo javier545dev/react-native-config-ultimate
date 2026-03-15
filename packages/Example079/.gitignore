@@ -66,6 +66,12 @@ yarn-error.log
 # testing
 /coverage
 
+# Vite
+dist/
+
+# Generated env for web
+src/env.ts
+
 # Yarn
 .yarn/*
 !.yarn/patches

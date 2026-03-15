@@ -25,10 +25,15 @@
     "example079:start": "cd packages/Example079 && pnpm start",
     "example079:ios": "cd packages/Example079 && pnpm ios",
     "example079:android": "cd packages/Example079 && pnpm android",
+    "example079:web": "cd packages/Example079 && pnpm web",
+    "example079:web:build": "cd packages/Example079 && pnpm web:build",
+    "example079:web:preview": "cd packages/Example079 && pnpm web:preview",
 
     "example:web:env": "cd packages/example-web && npx rncu .env --libRoot ../react-native-config-ultimate",
     "example:web:setup": "pnpm run build && pnpm run example:web:env",
-    "example:web:start": "pnpm --filter=example-web start"
+    "example:web:dev": "pnpm --filter=example-web dev",
+    "example:web:build": "pnpm --filter=example-web build",
+    "example:web:preview": "pnpm --filter=example-web preview"
   },
   "devDependencies": {
     "turbo": "^2.8.17"
