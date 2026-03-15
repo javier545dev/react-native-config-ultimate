@@ -135,6 +135,81 @@ Releases are automated via release-please:
 2. release-please creates a Release PR
 3. Merge Release PR to publish to npm
 
+## Skills (Auto-load based on context)
+
+When working on this project, load the appropriate skill BEFORE writing code. These define coding standards and patterns.
+
+### Skill Detection
+
+| Context | Skill to Load |
+|---------|---------------|
+| React Native components, performance, navigation | `react-native-best-practices` |
+| TypeScript types, interfaces, generics | `typescript` |
+| Jest tests, mocking, assertions | `pytest` (patterns apply) |
+| Upgrading React Native version | `upgrading-react-native` |
+
+### react-native-best-practices
+
+Apply when working on:
+- Native module code (iOS/Android)
+- Performance optimizations
+- Example app components
+
+Key patterns:
+- Use `FlashList` over `FlatList` for large lists
+- Avoid anonymous functions in render
+- Memoize expensive computations
+- Handle platform differences with `Platform.select()`
+
+### typescript
+
+Apply when writing ANY TypeScript code in `src/`:
+- **Strict mode** - no `any`, use `unknown` and narrow
+- **Interfaces over types** for object shapes
+- **Explicit return types** on public functions
+- **Const assertions** for literal types
+- **Discriminated unions** for state machines
+
+```typescript
+// GOOD
+interface EnvConfig {
+  readonly name: string;
+  readonly value: string | number | boolean;
+}
+
+function parseEnv(input: unknown): EnvConfig {
+  if (!isValidEnv(input)) throw new Error('Invalid env');
+  return input;
+}
+
+// BAD
+type EnvConfig = any;
+function parseEnv(input) { return input; }
+```
+
+### Testing Patterns
+
+Apply when writing tests in `*.spec.ts`:
+- **Descriptive test names** - `it('should parse YAML with per-platform values')`
+- **Arrange-Act-Assert** structure
+- **Mock file system** - never touch real files
+- **Test edge cases** - empty files, missing keys, invalid YAML
+
+```typescript
+describe('loadEnv', () => {
+  it('should parse .env file with KEY=VALUE format', () => {
+    // Arrange
+    const content = 'API_URL=https://api.example.com';
+    
+    // Act
+    const result = parseEnvContent(content);
+    
+    // Assert
+    expect(result.API_URL).toBe('https://api.example.com');
+  });
+});
+```
+
 ## Questions?
 
 Check `docs/` for detailed documentation or open an issue.
