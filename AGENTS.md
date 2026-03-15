@@ -47,75 +47,77 @@ pnpm lint                 # Lint source code
 pnpm typecheck            # Type check
 ```
 
-### Running Example Apps
+### Running Example Apps (from root)
 
-#### Example (RN 0.83+)
+All example commands can be run from the monorepo root:
+
+#### Example (RN 0.83+ with YAML config)
 
 ```bash
-cd packages/example
+# First time setup (build + generate env + pod install)
+pnpm example:setup
 
-# Generate env config files (REQUIRED before first run)
-npx rncu .env.yaml --libRoot ../react-native-config-ultimate
-
-# Install iOS pods
-cd ios && pod install && cd ..
+# Or run individual steps:
+pnpm example:env          # Generate config from .env.yaml
+pnpm example:pods         # Install iOS pods
 
 # Run apps
-pnpm ios                  # Run on iOS simulator
-pnpm android              # Run on Android emulator
+pnpm example:start        # Start Metro bundler
+pnpm example:ios          # Run on iOS simulator
+pnpm example:android      # Run on Android emulator
 ```
 
-#### Example079 (RN 0.79.5)
+#### Example079 (RN 0.79.5 with .env config)
 
 ```bash
-cd packages/Example079
+# First time setup
+pnpm example079:setup
 
-# Generate env config files
-npx rncu .env --libRoot ../react-native-config-ultimate
-
-# Install iOS pods  
-cd ios && pod install && cd ..
+# Or run individual steps:
+pnpm example079:env       # Generate config from .env
+pnpm example079:pods      # Install iOS pods
 
 # Run apps
-pnpm ios                  # Run on iOS simulator
-pnpm android              # Run on Android emulator
+pnpm example079:start     # Start Metro bundler
+pnpm example079:ios       # Run on iOS simulator
+pnpm example079:android   # Run on Android emulator
+```
 
-# Android with specific architecture
-pnpm android:new-arch     # New Architecture (Fabric/TurboModules)
-pnpm android:old-arch     # Old Architecture (Bridge)
+#### Example Web
+
+```bash
+pnpm example:web:setup    # Build + generate env
+pnpm example:web:start    # Start web server
 ```
 
 ### Updating Environment Variables
 
-After modifying `.env` or `.env.yaml` files, regenerate config:
+After modifying `.env` or `.env.yaml` files, regenerate config from root:
 
 ```bash
-# From example directory
-npx rncu .env.yaml --libRoot ../react-native-config-ultimate
-
-# This generates:
-# - android/app/src/main/java/.../RNCUValues.kt  (Android)
-# - ios/rncu.xcconfig                             (iOS)
-# - src/env.ts                                    (JavaScript/TypeScript)
+pnpm example:env          # For example (RN 0.83)
+pnpm example079:env       # For Example079 (RN 0.79)
 ```
 
-**Important**: After regenerating:
-- **Android**: Rebuild the app (`pnpm android`)
-- **iOS**: Rebuild the app (`pnpm ios`) - xcconfig changes require rebuild
+This generates:
+- `android/app/src/main/java/.../RNCUValues.kt` (Android)
+- `ios/rncu.xcconfig` (iOS)
+- `src/env.ts` (JavaScript/TypeScript)
+
+**Important**: After regenerating, rebuild the app (`pnpm example:ios` or `pnpm example:android`)
 
 ### Library Development Workflow
 
 ```bash
 # 1. Make changes in library source
-cd packages/react-native-config-ultimate/src
+#    Edit files in packages/react-native-config-ultimate/src/
 
 # 2. Build library
 pnpm build
 
-# 3. Test changes in example app
-cd ../example
-npx rncu .env.yaml --libRoot ../react-native-config-ultimate
-pnpm ios  # or pnpm android
+# 3. Update env and test in example app
+pnpm example:env
+pnpm example:ios   # or pnpm example:android
 ```
 
 ## Key Conventions
