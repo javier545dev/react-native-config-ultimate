@@ -26,6 +26,7 @@ DerivedData
 local.properties
 *.iml
 *.hprof
+.cxx/
 
 # node.js
 node_modules/
@@ -40,3 +41,6 @@ Gemfile.lock
 # rncu generated
 ios/rncu.xcconfig
 Podfile.lock
+
+# CocoaPods generated (regenerate with pod install)
+ios/*.xcworkspace/

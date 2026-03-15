@@ -216,6 +216,10 @@ npm run build
 ├── packages/
 │   ├── react-native-config-ultimate/  # Main library
 │   │   ├── src/                       # TypeScript source
+│   │   ├── lib/                       # Compiled output (generated)
+│   │   │   ├── commonjs/              # CommonJS build (Node.js)
+│   │   │   ├── module/                # ESM build (bundlers)
+│   │   │   └── typescript/            # Type definitions
 │   │   ├── ios/                       # iOS native module
 │   │   ├── android/                   # Android native module
 │   │   └── templates/                 # Handlebars templates
@@ -223,6 +227,103 @@ npm run build
 ├── docs/                              # Documentation
 └── .github/workflows/                 # CI/CD
 ```
+
+## Build System
+
+This library uses [react-native-builder-bob](https://github.com/callstack/react-native-builder-bob) 
+for building TypeScript to JavaScript. This is the industry standard for React Native libraries.
+
+### Build Output
+
+Running `npm run build` generates three outputs in `lib/`:
+
+| Directory | Format | Purpose |
+|-----------|--------|---------|
+| `lib/commonjs/` | CommonJS | Node.js (CLI, Jest tests) |
+| `lib/module/` | ESM | Bundlers (Metro, Webpack) |
+| `lib/typescript/` | `.d.ts` | TypeScript type definitions |
+
+### Entry Points (package.json)
+
+```json
+{
+  "main": "./lib/commonjs/index.js",     // Node.js/CommonJS
+  "module": "./lib/module/index.js",     // ESM bundlers
+  "react-native": "./src/index.ts",      // Metro uses source directly
+  "types": "./lib/typescript/src/index.d.ts"
+}
+```
+
+### The Shebang Fix
+
+The CLI (`rncu` command) needs a **shebang** to be executable:
+
+```bash
+#!/usr/bin/env node
+```
+
+This line tells the OS to use Node.js to run the script. Without it, running `npx rncu .env` 
+fails with cryptic errors like:
+
+```
+line 1: use strict: command not found
+```
+
+**Problem**: `react-native-builder-bob` doesn't add shebangs when compiling TypeScript.
+
+**Solution**: The build script adds the shebang as a post-build step:
+
+```json
+{
+  "build": "bob build && node -e \"const fs=require('fs');const f='lib/commonjs/cli.js';const c=fs.readFileSync(f,'utf8');if(!c.startsWith('#!')){fs.writeFileSync(f,'#!/usr/bin/env node\\n'+c)}\""
+}
+```
+
+This one-liner:
+1. Runs `bob build` to compile TypeScript
+2. Reads `lib/commonjs/cli.js`
+3. Prepends `#!/usr/bin/env node\n` if not already present
+4. Writes the file back
+
+### Testing the Example App
+
+The example app is a React Native project in `packages/example/`. 
+
+**Important for monorepo development**: The example needs symlinks for Android to work:
+
+```bash
+# These are created automatically, but if needed:
+cd packages/example/node_modules
+ln -sf ../../../node_modules/react-native react-native
+ln -sf ../../../node_modules/@react-native @react-native
+```
+
+To test changes:
+
+```bash
+# 1. Build the library
+cd packages/react-native-config-ultimate
+npm run build
+
+# 2. Generate config files (from example dir)
+cd ../example
+node -e "
+const main = require('../../packages/react-native-config-ultimate/lib/commonjs/main').default;
+const path = require('path');
+main(process.cwd(), path.resolve('../react-native-config-ultimate'), ['.env']);
+"
+
+# 3. Run on iOS
+npm run ios
+
+# 4. Run on Android  
+npm run android
+```
+
+### Android Reserved Names
+
+**Warning**: Avoid using `DEBUG` as an env variable name. It conflicts with Android's 
+built-in `BuildConfig.DEBUG` boolean. Use `DEBUG_MODE` or similar instead.
 
 ## Running Tests
 

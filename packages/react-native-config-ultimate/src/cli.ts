@@ -156,3 +156,6 @@ export default async function cli(): Promise<void> {
     void watcher.close().then(() => process.exit(0));
   });
 }
+
+// Auto-invoke when run as CLI script
+cli();

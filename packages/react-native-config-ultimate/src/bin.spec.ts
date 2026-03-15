@@ -4,8 +4,7 @@ import path from 'path';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { files_to_assert } = require('./main.spec') as { files_to_assert: string[] };
 
-// TODO: Re-enable after fixing integration test paths for bob build output
-describe.skip.each`
+describe.each`
   extension  | env_test_content
   ${''}      | ${'hello=world'}
   ${'.yaml'} | ${'hello: world'}

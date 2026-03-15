@@ -1,6 +1,6 @@
 # Cookbook
 
-collection of recipes how `react-native-ultimate-config` can be used for
+collection of recipes how `react-native-config-ultimate` can be used for
 typical tasks
 
 ☝️ _most of the recipes assume default template of react-native app (single target/scheme on ios and no flavors on android) unless stated otherwise_
@@ -14,6 +14,8 @@ typical tasks
 1. [Using multiple flavors (android)](#using-multiple-flavors-android)
 1. [Generate fastlane dotenv](#generate-fastlane-dotenv)
 1. [Override native values in js](#override-native-values-in-js)
+1. [Access env vars from native Swift code](#access-env-vars-from-native-swift-code)
+1. [Apply rncu.gradle in monorepos and pnpm projects](#apply-rncugradle-in-monorepos-and-pnpm-projects)
 
 ## Application name
 
@@ -38,7 +40,7 @@ typical tasks
 
 1. open `android/app/src/main/AndroidManifest.xml`
 1. find tag `application` and set attribute `android:label` to
-   `@strings/APP_NAME` or `${APP_NAME}`
+   `@string/APP_NAME` or `${APP_NAME}`
 
    ```xml
     <manifest>
@@ -212,7 +214,7 @@ Assuming you want to support multiple flavors of the app: "dev" and "staging".
     }
    ```
 
-1. Done. If you run `(cd android; ./gradlew/assembleDebug)` it will properly
+1. Done. If you run `(cd android; ./gradlew assembleDebug)` it will properly
    pick up all configs per flavor names. Whenever gradle is configuring tasks
    it will read env data from files and populate resources, build config and
    manifest placeholders from them.
@@ -248,15 +250,154 @@ over-the-air deploys with services like codepush.
 This can be achieved with rc config: `js_override`:
 
 ```js
-// rncu.rc
+// .rncurc.js
 module.exports = {
   js_override: true,
 };
 ```
 
-In this case `react-native-ultimate-config` will embed all config values
+In this case `react-native-config-ultimate` will embed all config values
 into javascript code overriding values from native.
 
 NOTE: This feature does not apply to web projects which do not use native values
 either way. See the [quickstart guide](./quickstart.md) for help configuring
-`react-native-ultimate-config` for use in a web project.
+`react-native-config-ultimate` for use in a web project.
+
+## Access env vars from native Swift code
+
+Use this recipe when you need to read config values directly from native Swift code —
+for example to configure a native SDK before the JS bridge starts, or in a Swift-only
+extension target.
+
+This approach uses the iOS Build Settings chain (`rncu.xcconfig` → Info.plist → Bundle)
+and requires **no bridging header**.
+
+### Prerequisites
+
+- `rncu.xcconfig` is already wired to your project's base configuration (see
+  [quickstart](./quickstart.md#ios)).
+- The variable you want to expose exists in your `.env` file and you have run
+  `npx rncu .env` at least once.
+
+### 1. Expose the variable through Info.plist
+
+Add an entry for each variable you want in `ios/<YourApp>/Info.plist`:
+
+```xml
+<key>API_URL</key>
+<string>$(API_URL)</string>
+```
+
+Xcode expands `$(API_URL)` at build time from the value injected by `rncu.xcconfig`.
+You do **not** need to add every variable — only those you need in native Swift.
+
+### 2. Create Config.swift
+
+Create `ios/<YourApp>/Config.swift`:
+
+```swift
+import Foundation
+
+/// Type-safe access to environment variables defined in `.env`.
+///
+/// Values are injected at build time by `react-native-config-ultimate` via `rncu.xcconfig`.
+/// Each variable is resolved through `Info.plist` using Xcode's `$(KEY)` build setting expansion.
+///
+/// **Workflow when adding a new variable:**
+/// 1. Add the key to `.env`
+/// 2. Run `npx rncu .env` to regenerate `rncu.xcconfig`
+/// 3. Add `<key>YOUR_KEY</key><string>$(YOUR_KEY)</string>` to `Info.plist`
+/// 4. Add a static property here: `static let yourKey: String = value(for: "YOUR_KEY")`
+enum Config {
+    static let apiUrl: String = value(for: "API_URL")
+}
+
+// MARK: - Private
+
+private func value(for key: String) -> String {
+    guard
+        let raw = Bundle.main.object(forInfoDictionaryKey: key) as? String,
+        !raw.isEmpty
+    else {
+        fatalError("""
+            [Config] Missing or empty value for key '\(key)'.
+            → Did you run `npx rncu .env`?
+            → Is '\(key)' added to Info.plist as <string>$(\(key))</string>?
+            """)
+    }
+    return raw
+}
+```
+
+### 3. Register Config.swift in Xcode
+
+Add the file to your Xcode project:
+1. In Xcode's project navigator, right-click the `<YourApp>` group → **Add Files to…**
+2. Select `Config.swift`
+3. Make sure **Target Membership** is checked for your app target
+
+### 4. Use it anywhere in native Swift
+
+```swift
+// In AppDelegate, a native module, or any Swift file
+let url = Config.apiUrl
+```
+
+### Data flow summary
+
+```
+.env
+  ↓ npx rncu .env
+rncu.xcconfig  (API_URL=https://api.example.com)
+  ↓ Project-level base configuration
+Build Settings  (API_URL=https://api.example.com)
+  ↓ Xcode build setting expansion
+Info.plist  (<key>API_URL</key><string>$(API_URL)</string> → "https://api.example.com")
+  ↓ Bundle.main
+Config.swift  (static let apiUrl = value(for: "API_URL"))  →  "https://api.example.com"
+```
+
+> **Tip:** Add only the variables you actually need in Swift to `Info.plist`.
+> All variables are already available to JS via the normal bridge — this pattern is
+> specifically for native Swift code that runs before or outside the JS context.
+
+---
+
+## Apply rncu.gradle in monorepos and pnpm projects
+
+The [quickstart guide](./quickstart.md#android) shows the default way to apply the
+Gradle plugin. However, hardcoded relative paths like `../../node_modules/...` break
+in setups where `node_modules` is not co-located with the project root (pnpm with
+`node-linker=hoisted`, Yarn workspaces, nested monorepos, etc.).
+
+### The problem
+
+```gradle
+// ❌ Breaks if node_modules is not two levels up
+apply from: "../../node_modules/react-native-config-ultimate/android/rncu.gradle"
+```
+
+### The solution
+
+Use Gradle's built-in project resolution instead:
+
+```gradle
+// ✅ Works regardless of where node_modules lives
+apply from: project(':react-native-config-ultimate').projectDir.getPath() + "/rncu.gradle"
+```
+
+This tells Gradle to ask the already-resolved `:react-native-config-ultimate` project
+where it lives on disk, so the path is always correct.
+
+### When to use each form
+
+| Setup | Recommended form |
+|---|---|
+| Default RN template, npm/yarn, flat `node_modules` | Either form works |
+| pnpm with `node-linker=hoisted` | `project(':...')` form |
+| Yarn workspaces / monorepo | `project(':...')` form |
+| Nested monorepo (app inside packages/) | `project(':...')` form |
+
+> **pnpm note:** pnpm's default virtual store layout (`node-linker=isolated`) is
+> **not** compatible with CocoaPods ≥ 1.16. Use `node-linker=hoisted` in your
+> `.npmrc` when working with iOS projects.

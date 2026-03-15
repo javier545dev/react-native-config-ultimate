@@ -1,0 +1,6 @@
+packages:
+  - "packages/react-native-config-ultimate"
+  # NOTE: packages/example is intentionally EXCLUDED from workspace
+  # React Native projects need flat node_modules (node-linker=hoisted)
+  # which conflicts with pnpm workspace symlinks
+  - "packages/example-web"

@@ -44,6 +44,9 @@ buck-out/
 # Codegen
 rncu.xcconfig
 
+# Turbo
+.turbo
+
 # Jest
 coverage
 
@@ -51,3 +54,6 @@ coverage
 logs/
 *.log
 .zed/
+
+# AI Agent Config
+.atl/

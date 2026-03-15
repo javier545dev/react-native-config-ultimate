@@ -1,28 +1,30 @@
 {
   "name": "root",
   "private": true,
+  "packageManager": "pnpm@10.28.0",
   "workspaces": [
     "packages/react-native-config-ultimate",
     "packages/example",
     "packages/example-web"
   ],
   "scripts": {
-    "build": "lerna run build --scope=react-native-config-ultimate",
-    "test": "lerna run test --scope=react-native-config-ultimate",
-    "lint": "lerna run lint --scope=react-native-config-ultimate",
-    "example:setup": "npm run build && npm run example:env && npm run pods",
-    "example:env": "lerna run rncu --scope=example -- -- .env",
-    "example:env:watch": "lerna run rncu --scope=example -- -- .env --watch",
-    "example:start": "lerna run start --scope=example",
-    "example:ios": "lerna run ios --scope=example",
-    "example:android": "lerna run android --scope=example",
+    "build": "turbo build --filter=react-native-config-ultimate",
+    "test": "turbo test --filter=react-native-config-ultimate",
+    "lint": "turbo lint --filter=react-native-config-ultimate",
+    "typecheck": "turbo typecheck --filter=react-native-config-ultimate",
+    "example:setup": "pnpm run build && pnpm run example:env && pnpm run pods",
+    "example:env": "pnpm --filter=example run rncu .env",
+    "example:env:watch": "pnpm --filter=example run rncu .env --watch",
+    "example:start": "pnpm --filter=example run start",
+    "example:ios": "pnpm --filter=example run ios",
+    "example:android": "pnpm --filter=example run android",
     "pods": "cd packages/example/ios && pod install",
-    "example:web:setup": "npm run build && npm run example:web:env",
-    "example:web:env": "lerna run rncu --scope=example-web -- -- .env",
-    "example:web:start": "lerna run start --scope=example-web",
+    "example:web:setup": "pnpm run build && pnpm run example:web:env",
+    "example:web:env": "pnpm --filter=example-web run rncu .env",
+    "example:web:start": "pnpm --filter=example-web run start",
     "version": "cd packages/react-native-config-ultimate && npx standard-version"
   },
   "devDependencies": {
-    "lerna": "^9.0.4"
+    "turbo": "^2.8.17"
   }
 }

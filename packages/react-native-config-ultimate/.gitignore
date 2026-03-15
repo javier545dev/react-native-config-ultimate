@@ -3,6 +3,7 @@ lib/
 
 # Codegen generated files (created by rncu CLI)
 android/rncu.yaml
+android/rnuc.yaml  # deprecated legacy name
 ios/ConfigValues.h
 index.d.ts
 index.web.js

@@ -45,25 +45,37 @@ For advanced setup please refer to [cookbook](./cookbook.md)
          ![drag and drop](./quickstart.assets/ios.1.png)
          ![drag and drop](./quickstart.assets/ios.2.png)
       1. go to project settings
-      1. set `rncu.config` as root configuration for both "Debug" and "Release"
+      1. set `rncu.xcconfig` as root configuration for both "Debug" and "Release"
          ![set](./quickstart.assets/ios.3.png)
          ![set](./quickstart.assets/ios.4.png)
 
-   1. android
-      <a name="android"></a>
+    1. android
+       <a name="android"></a>
 
-      1. apply plugin in gradle
+       1. apply plugin in gradle
 
-         Open `android/app/build.gradle` and add this line at the top of the file
-         (before the `android {}` block):
+          Open `android/app/build.gradle` and add this line at the top of the file
+          (before the `android {}` block):
 
-         ```gradle
-         apply from: "../../node_modules/react-native-config-ultimate/android/rncu.gradle"
-         ```
+          ```gradle
+          apply from: project(':react-native-config-ultimate').projectDir.getPath() + "/rncu.gradle"
+          ```
 
-         > **Note:** In React Native ≥ 0.71 `react.gradle` was removed. Do **not**
-         > add `rncu.gradle` after `react.gradle` — just add it at the top level of
-         > `android/app/build.gradle`.
+          > **Note:** In React Native ≥ 0.71 `react.gradle` was removed. Do **not**
+          > add `rncu.gradle` after `react.gradle` — just add it at the top level of
+          > `android/app/build.gradle`.
+
+          > **Monorepo / pnpm users:** The `project(':react-native-config-ultimate')` form uses
+          > Gradle's own dependency resolution and works regardless of where `node_modules`
+          > lives on disk (pnpm `node-linker=hoisted`, Yarn workspaces, nested monorepos, etc.).
+          > If your project layout differs from the default RN template, prefer this form over
+          > a hardcoded relative path such as `"../../node_modules/..."`.
+
+          > **If you cannot use the Gradle project reference** (e.g. the package is not a
+          > recognized Gradle project in your setup), fall back to the relative path form:
+          > ```gradle
+          > apply from: "../../node_modules/react-native-config-ultimate/android/rncu.gradle"
+          > ```
 
       2. expose `BuildConfig` to the library
 
