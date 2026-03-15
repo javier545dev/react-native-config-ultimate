@@ -37,17 +37,85 @@
 
 ## Commands
 
+### Library Development (from root)
+
 ```bash
-# From root
 pnpm install              # Install all dependencies
 pnpm build                # Build library (uses turbo, cached)
 pnpm test                 # Run tests (136 tests)
 pnpm lint                 # Lint source code
 pnpm typecheck            # Type check
+```
 
-# From packages/react-native-config-ultimate
-pnpm test                 # Run tests directly
-pnpm build                # Build with builder-bob
+### Running Example Apps
+
+#### Example (RN 0.83+)
+
+```bash
+cd packages/example
+
+# Generate env config files (REQUIRED before first run)
+npx rncu .env.yaml --libRoot ../react-native-config-ultimate
+
+# Install iOS pods
+cd ios && pod install && cd ..
+
+# Run apps
+pnpm ios                  # Run on iOS simulator
+pnpm android              # Run on Android emulator
+```
+
+#### Example079 (RN 0.79.5)
+
+```bash
+cd packages/Example079
+
+# Generate env config files
+npx rncu .env --libRoot ../react-native-config-ultimate
+
+# Install iOS pods  
+cd ios && pod install && cd ..
+
+# Run apps
+pnpm ios                  # Run on iOS simulator
+pnpm android              # Run on Android emulator
+
+# Android with specific architecture
+pnpm android:new-arch     # New Architecture (Fabric/TurboModules)
+pnpm android:old-arch     # Old Architecture (Bridge)
+```
+
+### Updating Environment Variables
+
+After modifying `.env` or `.env.yaml` files, regenerate config:
+
+```bash
+# From example directory
+npx rncu .env.yaml --libRoot ../react-native-config-ultimate
+
+# This generates:
+# - android/app/src/main/java/.../RNCUValues.kt  (Android)
+# - ios/rncu.xcconfig                             (iOS)
+# - src/env.ts                                    (JavaScript/TypeScript)
+```
+
+**Important**: After regenerating:
+- **Android**: Rebuild the app (`pnpm android`)
+- **iOS**: Rebuild the app (`pnpm ios`) - xcconfig changes require rebuild
+
+### Library Development Workflow
+
+```bash
+# 1. Make changes in library source
+cd packages/react-native-config-ultimate/src
+
+# 2. Build library
+pnpm build
+
+# 3. Test changes in example app
+cd ../example
+npx rncu .env.yaml --libRoot ../react-native-config-ultimate
+pnpm ios  # or pnpm android
 ```
 
 ## Key Conventions
