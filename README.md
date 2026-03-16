@@ -1,150 +1,457 @@
-# react-native-config-ultimate
+<p align="center">
+  <img src=".github/logo.svg" alt="react-native-config-ultimate logo" width="100" height="100" />
+</p>
 
-_Config that works_
+<h1 align="center">react-native-config-ultimate</h1>
 
-[![NPM](https://img.shields.io/npm/l/react-native-config-ultimate)](https://www.npmjs.com/package/react-native-config-ultimate)
-[![npm](https://img.shields.io/npm/v/react-native-config-ultimate?color=green&label=version)](https://www.npmjs.com/package/react-native-config-ultimate)
-[![npm](https://img.shields.io/npm/dw/react-native-config-ultimate?color=green)](https://www.npmjs.com/package/react-native-config-ultimate)
+<p align="center">
+  <strong>Environment variables for React Native that just work.</strong>
+  <br />
+  <strong>iOS</strong> &bull; <strong>Android</strong> &bull; <strong>Web</strong> &bull; <strong>New Architecture</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/react-native-config-ultimate">
+    <img src="https://img.shields.io/npm/v/react-native-config-ultimate?style=flat-square&color=CC3534&label=npm" alt="npm version" />
+  </a>
+  <a href="https://www.npmjs.com/package/react-native-config-ultimate">
+    <img src="https://img.shields.io/npm/dm/react-native-config-ultimate?style=flat-square&color=007ACC&label=downloads" alt="npm downloads" />
+  </a>
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/npm/l/react-native-config-ultimate?style=flat-square&color=brightgreen" alt="license" />
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square" alt="TypeScript" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="./docs/quickstart.md"><strong>Getting Started</strong></a> &nbsp;•&nbsp;
+  <a href="./docs/api.md"><strong>API Reference</strong></a> &nbsp;•&nbsp;
+  <a href="./docs/cookbook.md"><strong>Cookbook</strong></a> &nbsp;•&nbsp;
+  <a href="https://github.com/javier545dev/react-native-config-ultimate/issues"><strong>Report Bug</strong></a>
+</p>
 
 ---
 
-> **This is a community-maintained fork** of
-> [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config)
-> originally created by [Max Komarychev](https://github.com/maxkomarychev).
->
-> The original library has not received updates since September 2023 and does not
-> support React Native's New Architecture (TurboModules), React 19, or modern
-> tooling. This fork picks up where it left off.
->
-> **Full credit and gratitude to Max** for the original design, architecture, and
-> years of maintenance. This project would not exist without his work.
-> The MIT license is preserved in its entirety.
+## The Problem
+
+Managing environment variables in React Native is painful:
+
+```
+❌ Different config files for iOS and Android
+❌ Separate setup for each platform
+❌ Type-unsafe string values
+❌ No support for New Architecture
+❌ Existing solutions are unmaintained
+```
+
+## The Solution
+
+**One config file. Every platform. Type-safe. Just works.**
+
+```bash
+# Create your config
+echo "API_URL=https://api.myapp.com" > .env
+
+# Generate for all platforms
+npx rncu .env
+
+# Use everywhere ✨
+```
+
+```tsx
+import Config from 'react-native-config-ultimate';
+
+// TypeScript knows your config shape!
+console.log(Config.API_URL); // https://api.myapp.com
+```
 
 ---
 
-## Gradle compatibility
+## Why Choose This Library?
 
-| react-native-config-ultimate | gradle |
-| ---------------------------- | ------ |
-| 0.0.x                        | 8      |
+<table>
+<tr>
+<th width="33%">🚀 Modern</th>
+<th width="33%">📱 Universal</th>
+<th width="33%">🛡️ Type-Safe</th>
+</tr>
+<tr>
+<td>
 
-> For older versions see the original package [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config).
+- New Architecture ready
+- TurboModules support
+- React Native 0.73+
+- React 18 & 19
 
-## React Native compatibility
+</td>
+<td>
 
-| react-native-config-ultimate | react-native | react  | New Architecture |
-| ---------------------------- | ------------ | ------ | ---------------- |
-| 0.0.x                        | >=0.73       | >=18   | ✅ TurboModules  |
+- iOS (Swift, Obj-C)
+- Android (Kotlin, Java)
+- Web (RN Web, Vite)
+- Expo compatible
 
-## TL;DR usage
+</td>
+<td>
 
-1. install
-   | npm | yarn |
-   |-|-|
-   |`npm install react-native-config-ultimate` | `yarn add react-native-config-ultimate`|
-2. [one-off setup for native projects](./docs/quickstart.md)
-3. initialize env
-   | npm | yarn |
-   |-|-|
-   |`npx rncu .env`|`yarn rncu .env`|
-4. build! `react-native run-{ios,android}`
+- Auto-generated `.d.ts`
+- Strict TypeScript
+- Schema validation
+- Zero `any` types
 
-## ☝❗Approach to versioning and breaking changes
+</td>
+</tr>
+</table>
 
-This library is using [semver](https://semver.org/) and heavily relying on codegeneration. Many new features and/or bugfixes will require these files to be regenerated. Changes to codegenerated files will not be considered breaking
-unless they affect behavior of API or CLI.
+### Comparison
 
-Therefore every time this library is updated all files MUST be regenerated using `rncu` command.
+| Feature | react-native-config-ultimate | react-native-config | react-native-dotenv |
+|---------|:----------------------------:|:-------------------:|:-------------------:|
+| **New Architecture** | ✅ | ❌ | ❌ |
+| **React Native 0.79+** | ✅ | ⚠️ | ⚠️ |
+| **Web support** | ✅ | ❌ | ✅ |
+| **YAML config** | ✅ | ❌ | ❌ |
+| **Per-platform values** | ✅ | ❌ | ❌ |
+| **Type-safe** | ✅ | ⚠️ | ⚠️ |
+| **Multi-env merging** | ✅ | ❌ | ❌ |
+| **Schema validation** | ✅ | ❌ | ❌ |
+| **Native code access** | ✅ | ✅ | ❌ |
+| **Active maintenance** | ✅ | ⚠️ | ⚠️ |
 
-## Table of contents
+---
 
-1. [Features 🎆](#features)
-1. [Mission 🥾](#mission)
-1. [Quickstart Guide 🏃](./docs/quickstart.md)
-1. [Migration Guide 🚀](./docs/migration.md) — from `react-native-ultimate-config` or `react-native-config`
-1. [API 🧰](./docs/api.md)
-1. [Testing Guide 🧪](./docs/testing.md)
-1. [Cookbook 🥦](./docs/cookbook.md)
-1. [Troubleshooting 🎱](./docs/troubleshooting.md)
-1. [Contributing 🤝](./CONTRIBUTING.md)
-1. [Alternatives](./docs/alternatives.md)
+## Quick Start
+
+### 1. Install
+
+```bash
+npm install react-native-config-ultimate
+# or
+yarn add react-native-config-ultimate
+# or
+pnpm add react-native-config-ultimate
+```
+
+### 2. Create config file
+
+**Option A: `.env` (simple)**
+```bash
+API_URL=https://api.myapp.com
+APP_NAME=MyApp
+DEBUG_MODE=true
+VERSION=1.0.0
+```
+
+**Option B: `.env.yaml` (powerful)**
+```yaml
+API_URL: https://api.myapp.com
+APP_NAME: MyApp
+DEBUG_MODE: true
+VERSION: 1.0.0
+
+# Per-platform values 🎯
+APP_ICON:
+  ios: AppIcon
+  android: ic_launcher
+```
+
+### 3. Setup native projects
+
+📱 **iOS** — [Setup Guide](./docs/quickstart.md#ios-setup)  
+🤖 **Android** — [Setup Guide](./docs/quickstart.md#android-setup)
+
+### 4. Generate & use
+
+```bash
+npx rncu .env
+# or
+npx rncu .env.yaml
+```
+
+```tsx
+import Config from 'react-native-config-ultimate';
+
+function App() {
+  return (
+    <View>
+      <Text>API: {Config.API_URL}</Text>
+      <Text>Version: {Config.VERSION}</Text>
+      {Config.DEBUG_MODE && <Text>🐛 Debug Mode</Text>}
+    </View>
+  );
+}
+```
+
+**That's it!** Full guide: [**Quickstart →**](./docs/quickstart.md)
+
+---
 
 ## Features
 
-1. Simple one-off [setup](./docs/quickstart.md) for native projects
-1. No need to mess with xcode schemes or android flavors
-1. Access from [javascript](./docs/api.md#javascript)
-1. Access from native code: [Java](./docs/api.md#java), [Kotlin](./docs/api.md#kotlin), [Objective-C](./docs/api.md#objective-c), and [Swift](./docs/api.md#swift)
-1. Access in build tools: [xcode](./docs/api.md#ios), [gradle](./docs/api.md#buildgradle) and [AndroidManifest.xml](./docs/api.md#androidmanifestxml)
-1. [Web support](./docs/api.md#web) (works with React Native for Web)
-1. [Hooks](./docs/api.md#hooks)
-1. [Monorepo support](./docs/monorepo-tips.md) (yarn workspaces or lerna)
-1. **[New Architecture](./docs/api.md#new-architecture)** — TurboModules support (RN 0.68+), fully backward-compatible with old arch
-1. **[Multi-env file merging](./docs/api.md#multi-env-file-merging)** — `rncu .env.base .env.staging` (v7+)
-1. **[Dotenv variable expansion](./docs/api.md#dotenv-variable-expansion)** — `API_URL=$BASE_URL/v1` (v7+)
-1. **[Schema validation](./docs/api.md#schema-validation)** — fail at build time on missing or invalid vars (v7+)
-1. Unit tested with jest (136 tests, 93%+ coverage)
-1. Written in TypeScript with strict mode — [exact typings](./docs/api.md#typescript) generated for your env vars
-1. Supports [dotenv and yaml](./docs/api.md#files)
-1. [Fully typed](./docs/api.md#note-about-types) values available when using yaml config
-1. Configure values [per platform](./docs/api.md#per-platform-values) in one file
+<details>
+<summary><strong>📁 Multi-Environment Support</strong></summary>
 
-## Mission
+Merge multiple env files — great for staging, production, etc:
 
-React-Native brings together 3 platforms: ios, android, javascript each of
-which have different conventions and approaches how to manage environment
-settings.
+```bash
+npx rncu .env.base .env.staging
+```
 
-A typical app is usually operating in some environment defined by server urls
-various api keys or feature flags. When dealing with react-native such things
-often need to exist in 3 places: ios, android and js code. Even managing things
-as simple as application name or bundle id needs to be done in 2 places:
-`Info.plist` and `AndroidManifest.xml`
+Later values override earlier ones.
 
-`react-native-config-ultimate` tries to reduce friction in managing these things
-by abstracting away from nuances of native projects.
+</details>
 
-With `react-native-config-ultimate` it is possible to [consume](./docs/api.md) variables in
-every place of a typical react-native app:
+<details>
+<summary><strong>🔗 Variable Expansion</strong></summary>
 
-- javascript / typescript
-- native code
-  - java / kotlin
-  - objective-c / swift
-- native build configuration
-  - ios
-    - build settings
-    - infoplist
-  - android
-    - build config
-    - string resources
-    - project.ext
+Reference other variables:
+
+```bash
+BASE_URL=https://api.myapp.com
+API_URL=$BASE_URL/v1
+AUTH_URL=$BASE_URL/auth
+```
+
+</details>
+
+<details>
+<summary><strong>✅ Schema Validation</strong></summary>
+
+Fail fast if required vars are missing:
+
+```js
+// .rncurc.js
+module.exports = {
+  schema: {
+    API_URL: { type: 'string', required: true },
+    DEBUG_MODE: { type: 'boolean', default: false },
+  }
+};
+```
+
+</details>
+
+<details>
+<summary><strong>🎯 Per-Platform Values</strong></summary>
+
+Different values for iOS/Android/Web:
+
+```yaml
+APP_STORE_URL:
+  ios: https://apps.apple.com/app/myapp
+  android: https://play.google.com/store/apps/details?id=com.myapp
+  web: https://myapp.com
+```
+
+</details>
+
+<details>
+<summary><strong>🪝 Hooks API</strong></summary>
+
+Transform values at build time:
+
+```js
+// .rncurc.js
+module.exports = {
+  on_env: (env) => ({
+    ...env,
+    BUILD_TIME: new Date().toISOString(),
+  })
+};
+```
+
+</details>
+
+<details>
+<summary><strong>👀 Watch Mode</strong></summary>
+
+Auto-regenerate on changes:
+
+```bash
+npx rncu .env --watch
+```
+
+</details>
+
+---
+
+## Access Everywhere
+
+Your config is available in every layer of your app:
 
 ```
-|-------------------------------------------------------|
-|                                                       |
-|                 javascript / typescript               |
-|                                                       |
-|-------------------------------------------------------|
-|                          |                            |
-|   objective-c / swift    |       java / kotlin        |
-|                          |                            |
-|-------------------------------------------------------|
-|                          |                            |
-|      build settings      |     AndroidManifest.xml    |
-|         infoplist        |        build.gradle        |
-|                          |                            |
-|-------------------------------------------------------|
+┌─────────────────────────────────────────────────────────┐
+│                                                         │
+│              JavaScript / TypeScript                    │
+│                   Config.API_URL                        │
+│                                                         │
+├────────────────────────┬────────────────────────────────┤
+│                        │                                │
+│   Swift / Objective-C  │       Kotlin / Java            │
+│   UltimateConfig       │       BuildConfig              │
+│      .API_URL          │         .API_URL               │
+│                        │                                │
+├────────────────────────┼────────────────────────────────┤
+│                        │                                │
+│   Xcode Build Settings │   AndroidManifest.xml          │
+│   $(API_URL)           │   ${API_URL}                   │
+│   Info.plist           │   build.gradle                 │
+│                        │                                │
+└────────────────────────┴────────────────────────────────┘
+```
+
+**Examples:**
+
+```swift
+// Swift
+let apiUrl = UltimateConfig.API_URL
+```
+
+```kotlin
+// Kotlin
+val apiUrl = BuildConfig.API_URL
+```
+
+```xml
+<!-- AndroidManifest.xml -->
+<meta-data android:name="api_url" android:value="${API_URL}" />
 ```
 
 ---
 
-## Releases
+## Compatibility
 
-This project uses [release-please](https://github.com/googleapis/release-please) for automated releases. Every merge to `master` with conventional commits (`feat:`, `fix:`, etc.) will automatically:
+| Version | React Native | React | Gradle | Architecture |
+|:-------:|:------------:|:-----:|:------:|:------------:|
+| **0.2.x** | ≥ 0.73 | ≥ 18 | ≥ 8 | ✅ New (TurboModules) |
+| **0.1.x** | ≥ 0.73 | ≥ 18 | ≥ 8 | ✅ New (TurboModules) |
 
-1. Create/update a Release PR with changelog
-2. When merged, create a GitHub Release
-3. Publish to npm
+> **Need older RN support?** See [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config)
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for commit conventions.
+---
+
+## Documentation
+
+| 📖 Guide | Description |
+|:---------|:------------|
+| [**Quickstart**](./docs/quickstart.md) | Installation and setup |
+| [**API Reference**](./docs/api.md) | JavaScript, native code, build tools |
+| [**Migration Guide**](./docs/migration.md) | From react-native-config |
+| [**Cookbook**](./docs/cookbook.md) | Common patterns and recipes |
+| [**Testing**](./docs/testing.md) | Mocking Config in tests |
+| [**Monorepo Tips**](./docs/monorepo-tips.md) | pnpm, yarn workspaces, Lerna |
+| [**Troubleshooting**](./docs/troubleshooting.md) | Common issues and solutions |
+
+---
+
+## Examples
+
+| Project | React Native | Platforms | Description |
+|:--------|:------------:|:---------:|:------------|
+| [**example**](./packages/example) | 0.83 | iOS, Android | Full native app with YAML |
+| [**Example079**](./packages/Example079) | 0.79 | iOS, Android, Web | Native + Vite web |
+| [**example-web**](./packages/example-web) | — | Web | Standalone Vite + RN Web |
+
+---
+
+## Frequently Asked Questions
+
+<details>
+<summary><strong>Do I need to rebuild after changing .env?</strong></summary>
+
+**JavaScript**: No, just re-run `npx rncu .env` and reload the app.
+
+**Native values** (Info.plist, AndroidManifest): Yes, you need to rebuild.
+
+</details>
+
+<details>
+<summary><strong>Can I use this with Expo?</strong></summary>
+
+Yes! Works with Expo managed and bare workflows. See [Expo setup](./docs/quickstart.md#expo).
+
+</details>
+
+<details>
+<summary><strong>How do I use different configs for dev/staging/prod?</strong></summary>
+
+Use multi-file merging:
+```bash
+npx rncu .env.base .env.production
+```
+
+Or use separate commands in your package.json:
+```json
+{
+  "scripts": {
+    "env:dev": "rncu .env.dev",
+    "env:prod": "rncu .env.prod"
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Is this library actively maintained?</strong></summary>
+
+Yes! This is a community fork that adds New Architecture support, React 19 compatibility, and ongoing maintenance. See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+</details>
+
+---
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+```bash
+git clone https://github.com/javier545dev/react-native-config-ultimate.git
+cd react-native-config-ultimate
+pnpm install
+pnpm test
+pnpm build
+```
+
+---
+
+## Credits
+
+<table>
+<tr>
+<td align="center">
+  <strong>Original Author</strong><br/>
+  <a href="https://github.com/maxkomarychev">Max Komarychev</a><br/>
+  <sub>Creator of react-native-ultimate-config</sub>
+</td>
+<td align="center">
+  <strong>Current Maintainer</strong><br/>
+  <a href="https://github.com/javier545dev">javier545dev</a><br/>
+  <sub>New Architecture & React 19 support</sub>
+</td>
+</tr>
+</table>
+
+> This is a community-maintained fork of [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config). Full credit to Max for the original design and years of maintenance. The MIT license is preserved.
+
+---
+
+## License
+
+MIT License — see [LICENSE](./LICENSE) for details.
+
+---
+
+<p align="center">
+  <strong>If this library helps you, consider giving it a ⭐️</strong>
+  <br/><br/>
+  <a href="https://github.com/javier545dev/react-native-config-ultimate">
+    <img src="https://img.shields.io/github/stars/javier545dev/react-native-config-ultimate?style=social" alt="GitHub stars" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="./docs/quickstart.md"><strong>Get Started →</strong></a>
+</p>
