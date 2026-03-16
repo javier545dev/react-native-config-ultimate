@@ -8,6 +8,14 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.1.1](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.1.0...v0.1.1) (2026-03-16)
+
+
+### Features
+
+* v0.2.0 - pnpm/turbo migration, Jest fix, RN 0.79-0.83 support ([91c4f44](https://github.com/javier545dev/react-native-config-ultimate/commit/91c4f4443e311a82b6ce2438c24dc822f78c78c6))
+* **web:** migrate to Vite + React Native Web ([98bd13e](https://github.com/javier545dev/react-native-config-ultimate/commit/98bd13efcd14ec5eb682510a92428a7c232082f1))
+
 ## [0.1.0](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.7...v0.1.0) (2026-03-02)
 
 

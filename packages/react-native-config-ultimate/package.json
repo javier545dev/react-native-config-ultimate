@@ -1,7 +1,7 @@
 {
   "name": "react-native-config-ultimate",
   "title": "React Native Config Ultimate",
-  "version": "0.2.0",
+  "version": "0.1.1",
   "description": "Config that works. A community-maintained fork of react-native-ultimate-config.",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
