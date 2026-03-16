@@ -1,11 +1,18 @@
 # Cookbook
 
-collection of recipes how `react-native-config-ultimate` can be used for
-typical tasks
+Common patterns and recipes for `react-native-config-ultimate`.
 
-☝️ _most of the recipes assume default template of react-native app (single target/scheme on ios and no flavors on android) unless stated otherwise_
+![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=apple&logoColor=white)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
+![Web](https://img.shields.io/badge/Web-4285F4?style=flat&logo=google-chrome&logoColor=white)
 
-## Table of contents
+> **Note:** Most recipes assume the default RN template (single scheme/target on iOS, no flavors on Android) unless stated otherwise.
+
+> **Compatibility:** These recipes work with both Old and New Architecture (TurboModules). Tested with React Native 0.73+ and React 18/19.
+
+---
+
+## Table of Contents
 
 1. [Application name](#application-name)
 1. [Bundle identifier](#bundle-identifier)
@@ -19,117 +26,183 @@ typical tasks
 
 ## Application name
 
-1. Declare env variable `APP_NAME=RNUC Demo`
-1. Initialize config `yarn rncu .env`
-1. Configure native projects
+Set different app names per environment (Dev, Staging, Production).
 
-### iOS
+### 1. Define in your env file
 
-1. open xcode
-1. go to "Info" tab
-1. find entry "Bundle Display Name"
-1. replace it with `${APP_NAME}`
+```yaml
+# .env.yaml
+APP_NAME: MyApp Dev
+```
+
+Or for per-platform names:
+
+```yaml
+# .env.yaml
+APP_NAME:
+  ios: MyApp Dev
+  android: MyApp Dev
+  web: MyApp (Development)
+```
+
+### 2. Generate config
+
+```bash
+npx rncu .env.yaml
+```
+
+### 3. Configure iOS
+
+![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=apple&logoColor=white)
+
+1. Open Xcode
+2. Go to **Info** tab
+3. Find **Bundle Display Name**
+4. Replace it with `${APP_NAME}`
 
    ![app name screenshot ios](./cookbook.assets/app-name.png)
 
-1. checkout app name has changes
+5. Build and verify the app name changed
 
    ![checkout app name](./cookbook.assets/checkout-app-name.png)
 
-### Android
+### 4. Configure Android
 
-1. open `android/app/src/main/AndroidManifest.xml`
-1. find tag `application` and set attribute `android:label` to
-   `@string/APP_NAME` or `${APP_NAME}`
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
 
-   ```xml
-    <manifest>
-        ...
-        <application
-            ...
-            android:label="@string/APP_NAME"
-        </application>
-    </manifest>
-   ```
+Edit `android/app/src/main/AndroidManifest.xml`:
 
-   or
+**Option A: Using string resource**
+```xml
+<manifest>
+    <application
+        android:label="@string/APP_NAME">
+    </application>
+</manifest>
+```
 
-   ```xml
-   <manifest>
-     ...
-     <application
-         ...
-         android:label="${APP_NAME}"
-     </application>
-   </manifest>
-   ```
+**Option B: Using manifest placeholder**
+```xml
+<manifest>
+    <application
+        android:label="${APP_NAME}">
+    </application>
+</manifest>
+```
 
 ## Bundle identifier
 
-1. Declare env variable `BUNDLE_ID=com.awesomern.app`
-1. Initialize config `yarn rncu .env`
-1. Configure native projects
+Set different bundle IDs per environment to allow multiple app versions on the same device.
 
-### ios
+### 1. Define in your env file
 
-1. open xcode
-1. go to "Build Settings" tab
-1. find entry "PRODUCT_BUNDLE_IDENTIFIER"
-   ![app name screenshot ios](./cookbook.assets/find-bundle-id.png)
-1. replace it with `${BUNDLE_ID}`
+```yaml
+# .env.dev.yaml
+BUNDLE_ID: com.mycompany.myapp.dev
 
-   ![app name screenshot ios](./cookbook.assets/replace-bundle-id.png)
+# .env.staging.yaml
+BUNDLE_ID: com.mycompany.myapp.staging
 
-1. checkout bunle id has changed
-   ![app name screenshot ios](./cookbook.assets/checkout-bundle-id-1.png)
-   ![app name screenshot ios](./cookbook.assets/checkout-bundle-id-2.png)
+# .env.prod.yaml
+BUNDLE_ID: com.mycompany.myapp
+```
 
-### Android
+### 2. Generate config
 
-1. open `android/app/build.gradle`
-1. set bundle id with data from config:
+```bash
+npx rncu .env.dev.yaml  # or your target environment
+```
 
-```gradle
+### 3. Configure iOS
+
+![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=apple&logoColor=white)
+
+1. Open Xcode
+2. Go to **Build Settings** tab
+3. Find **PRODUCT_BUNDLE_IDENTIFIER**
+   ![find bundle id](./cookbook.assets/find-bundle-id.png)
+4. Replace it with `${BUNDLE_ID}`
+   ![replace bundle id](./cookbook.assets/replace-bundle-id.png)
+5. Verify the bundle ID changed
+   ![verify bundle id](./cookbook.assets/checkout-bundle-id-1.png)
+   ![verify bundle id](./cookbook.assets/checkout-bundle-id-2.png)
+
+### 4. Configure Android
+
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
+
+Edit `android/app/build.gradle`:
+
+```kotlin
 android {
-    ...
     defaultConfig {
         applicationId project.config.get("BUNDLE_ID")
-        ...
+        // ...
     }
 }
 ```
 
-## Deeplink
+## Deep Links
 
-Suppose you want your app to open links with scheme "awesomeapp://"
+Configure custom URL schemes for deep linking (e.g., `myapp://profile/123`).
 
-1. declare env variable `DEEPLINK_SCHEME=awesomeapp`
+### 1. Define in your env file
 
-### iOS
+```yaml
+# .env.yaml
+DEEPLINK_SCHEME: myapp
 
-1. [get familiar with official guide](https://developer.apple.com/documentation/uikit/inter-process_communication/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app)
-1. open xcode
-1. go to "Info" tab
-1. find section "URL Types" and press "+"
-1. in "scheme" field type `${DEEPLINK_SCHEME}`
+# Per-environment deep links
+# .env.dev.yaml
+DEEPLINK_SCHEME: myapp-dev
+
+# .env.prod.yaml
+DEEPLINK_SCHEME: myapp
+```
+
+### 2. Configure iOS
+
+![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=apple&logoColor=white)
+
+See [Apple's URL Scheme Guide](https://developer.apple.com/documentation/uikit/inter-process_communication/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app).
+
+1. Open Xcode
+2. Go to **Info** tab
+3. Find **URL Types** section and click **+**
+4. In the **URL Schemes** field, enter `${DEEPLINK_SCHEME}`
 
 ![deeplink screenshot ios](./cookbook.assets/deeplink.png)
 
-### Android
+### 3. Configure Android
 
-1. [get familiar with official guide](https://developer.android.com/training/app-links/deep-linking)
-1. open `android/app/src/main/AndroidManifest.xml`
-1. add intent filter according to the guide and configure scheme using variable:
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
 
-   ```xml
-   <activity>
-       ...
-       <intent-filter>
-           ...
-           <data android:scheme="${DEEPLINK_SCHEME}" />
-       </intent-filter>
-   </activity>
-   ```
+See [Android Deep Linking Guide](https://developer.android.com/training/app-links/deep-linking).
+
+Edit `android/app/src/main/AndroidManifest.xml`:
+
+```xml
+<activity
+    android:name=".MainActivity"
+    android:launchMode="singleTask">
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="${DEEPLINK_SCHEME}" />
+    </intent-filter>
+</activity>
+```
+
+### 4. Test Deep Links
+
+```bash
+# iOS Simulator
+xcrun simctl openurl booted "myapp://profile/123"
+
+# Android Emulator
+adb shell am start -a android.intent.action.VIEW -d "myapp://profile/123"
+```
 
 ## Using multiple schemes (ios)
 
@@ -401,3 +474,12 @@ where it lives on disk, so the path is always correct.
 > **pnpm note:** pnpm's default virtual store layout (`node-linker=isolated`) is
 > **not** compatible with CocoaPods ≥ 1.16. Use `node-linker=hoisted` in your
 > `.npmrc` when working with iOS projects.
+
+---
+
+## Related
+
+- [Quickstart](./quickstart.md) — Installation and setup
+- [API Reference](./api.md) — Full CLI options and native access
+- [Monorepo Tips](./monorepo-tips.md) — pnpm, yarn workspaces, Lerna, Nx
+- [Troubleshooting](./troubleshooting.md) — Common issues and solutions

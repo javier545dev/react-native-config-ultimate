@@ -1,7 +1,18 @@
 # Testing Guide
 
-This guide explains how to test React Native apps that use
-`react-native-config-ultimate` at every level of the testing pyramid.
+How to test React Native apps that use `react-native-config-ultimate`.
+
+![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=apple&logoColor=white)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
+![Web](https://img.shields.io/badge/Web-4285F4?style=flat&logo=google-chrome&logoColor=white)
+
+> **Key insight:** Config values are injected at build time and read from native code. In tests, you need to **mock the module** so tests don't depend on generated files.
+
+> **Compatibility:** Works with both Old and New Architecture (TurboModules). Tested with React Native 0.73+ and React 18/19.
+
+---
+
+## Testing Pyramid
 
 ```
          ┌─────────────────┐
@@ -37,21 +48,31 @@ npx jest
 time. In Jest, you must mock the module so tests don't depend on generated
 files or native code.
 
-**Option A — inline mock per test file:**
+#### Option A: Inline mock per test file
+
+Best for: Tests that need different config values.
 
 ```typescript
+// src/components/ApiLabel.test.tsx
 jest.mock('react-native-config-ultimate', () => ({
   API_URL: 'https://mock-api.test',
   APP_ENV: 'test',
-  FEATURE_FLAG: 'true',
+  DEBUG_MODE: true,
+  TIMEOUT_MS: 5000,
 }));
+
+import Config from 'react-native-config-ultimate';
+// Config.API_URL === 'https://mock-api.test'
 ```
 
-**Option B — global mock via `moduleNameMapper` in `jest.config.js`:**
+#### Option B: Global mock via `moduleNameMapper`
 
-```js
+Best for: Consistent mock across all tests.
+
+```javascript
 // jest.config.js
 module.exports = {
+  preset: 'react-native',
   moduleNameMapper: {
     'react-native-config-ultimate': '<rootDir>/__mocks__/config.ts',
   },
@@ -60,13 +81,19 @@ module.exports = {
 
 ```typescript
 // __mocks__/config.ts
-export default {
+const Config = {
   API_URL: 'https://mock-api.test',
   APP_ENV: 'test',
+  DEBUG_MODE: false,
+  TIMEOUT_MS: 3000,
 };
+
+export default Config;
 ```
 
-**Option C — Jest manual mock in `__mocks__/` folder:**
+#### Option C: Jest manual mock (auto-discovered)
+
+Best for: Zero-config mocking.
 
 ```
 your-app/
@@ -76,11 +103,31 @@ your-app/
 
 ```typescript
 // __mocks__/react-native-config-ultimate.ts
-const config = {
+const Config = {
   API_URL: 'https://mock-api.test',
   APP_ENV: 'test',
+  DEBUG_MODE: false,
 };
-export default config;
+
+export default Config;
+```
+
+#### Option D: Type-safe mock with TypeScript
+
+Best for: Full TypeScript support in tests.
+
+```typescript
+// __mocks__/react-native-config-ultimate.ts
+import type { ConfigVariables } from 'react-native-config-ultimate';
+
+const Config: ConfigVariables = {
+  API_URL: 'https://mock-api.test',
+  APP_ENV: 'test',
+  DEBUG_MODE: false,
+  TIMEOUT_MS: 3000,
+};
+
+export default Config;
 ```
 
 ### Example test
@@ -317,3 +364,11 @@ jobs:
 | Detox run iOS | `npm run test:e2e:ios` | `packages/example/` |
 | Detox build Android | `npm run test:e2e:build:android` | `packages/example/` |
 | Detox run Android | `npm run test:e2e:android` | `packages/example/` |
+
+---
+
+## Related
+
+- [Quickstart](./quickstart.md) — Installation and setup
+- [API Reference](./api.md) — Full API documentation
+- [Troubleshooting](./troubleshooting.md) — Common issues and solutions

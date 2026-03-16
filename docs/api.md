@@ -1,6 +1,16 @@
-# API
+# API Reference
 
-Table of contents
+![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=apple&logoColor=white)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
+![Web](https://img.shields.io/badge/Web-4285F4?style=flat&logo=google-chrome&logoColor=white)
+
+> **Note:** v0.2.0 is the first stable release. Versions `<0.2.0` are deprecated.
+
+This library supports **both Old and New Architecture** (TurboModules) with the same API. Works with React Native 0.73+ and React 18/19.
+
+---
+
+## Table of Contents
 
 1. [Files](#files)
    1. [Dotenv variable expansion](#dotenv-variable-expansion)
@@ -227,18 +237,27 @@ module.exports = {
 
 ## New Architecture
 
+![New Architecture](https://img.shields.io/badge/New_Arch-TurboModules-61DAFB?style=flat&logo=react&logoColor=black)
+![Old Architecture](https://img.shields.io/badge/Old_Arch-Bridge-61DAFB?style=flat&logo=react&logoColor=black)
+
 `react-native-config-ultimate` supports **both** the Old Architecture (Bridge / NativeModules) and the New Architecture (TurboModules) with the same API. No configuration required — the library auto-detects which architecture is active.
 
-| Architecture | React Native | How it works |
-|---|---|---|
-| Old (Bridge) | >=0.60 | `NativeModules.UltimateConfig.getConstants()` |
-| New (TurboModules) | >=0.68 | TurboModule spec via Codegen |
+| Architecture | React Native | React | How it works |
+|---|---|---|---|
+| Old (Bridge) | >=0.60 | 17/18 | `NativeModules.UltimateConfig.getConstants()` |
+| New (TurboModules) | >=0.68 | 18/19 | TurboModule spec via Codegen |
 
 The JS API is identical in both cases:
 
 ```typescript
-import config from 'react-native-config-ultimate';
-config.MY_VAR; // works on old arch and new arch
+import Config from 'react-native-config-ultimate';
+
+// Works on Old Architecture AND New Architecture
+console.log(Config.MY_VAR);
+
+// TypeScript knows the exact type from your .env.yaml
+const timeout: number = Config.TIMEOUT_MS;
+const debug: boolean = Config.DEBUG_MODE;
 ```
 
 ## Javascript
@@ -270,9 +289,11 @@ export default UltimateConfig;
 
 For dotenv files, all values are typed as `string`. For YAML files, the actual type (`string`, `number`, `boolean`) is inferred from the value.
 
-## ios
+## iOS
 
-### Build settings
+![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=apple&logoColor=white)
+
+### Build Settings
 
 All values from env file are exposed to Build Settings.
 
@@ -461,7 +482,9 @@ print(Config.appName)  // → "MyApp"
 
 ## Android
 
-Gradle plugin of a library injects environment variables into as:
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
+
+The Gradle plugin injects environment variables as:
 
 1. `BuildConfig` entries
 1. stirng resources
@@ -622,17 +645,57 @@ fun AppInfo() {
 
 ## Web
 
-Variables are exported as an object from `react-native-config-ultimate`:
+![Web](https://img.shields.io/badge/Web-4285F4?style=flat&logo=google-chrome&logoColor=white)
 
-```javascript
-// import module
-import config from "react-native-config-ultimate";
+The library provides full web support via React Native Web. Variables are exported as an object:
 
-// access variables
-config.MY_CONFIG;
+```typescript
+// Works in Vite, Webpack, Rollup, Parcel
+import Config from 'react-native-config-ultimate';
+
+console.log(Config.API_URL);
+console.log(Config.TIMEOUT_MS);
 ```
 
-This functionality relies on the [package.json browser field](https://docs.npmjs.com/cli/v7/configuring-npm/package-json#browser), see the [quickstart guide](./quickstart.md) for details.
+### Bundler Compatibility
+
+| Bundler | Support | Notes |
+|---------|:-------:|-------|
+| **Vite** | ✅ | Works out of the box — recommended |
+| **Webpack** | ✅ | Ensure target includes `"web"` |
+| **Rollup** | ✅ | Use `@rollup/plugin-node-resolve` with `browser: true` |
+| **Parcel** | ✅ | Works out of the box |
+
+### Vite Configuration Example
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      'react-native': 'react-native-web',
+    },
+  },
+});
+```
+
+### Per-Platform Web Values
+
+Use YAML to specify web-specific values:
+
+```yaml
+# .env.yaml
+API_ENDPOINT:
+  ios: https://ios.api.example.com
+  android: https://android.api.example.com
+  web: https://web.api.example.com
+```
+
+This functionality relies on the [package.json browser field](https://docs.npmjs.com/cli/v7/configuring-npm/package-json#browser). See the [quickstart guide](./quickstart.md#web-setup) for detailed setup.
 
 ## Note about types
 
@@ -647,4 +710,12 @@ If yaml file is used for configuration then it is possible to pick up types of v
 | build.gradle        | yes             | -                                                                                                                                                                                        |
 | AndroidManifest.xml | yes\*           | floating point values are available as `@string` resources since there are no such type available in resources: https://developer.android.com/guide/topics/resources/available-resources |
 | Java                | yes             | -                                                                                                                                                                                        |
-| Kotlin              | yes             | same as Java, via BuildConfig                                                                                                                                                            |
+| Kotlin              | yes             | same as Java, via BuildConfig                                                                                                                            |
+
+---
+
+## Related
+
+- [Quickstart](./quickstart.md) — Installation and setup
+- [Cookbook](./cookbook.md) — Common patterns and recipes
+- [Troubleshooting](./troubleshooting.md) — Common issues and solutions
