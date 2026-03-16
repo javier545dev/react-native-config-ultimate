@@ -326,7 +326,6 @@ val apiUrl = BuildConfig.API_URL
 | Version | React Native | React | Gradle | Architecture |
 |:-------:|:------------:|:-----:|:------:|:------------:|
 | **0.2.x** | ≥ 0.73 | ≥ 18 | ≥ 8 | ✅ New (TurboModules) |
-| **0.1.x** | ≥ 0.73 | ≥ 18 | ≥ 8 | ✅ New (TurboModules) |
 
 > **Need older RN support?** See [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config)
 
