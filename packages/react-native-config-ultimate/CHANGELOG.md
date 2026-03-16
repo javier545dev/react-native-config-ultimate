@@ -8,6 +8,22 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.2.0](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.1.0...v0.2.0) (2026-03-16)
+
+
+### Features
+
+* **monorepo:** migrate from npm/lerna to pnpm + Turborepo ([91c4f44](https://github.com/javier545dev/react-native-config-ultimate/commit/91c4f4443e311a82b6ce2438c24dc822f78c78c6))
+* **web:** migrate example-web to Vite + React Native Web ([98bd13e](https://github.com/javier545dev/react-native-config-ultimate/commit/98bd13efcd14ec5eb682510a92428a7c232082f1))
+* **example:** add Example079 for RN 0.79.5 testing with web support ([98bd13e](https://github.com/javier545dev/react-native-config-ultimate/commit/98bd13efcd14ec5eb682510a92428a7c232082f1))
+* **docs:** add AGENTS.md and CLAUDE.md for AI assistants ([dcbca5f](https://github.com/javier545dev/react-native-config-ultimate/commit/dcbca5fae1e9972708ae21487a5dbaeac4aa847f))
+
+
+### Bug Fixes
+
+* **jest:** use rootDir prefix in testPathIgnorePatterns ([91c4f44](https://github.com/javier545dev/react-native-config-ultimate/commit/91c4f4443e311a82b6ce2438c24dc822f78c78c6))
+
+
 ## [0.1.0](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.0.7...v0.1.0) (2026-03-02)
 
 
