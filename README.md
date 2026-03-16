@@ -277,6 +277,38 @@ npx rncu .env --watch
 
 ---
 
+## How It Works
+
+```mermaid
+flowchart LR
+    subgraph Input
+        ENV[".env / .env.yaml"]
+    end
+
+    subgraph CLI
+        RNCU["npx rncu"]
+    end
+
+    subgraph Output
+        TS["env.ts"]
+        IOS["rncu.xcconfig"]
+        ANDROID["RNCUValues.kt"]
+    end
+
+    subgraph Runtime
+        JS["JS/TS"]
+        SWIFT["Swift"]
+        KOTLIN["Kotlin"]
+    end
+
+    ENV --> RNCU
+    RNCU --> TS --> JS
+    RNCU --> IOS --> SWIFT
+    RNCU --> ANDROID --> KOTLIN
+```
+
+---
+
 ## Access Everywhere
 
 Your config is available in every layer of your app:

@@ -79,6 +79,63 @@ console.log(Config.API_URL); // https://api.myapp.com
 
 ---
 
+## How It Works
+
+```mermaid
+flowchart TB
+    subgraph Input["📄 Input Files"]
+        ENV[".env / .env.yaml"]
+        SCHEMA[".rncurc.js (optional)"]
+    end
+
+    subgraph CLI["⚙️ rncu CLI"]
+        PARSE["Parse & Validate"]
+        MERGE["Merge Environments"]
+        EXPAND["Expand Variables"]
+    end
+
+    subgraph Output["📦 Generated Files"]
+        direction TB
+        TS["src/env.ts\n(TypeScript types)"]
+        IOS["ios/rncu.xcconfig\n(Build Settings)"]
+        ANDROID["android/.../RNCUValues.kt\n(BuildConfig)"]
+    end
+
+    subgraph Runtime["🚀 Runtime Access"]
+        direction TB
+        JS["JavaScript/TypeScript\nConfig.API_URL"]
+        SWIFT["Swift/Obj-C\nUltimateConfig.API_URL"]
+        KOTLIN["Kotlin/Java\nBuildConfig.API_URL"]
+        WEB["Web (Vite)\nConfig.API_URL"]
+    end
+
+    ENV --> PARSE
+    SCHEMA --> PARSE
+    PARSE --> MERGE
+    MERGE --> EXPAND
+    EXPAND --> TS
+    EXPAND --> IOS
+    EXPAND --> ANDROID
+
+    TS --> JS
+    TS --> WEB
+    IOS --> SWIFT
+    ANDROID --> KOTLIN
+
+    style Input fill:#e1f5fe
+    style CLI fill:#fff3e0
+    style Output fill:#e8f5e9
+    style Runtime fill:#fce4ec
+```
+
+**The flow:**
+1. **Input** — Your `.env` or `.env.yaml` file (plus optional schema)
+2. **CLI** — `npx rncu .env` parses, merges, and validates
+3. **Output** — Generates platform-specific files
+4. **Runtime** — Access config values anywhere in your app
+
+---
+
 ## Key Features
 
 | Feature | Description |
