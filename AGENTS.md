@@ -182,11 +182,23 @@ APP_ICON:
   android: app_icon_dev  # Android requires lowercase
 ```
 
-### 5. Monorepo Testing
-When running the CLI from a different package in the monorepo, use `--libRoot`:
-```bash
-npx rncu .env --libRoot ../react-native-config-ultimate
+### 5. Monorepo Autolink Behavior
+Example apps are excluded from pnpm workspace (`pnpm-workspace.yaml`) and install the library from npm. The `react-native.config.js` must NOT override dependency paths:
+```js
+// WRONG - forces local package, breaks config file location
+dependencies: {
+  'react-native-config-ultimate': {
+    root: path.join(__dirname, '..', 'react-native-config-ultimate'),
+  },
+}
+
+// CORRECT - let autolink find the npm package in node_modules
+module.exports = {
+  project: { ios: { automaticPodsInstallation: true } },
+  // No dependencies override
+};
 ```
+The CLI writes `rncu.yaml` to `node_modules/.../android/`, and Gradle must read from the same location.
 
 ## What NOT to Do
 
