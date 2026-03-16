@@ -83,56 +83,129 @@ console.log(Config.API_URL); // https://api.myapp.com
 
 ```mermaid
 flowchart TB
-    subgraph Input["📄 Input Files"]
-        ENV[".env / .env.yaml"]
-        SCHEMA[".rncurc.js (optional)"]
+    subgraph Config["📄 Configuration"]
+        ENV[".env"]
+        YAML[".env.yaml"]
+        SCHEMA[".rncurc.js"]
     end
 
-    subgraph CLI["⚙️ rncu CLI"]
-        PARSE["Parse & Validate"]
-        MERGE["Merge Environments"]
-        EXPAND["Expand Variables"]
+    subgraph Build["🔧 Build Time"]
+        CLI["npx rncu"]
     end
 
-    subgraph Output["📦 Generated Files"]
-        direction TB
-        TS["src/env.ts\n(TypeScript types)"]
-        IOS["ios/rncu.xcconfig\n(Build Settings)"]
-        ANDROID["android/.../RNCUValues.kt\n(BuildConfig)"]
+    subgraph Generated["📦 Generated Files"]
+        TS["env.ts + index.d.ts"]
+        XCCONFIG["rncu.xcconfig"]
+        KT["RNCUValues.kt"]
     end
 
-    subgraph Runtime["🚀 Runtime Access"]
-        direction TB
-        JS["JavaScript/TypeScript\nConfig.API_URL"]
-        SWIFT["Swift/Obj-C\nUltimateConfig.API_URL"]
-        KOTLIN["Kotlin/Java\nBuildConfig.API_URL"]
-        WEB["Web (Vite)\nConfig.API_URL"]
+    subgraph iOS["🍎 iOS"]
+        SWIFT["Swift"]
+        OBJC["Objective-C"]
+        PLIST["Info.plist"]
+        XCODE["Build Settings"]
     end
 
-    ENV --> PARSE
-    SCHEMA --> PARSE
-    PARSE --> MERGE
-    MERGE --> EXPAND
-    EXPAND --> TS
-    EXPAND --> IOS
-    EXPAND --> ANDROID
+    subgraph Android["🤖 Android"]
+        KOTLIN["Kotlin"]
+        JAVA["Java"]
+        MANIFEST["AndroidManifest"]
+        GRADLE["build.gradle"]
+    end
+
+    subgraph Web["🌐 Web"]
+        VITE["Vite"]
+        WEBPACK["Webpack"]
+        RNW["React Native Web"]
+    end
+
+    subgraph JS["⚛️ JavaScript"]
+        REACT["React Components"]
+        HOOKS["Custom Hooks"]
+        SERVICES["API Services"]
+    end
+
+    ENV --> CLI
+    YAML --> CLI
+    SCHEMA --> CLI
+
+    CLI --> TS
+    CLI --> XCCONFIG
+    CLI --> KT
 
     TS --> JS
-    TS --> WEB
-    IOS --> SWIFT
-    ANDROID --> KOTLIN
+    TS --> Web
 
-    style Input fill:#e1f5fe
-    style CLI fill:#fff3e0
-    style Output fill:#e8f5e9
-    style Runtime fill:#fce4ec
+    XCCONFIG --> iOS
+    KT --> Android
+
+    style Config fill:#e3f2fd
+    style Build fill:#fff8e1
+    style Generated fill:#e8f5e9
+    style iOS fill:#fafafa
+    style Android fill:#e8f5e9
+    style Web fill:#e1f5fe
+    style JS fill:#fce4ec
 ```
 
 **The flow:**
-1. **Input** — Your `.env` or `.env.yaml` file (plus optional schema)
-2. **CLI** — `npx rncu .env` parses, merges, and validates
-3. **Output** — Generates platform-specific files
-4. **Runtime** — Access config values anywhere in your app
+1. **Configuration** — Define your env vars in `.env`, `.env.yaml`, or both
+2. **Build Time** — Run `npx rncu .env` to generate platform files
+3. **Generated Files** — TypeScript types, iOS xcconfig, Android Kotlin
+4. **Runtime** — Access values in any layer of your app
+
+---
+
+## Technology Stack
+
+```mermaid
+flowchart LR
+    subgraph Core["Core"]
+        direction TB
+        NODE["Node.js"]
+        TS2["TypeScript"]
+        HBS["Handlebars"]
+    end
+
+    subgraph Platforms["Supported Platforms"]
+        direction TB
+        RN["React Native 0.73+"]
+        REACT["React 18/19"]
+        EXPO["Expo"]
+    end
+
+    subgraph Arch["Architecture"]
+        direction TB
+        NEW["New Arch\nTurboModules"]
+        OLD["Old Arch\nBridge"]
+    end
+
+    subgraph Bundlers["Web Bundlers"]
+        direction TB
+        V["Vite"]
+        W["Webpack"]
+        R["Rollup"]
+    end
+
+    subgraph Native["Native Languages"]
+        direction TB
+        SW["Swift"]
+        OC["Objective-C"]
+        KO["Kotlin"]
+        JA["Java"]
+    end
+
+    Core --> Platforms
+    Platforms --> Arch
+    Platforms --> Bundlers
+    Platforms --> Native
+
+    style Core fill:#fff3e0
+    style Platforms fill:#e3f2fd
+    style Arch fill:#f3e5f5
+    style Bundlers fill:#e1f5fe
+    style Native fill:#e8f5e9
+```
 
 ---
 
