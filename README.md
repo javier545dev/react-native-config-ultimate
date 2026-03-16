@@ -7,7 +7,7 @@
 <p align="center">
   <strong>Environment variables for React Native that just work.</strong>
   <br />
-  <strong>iOS</strong> &bull; <strong>Android</strong> &bull; <strong>Web</strong> &bull; <strong>New Architecture</strong>
+  <strong>iOS</strong> &bull; <strong>Android</strong> &bull; <strong>Web</strong> &bull; <strong>Old & New Architecture</strong>
 </p>
 
 <p align="center">
