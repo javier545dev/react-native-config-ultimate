@@ -11,14 +11,12 @@
     "test": "turbo test --filter=react-native-config-ultimate",
     "lint": "turbo lint --filter=react-native-config-ultimate",
     "typecheck": "turbo typecheck --filter=react-native-config-ultimate",
-
     "example:env": "cd packages/example && npx rncu .env.yaml --libRoot ../react-native-config-ultimate",
     "example:pods": "cd packages/example/ios && pod install",
     "example:setup": "pnpm run build && pnpm run example:env && pnpm run example:pods",
     "example:start": "cd packages/example && pnpm start",
     "example:ios": "cd packages/example && pnpm ios",
     "example:android": "cd packages/example && pnpm android",
-
     "example079:env": "cd packages/Example079 && npx rncu .env --libRoot ../react-native-config-ultimate",
     "example079:pods": "cd packages/Example079/ios && pod install",
     "example079:setup": "pnpm run build && pnpm run example079:env && pnpm run example079:pods",
@@ -28,7 +26,6 @@
     "example079:web": "cd packages/Example079 && pnpm web",
     "example079:web:build": "cd packages/Example079 && pnpm web:build",
     "example079:web:preview": "cd packages/Example079 && pnpm web:preview",
-
     "example:web:env": "cd packages/example-web && npx rncu .env --libRoot ../react-native-config-ultimate",
     "example:web:setup": "pnpm run build && pnpm run example:web:env",
     "example:web:dev": "pnpm --filter=example-web dev",
@@ -36,6 +33,7 @@
     "example:web:preview": "pnpm --filter=example-web preview"
   },
   "devDependencies": {
+    "@bacons/xcode": "1.0.0-alpha.33",
     "turbo": "^2.8.17"
   }
 }
