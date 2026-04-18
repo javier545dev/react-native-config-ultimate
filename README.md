@@ -91,7 +91,6 @@ console.log(Config.API_URL); // https://api.myapp.com
 - iOS (Swift, Obj-C)
 - Android (Kotlin, Java)
 - Web (RN Web, Vite)
-- Expo compatible
 
 </td>
 <td>
@@ -353,26 +352,11 @@ flowchart TB
 
 Your config is available in every layer of your app:
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                                                         │
-│              JavaScript / TypeScript                    │
-│                   Config.API_URL                        │
-│                                                         │
-├────────────────────────┬────────────────────────────────┤
-│                        │                                │
-│   Swift / Objective-C  │       Kotlin / Java            │
-│   UltimateConfig       │       BuildConfig              │
-│      .API_URL          │         .API_URL               │
-│                        │                                │
-├────────────────────────┼────────────────────────────────┤
-│                        │                                │
-│   Xcode Build Settings │   AndroidManifest.xml          │
-│   $(API_URL)           │   ${API_URL}                   │
-│   Info.plist           │   build.gradle                 │
-│                        │                                │
-└────────────────────────┴────────────────────────────────┘
-```
+| Layer | iOS | Android |
+|:------|:----|:--------|
+| **JavaScript / TypeScript** | `Config.API_URL` | `Config.API_URL` |
+| **Native Code** | `UltimateConfig.API_URL` (Swift / Obj-C) | `BuildConfig.API_URL` (Kotlin / Java) |
+| **Build Settings** | `$(API_URL)` — Xcode Build Settings, Info.plist | `${API_URL}` — AndroidManifest.xml, build.gradle |
 
 **Examples:**
 
@@ -435,13 +419,6 @@ val apiUrl = BuildConfig.API_URL
 **JavaScript**: No, just re-run `npx rncu .env` and reload the app.
 
 **Native values** (Info.plist, AndroidManifest): Yes, you need to rebuild.
-
-</details>
-
-<details>
-<summary><strong>Can I use this with Expo?</strong></summary>
-
-Yes! Works with Expo managed and bare workflows. See [Expo setup](./docs/quickstart.md#expo).
 
 </details>
 

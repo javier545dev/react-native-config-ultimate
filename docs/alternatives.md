@@ -86,7 +86,7 @@ Comparing environment variable solutions for React Native.
 
 - You only need config values in **JavaScript** (not native code)
 - You want Babel transform without build-time generation
-- You're building a web-only or Expo-only app
+- You're building a web-only app
 
 ---
 

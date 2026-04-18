@@ -171,7 +171,6 @@ flowchart LR
         direction TB
         RN["React Native 0.73+"]
         REACT["React 18/19"]
-        EXPO["Expo"]
     end
 
     subgraph Arch["Architecture"]
@@ -248,10 +247,10 @@ flowchart LR
 
 ## Links
 
-- [GitHub Repository](https://github.com/AuxStudio/react-native-config-ultimate)
+- [GitHub Repository](https://github.com/javier545dev/react-native-config-ultimate)
 - [npm Package](https://www.npmjs.com/package/react-native-config-ultimate)
-- [Report an Issue](https://github.com/AuxStudio/react-native-config-ultimate/issues)
-- [Changelog](https://github.com/AuxStudio/react-native-config-ultimate/blob/master/CHANGELOG.md)
+- [Report an Issue](https://github.com/javier545dev/react-native-config-ultimate/issues)
+- [Changelog](https://github.com/javier545dev/react-native-config-ultimate/blob/master/CHANGELOG.md)
 
 ---
 
