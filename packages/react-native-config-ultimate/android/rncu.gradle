@@ -36,7 +36,9 @@ def readYaml(yamlPath) {
             "  after the last rncu run, which resets the file)."
         )
     }
-    def cfg = new org.yaml.snakeyaml.Yaml().load(yamlFile.newInputStream())
+    def cfg = new org.yaml.snakeyaml.Yaml(
+        new org.yaml.snakeyaml.constructor.SafeConstructor(new org.yaml.snakeyaml.LoaderOptions())
+    ).load(yamlFile.newInputStream())
     if (
         cfg instanceof String
     || cfg instanceof Integer
@@ -55,14 +57,14 @@ def buildRootConfig() {
     if (flavorMappingExists) {
         def config = [:]
         def flavorMapping = project.ext.get('flavorEnvMapping')
-        println "Flavor mapping detected: ${flavorMapping}"
-        flavorMapping.each { flavor, yamlPath -> 
+        logger.info "[rncu] Flavor mapping detected: ${flavorMapping.keySet()}"
+        flavorMapping.each { flavor, yamlPath ->
             def absolutePath = Paths.get(project.rootDir.getAbsolutePath(), yamlPath)
             config.put(flavor, readYaml(absolutePath))
         }
         return config
     } else {
-        println "No flavor mapping detected. Reading injected file"
+        logger.info "[rncu] No flavor mapping detected. Reading injected file"
         def cfg = readYaml(Paths.get(buildscript.sourceFile.getParent(), "rncu.yaml"))
         return cfg
     }
@@ -90,41 +92,43 @@ def flattenConfig(cfg) {
 }
 
 def rootConfig = buildRootConfig()
-println "Root config ${rootConfig}"
+logger.info "[rncu] Config loaded with ${rootConfig instanceof Map ? rootConfig.size() : 'N/A'} keys"
 
 def configPerFlavor(flavorName, rootConfig) {
     def mapping = project.ext.has('flavorEnvMapping')
     if (mapping && !flavorName.isEmpty()) {
-        println "mapping exists"
+        logger.info "[rncu] Using flavor mapping for '${flavorName}'"
         def f = rootConfig.get(flavorName)
         return f
     } else {
-        println "mapping does not exist or flavor is not defined"
+        logger.info "[rncu] No flavor mapping — using root config"
         return rootConfig
     }
 }
 
 def escape_double(str) {
-    return str.replace('"', '\\"')
+    return str.replace('\\', '\\\\').replace('"', '\\"')
 }
 def escape_single(str) {
-    return str.replace("'", "\\'")
+    return str.replace('\\', '\\\\').replace("'", "\\'")
 }
 
 android {
     // patch all variants with config values
     applicationVariants.all { variant ->
-        println "processing variant ${variant.name}"
-        def flavorName = variant.flavorName 
+        logger.info "[rncu] processing variant ${variant.name}"
+        def flavorName = variant.flavorName
 
         def cfg = flattenConfig(configPerFlavor(flavorName, rootConfig))
-        println "config per flavor ${flavorName} ${cfg}"
         def keySet = cfg.keySet().collect()
-        println "all keys ${keySet}"
+        logger.info "[rncu] variant '${variant.name}': ${keySet.size()} keys [${keySet.join(', ')}]"
         def rncuKeys = java.lang.String.join(",", keySet)
-        println "all keys as string ${rncuKeys}"
         variant.buildConfigField "String", "__RNCU_KEYS", "\"${rncuKeys}\""
-        variant.mergedFlavor.manifestPlaceholders.putAll(cfg)
+        // Only inject manifest placeholders if explicitly opted in via project.ext.rncuManifestPlaceholders = true
+        // This prevents accidental secret leakage into AndroidManifest.xml (readable in APK/AAB).
+        if (project.ext.has('rncuManifestPlaceholders') && project.ext.get('rncuManifestPlaceholders') == true) {
+            variant.mergedFlavor.manifestPlaceholders.putAll(cfg)
+        }
 
         cfg.each { k,v -> 
             if (v instanceof java.lang.String) {
