@@ -37,7 +37,20 @@ final class UltimateConfigHelper {
     final Map<String, Object> constants = new HashMap<>();
     try {
       Class<?> act = _buildConfig;
-      if (act == null) return constants;
+      if (act == null) {
+        // The user forgot to wire MainApplication. Without this call we have
+        // no way to find the app's generated BuildConfig fields, so the JS
+        // side will see an empty Config object. Surface the cause loudly
+        // instead of silently returning {} — the symptom is otherwise hard
+        // to diagnose (Config.MY_VAR === undefined with no error).
+        Log.w(
+          TAG,
+          "setBuildConfig was never called. Add " +
+            "UltimateConfigModule.setBuildConfig(BuildConfig.class) " +
+            "to MainApplication.onCreate() — required on both Old and New Architecture."
+        );
+        return constants;
+      }
 
       // Try both key names for backwards compatibility
       String keys = null;

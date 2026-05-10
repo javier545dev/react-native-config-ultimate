@@ -127,9 +127,9 @@ apply from: project(':react-native-config-ultimate').projectDir.getPath() + "/rn
 > apply from: "../../node_modules/react-native-config-ultimate/android/rncu.gradle"
 > ```
 
-### Step 2: Expose BuildConfig (Old Architecture only)
+### Step 2: Expose BuildConfig (required on both architectures)
 
-> **New Architecture (RN ≥ 0.73 with TurboModules):** Skip this step! The TurboModule reads values directly via Codegen.
+> **Required on Old AND New Architecture.** The native module cannot resolve your app's `BuildConfig` class on its own — you must hand it the reference once at app start. Without this call, `Config.MY_VAR` is `undefined` at runtime and a warning is printed to logcat (`UltimateConfig: setBuildConfig was never called…`).
 
 **Kotlin** — in `MainApplication.kt`:
 
