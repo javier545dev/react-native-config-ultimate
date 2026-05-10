@@ -3,14 +3,14 @@ import render_env from './render-env';
 import write_env from './write-env';
 import flatten from './flatten';
 import resolve_env from './resolve-env';
-import { validate_env } from './validate-env';
+import { validate_env, validate_keys } from './validate-env';
 
 import type { RC, EnvData } from './resolve-env';
 import type { EnvConfig } from './flatten';
 
 /**
  * Main build-time pipeline:
- *   load → resolve (on_env hook) → validate (schema) → flatten → render → write
+ *   load → resolve (on_env hook) → validate keys → validate schema → flatten → render → write
  *
  * @param project_root  Root of the React Native project
  * @param lib_root      Root of the react-native-config-ultimate install
@@ -24,6 +24,10 @@ export default async function main(
   rc?: RC
 ): Promise<void> {
   const env: EnvData = await resolve_env(load_env(env_file), rc);
+
+  // Always validate key names — prevents template injection in generated
+  // native files regardless of whether the user has defined a schema.
+  validate_keys(env);
 
   if (rc?.schema) {
     validate_env(env, rc.schema);

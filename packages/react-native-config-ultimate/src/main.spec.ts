@@ -7,7 +7,8 @@ jest.doMock('./write-env', () => ({ __esModule: true, default: mock_write_env })
 const mock_flatten = jest.fn();
 jest.doMock('./flatten', () => ({ __esModule: true, default: mock_flatten }));
 const mock_validate_env = jest.fn();
-jest.doMock('./validate-env', () => ({ validate_env: mock_validate_env }));
+const mock_validate_keys = jest.fn();
+jest.doMock('./validate-env', () => ({ validate_env: mock_validate_env, validate_keys: mock_validate_keys }));
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const main: (...args: unknown[]) => Promise<void> = require('./main').default;
@@ -28,6 +29,7 @@ describe('main', () => {
     mock_write_env.mockReset();
     mock_flatten.mockReset();
     mock_validate_env.mockReset();
+    mock_validate_keys.mockReset();
   });
 
   it('execute render with paths (string arg — backward-compatible)', async () => {
@@ -112,6 +114,14 @@ describe('main', () => {
       mock_render_env.mockReturnValueOnce({});
       await main('project', 'project/node_modules/react-native-config-ultimate', 'file');
       expect(mock_validate_env).not.toHaveBeenCalled();
+    });
+
+    it('always calls validate_keys even without a schema', async () => {
+      mock_load_env.mockReturnValueOnce({ API_KEY: 'secret' });
+      mock_flatten.mockReturnValue({});
+      mock_render_env.mockReturnValueOnce({});
+      await main('project', 'project/node_modules/react-native-config-ultimate', 'file');
+      expect(mock_validate_keys).toHaveBeenCalledWith({ API_KEY: 'secret' });
     });
 
     it('validates env AFTER on_env hook runs (hook output is validated)', async () => {

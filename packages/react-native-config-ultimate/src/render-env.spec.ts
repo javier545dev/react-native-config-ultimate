@@ -252,6 +252,23 @@ describe('handlebars helpers (via template output)', () => {
       // // should become /$()/ in xcconfig
       expect(content).toContain('/$()');
     });
+
+    it('strips newlines from xcconfig values to prevent injection', () => {
+      const env = {
+        ios: { SAFE: 'value\nINJECTED=evil' },
+        android: { SAFE: 'value' },
+        web: { SAFE: 'value' },
+      };
+
+      const result = render_env(project_root, lib_root, env);
+      const content = result[path.join(project_root, 'ios', 'rncu.xcconfig')];
+
+      // newline stripped → no separate INJECTED=evil line (it's concatenated with SAFE value)
+      const lines = content!.split('\n').filter((l: string) => l.trim() !== '' && !l.startsWith('//'));
+      // Should only have ONE xcconfig key (SAFE), not two
+      expect(lines).toHaveLength(1);
+      expect(lines[0]).toMatch(/^SAFE=/);
+    });
   });
 
   describe('type helpers', () => {

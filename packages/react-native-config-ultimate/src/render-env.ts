@@ -36,7 +36,10 @@ function escape(value: unknown): unknown {
 
 function xcconfig_format(value: unknown): unknown {
   if (is_string(value)) {
-    return (value as string).replace(/\/\//gm, '/$()/');
+    return (value as string)
+      .replace(/\n/gm, '')
+      .replace(/\r/gm, '')
+      .replace(/\/\//gm, '/$()/');
   }
   return value;
 }
