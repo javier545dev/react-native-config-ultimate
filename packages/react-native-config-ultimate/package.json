@@ -25,6 +25,7 @@
     "ios",
     "*.podspec",
     "!src/**/*.spec.ts",
+    "!lib/**/*.spec.*",
     "!src/test_outputs",
     "!ios/build",
     "!android/build",
