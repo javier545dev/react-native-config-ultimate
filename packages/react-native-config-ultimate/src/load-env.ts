@@ -18,6 +18,24 @@ function read_yaml(config_path: string): EnvData {
   if (typeof data === 'undefined' || data === null || typeof data !== 'object') {
     throw new Error(`Expected to read object from ${config_path}, but got '${data}'`);
   }
+
+  // Reject unsupported YAML types that would silently break template rendering.
+  // js-yaml parses unquoted dates (e.g. 2024-01-01) as Date objects.
+  const errors: string[] = [];
+  for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
+    if (value instanceof Date) {
+      errors.push(`${key}: YAML parsed as Date. Quote the value to treat it as a string: "${key}: \\"${String(value)}\\""`);
+    } else if (Array.isArray(value)) {
+      errors.push(`${key}: arrays are not supported. Use per-platform objects or scalar values.`);
+    }
+  }
+  if (errors.length > 0) {
+    throw new Error(
+      `[rncu] Unsupported value types in ${config_path}:\n` +
+        errors.map((e) => `  • ${e}`).join('\n')
+    );
+  }
+
   return data as EnvData;
 }
 

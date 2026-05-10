@@ -17,7 +17,12 @@ export default function flatten(config: EnvConfig, platform: Platform): FlatConf
   const result: FlatConfig = {};
   for (const [key, value] of Object.entries(config)) {
     if (value && typeof value === 'object') {
-      result[key] = (value as PerPlatformValue)[platform];
+      const resolved = (value as PerPlatformValue)[platform];
+      // Only include the key if this platform has a value defined.
+      // Omitting undefined prevents broken output in native templates.
+      if (resolved !== undefined) {
+        result[key] = resolved;
+      }
     } else {
       result[key] = value as ConfigValue;
     }

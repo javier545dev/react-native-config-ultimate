@@ -3,6 +3,31 @@ import type { EnvData, Schema } from './resolve-env';
 const VALID_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 /**
+ * Validate that all env key names are valid C/Java/JS identifiers.
+ * This runs UNCONDITIONALLY (even without a schema) to prevent template
+ * injection in generated native files (ConfigValues.h, xcconfig, override.js).
+ *
+ * Throws with a human-readable error listing ALL invalid keys at once.
+ */
+export function validate_keys(env: EnvData): void {
+  const errors: string[] = [];
+  for (const key of Object.keys(env)) {
+    if (!VALID_KEY_PATTERN.test(key)) {
+      errors.push(
+        `Invalid env key name: "${key}". Keys must start with a letter or underscore and contain only letters, numbers, and underscores.`
+      );
+    }
+  }
+  if (errors.length > 0) {
+    throw new Error(
+      `\n\n❌ react-native-config-ultimate: invalid key names:\n` +
+        errors.map((e) => `  • ${e}`).join('\n') +
+        '\n'
+    );
+  }
+}
+
+/**
  * Validate env data against a schema defined in `.rncurc.js`.
  * Called after `on_env` so the hook can add/transform vars before validation.
  *
@@ -11,15 +36,6 @@ const VALID_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
  */
 export function validate_env(env: EnvData, schema: Schema): void {
   const errors: string[] = [];
-
-  // Validate all env key names are valid identifiers
-  for (const key of Object.keys(env)) {
-    if (!VALID_KEY_PATTERN.test(key)) {
-      errors.push(
-        `Invalid env key name: "${key}". Keys must start with a letter or underscore and contain only letters, numbers, and underscores.`
-      );
-    }
-  }
 
   // Pre-compile all regex patterns once, before iterating over env values.
   // This avoids re-compiling the same pattern for every validated key.

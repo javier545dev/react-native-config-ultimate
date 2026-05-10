@@ -1,4 +1,4 @@
-import { validate_env } from './validate-env';
+import { validate_env, validate_keys } from './validate-env';
 import type { Schema } from './resolve-env';
 
 describe('validate-env', () => {
@@ -158,36 +158,37 @@ describe('validate-env', () => {
     });
   });
 
-  describe('env key name validation', () => {
+  describe('env key name validation (via validate_keys)', () => {
     it('throws for keys with invalid characters', () => {
-      const schema: Schema = {};
-      expect(() => validate_env({ 'invalid-key': 'value' }, schema)).toThrow(
+      expect(() => validate_keys({ 'invalid-key': 'value' })).toThrow(
         'Invalid env key name: "invalid-key"'
       );
     });
 
     it('throws for keys starting with a number', () => {
-      const schema: Schema = {};
-      expect(() => validate_env({ '123KEY': 'value' }, schema)).toThrow(
+      expect(() => validate_keys({ '123KEY': 'value' })).toThrow(
         'Invalid env key name: "123KEY"'
       );
     });
 
     it('throws for keys with spaces', () => {
-      const schema: Schema = {};
-      expect(() => validate_env({ 'MY KEY': 'value' }, schema)).toThrow(
+      expect(() => validate_keys({ 'MY KEY': 'value' })).toThrow(
         'Invalid env key name: "MY KEY"'
       );
     });
 
     it('accepts valid key names starting with underscore', () => {
-      const schema: Schema = {};
-      expect(() => validate_env({ _PRIVATE_KEY: 'value' }, schema)).not.toThrow();
+      expect(() => validate_keys({ _PRIVATE_KEY: 'value' })).not.toThrow();
     });
 
     it('accepts valid key names with numbers', () => {
-      const schema: Schema = {};
-      expect(() => validate_env({ API_V2_URL: 'value' }, schema)).not.toThrow();
+      expect(() => validate_keys({ API_V2_URL: 'value' })).not.toThrow();
+    });
+
+    it('reports all invalid keys at once', () => {
+      expect(() => validate_keys({ 'bad-key': 'a', '123key': 'b', GOOD_KEY: 'c' })).toThrow(
+        /bad-key.*123key/s
+      );
     });
   });
 
