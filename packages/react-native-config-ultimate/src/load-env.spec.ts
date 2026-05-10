@@ -152,6 +152,34 @@ describe('load-env', () => {
     it('throws when no files are provided', () => {
       expect(() => load_env([])).toThrow('No env file specified');
     });
+
+    it('rejects YAML values parsed as Date with a quoting hint', () => {
+      // js-yaml returns a Date instance for unquoted ISO dates like 2024-01-01.
+      mockReadFileSync.mockReturnValue(Buffer.from('RELEASE_DATE: 2024-01-01'));
+      mockYaml.mockReturnValue({ RELEASE_DATE: new Date('2024-01-01T00:00:00.000Z') });
+
+      expect(() => load_env('config.yaml')).toThrow(
+        /Unsupported value types[\s\S]*RELEASE_DATE: YAML parsed as Date/
+      );
+    });
+
+    it('rejects YAML arrays with a clear message', () => {
+      mockReadFileSync.mockReturnValueOnce(Buffer.from('TAGS: [a, b]'));
+      mockYaml.mockReturnValueOnce({ TAGS: ['a', 'b'] });
+
+      expect(() => load_env('config.yaml')).toThrow(/arrays are not supported/);
+    });
+
+    it('lists multiple unsupported values in a single error', () => {
+      mockReadFileSync.mockReturnValueOnce(Buffer.from('data'));
+      mockYaml.mockReturnValueOnce({
+        DATE_KEY: new Date('2024-01-01'),
+        ARRAY_KEY: [1, 2, 3],
+        OK_KEY: 'fine',
+      });
+
+      expect(() => load_env('config.yaml')).toThrow(/DATE_KEY[\s\S]*ARRAY_KEY/);
+    });
   });
 
   describe('mixed format (yaml + dotenv)', () => {

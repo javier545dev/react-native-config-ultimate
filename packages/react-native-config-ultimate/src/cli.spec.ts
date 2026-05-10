@@ -212,5 +212,72 @@ describe('cli', () => {
       await cli();
       expect(mock_chokidar_watch).toHaveBeenCalled();
     });
+
+    it('runs the SIGINT handler to close the watcher and exit', async () => {
+      set_argv('.env', '--watch');
+      const exit_spy = jest.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
+      await cli();
+
+      const sigint_call = (process_on_spy.mock.calls as [string, unknown][]).find(
+        ([event]) => event === 'SIGINT'
+      );
+      const handler = sigint_call?.[1] as (() => void) | undefined;
+      expect(handler).toBeDefined();
+
+      handler!();
+      // watcher.close() is a promise — drain microtasks so .then(exit) fires.
+      await new Promise<void>((resolve) => setImmediate(resolve));
+
+      expect(mock_watcher_close).toHaveBeenCalled();
+      expect(exit_spy).toHaveBeenCalledWith(0);
+
+      exit_spy.mockRestore();
+    });
+  });
+
+  // ── input validation ────────────────────────────────────────────────────
+
+  describe('input validation', () => {
+    // In production, process.exit() terminates the process; in tests we throw
+    // instead so cli() short-circuits the same way and downstream code (main)
+    // never runs.
+    function spy_exit_as_throw(): jest.SpyInstance {
+      return jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+        throw new Error(`__exit__ ${code ?? 0}`);
+      }) as never);
+    }
+
+    it('exits with code 1 when no env file is specified', async () => {
+      set_argv();
+      const exit_spy = spy_exit_as_throw();
+      const stderr_spy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+      await expect(cli()).rejects.toThrow('__exit__ 1');
+
+      expect(exit_spy).toHaveBeenCalledWith(1);
+      expect(stderr_spy).toHaveBeenCalledWith(expect.stringContaining('No env file specified'));
+      expect(mock_main).not.toHaveBeenCalled();
+
+      exit_spy.mockRestore();
+      stderr_spy.mockRestore();
+    });
+
+    it('exits with code 1 and lists each missing env file', async () => {
+      set_argv('.env.missing', '.env.also-missing');
+      // Both env files do NOT exist; .rncurc.js does NOT exist either.
+      mock_exists_sync.mockReturnValue(false);
+      const exit_spy = spy_exit_as_throw();
+      const stderr_spy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+      await expect(cli()).rejects.toThrow('__exit__ 1');
+
+      expect(exit_spy).toHaveBeenCalledWith(1);
+      expect(stderr_spy).toHaveBeenCalledWith(expect.stringContaining('.env.missing'));
+      expect(stderr_spy).toHaveBeenCalledWith(expect.stringContaining('.env.also-missing'));
+      expect(mock_main).not.toHaveBeenCalled();
+
+      exit_spy.mockRestore();
+      stderr_spy.mockRestore();
+    });
   });
 });
