@@ -50,7 +50,7 @@ export default async function cli(): Promise<void> {
     .help()
     .parseAsync();
 
-  const project_root = argv.projectRoot;
+  const project_root = path.resolve(argv.projectRoot);
 
   /**
    * Resolve the library root directory.
@@ -65,7 +65,7 @@ export default async function cli(): Promise<void> {
    *    (write-env.ts will create the directories on first run).
    */
   const lib_root: string = (() => {
-    if (argv.libRoot) return argv.libRoot;
+    if (argv.libRoot) return path.resolve(argv.libRoot);
 
     const conventional = path.join(project_root, 'node_modules', 'react-native-config-ultimate');
 
@@ -88,6 +88,11 @@ export default async function cli(): Promise<void> {
   // Accept one or more positional env file paths.
   // Multiple files are merged left-to-right (last file wins for conflicting keys).
   const env_files = argv._.map(String);
+
+  if (env_files.length === 0) {
+    log_err('No env file specified. Usage: rncu <env-file> [env-file2 ...]');
+    process.exit(1);
+  }
 
   // Validate env files exist before running anything.
   const missing_files = env_files.filter((f) => !fs.existsSync(f));
@@ -157,5 +162,7 @@ export default async function cli(): Promise<void> {
   });
 }
 
-// Auto-invoke when run as CLI script
-cli();
+// Auto-invoke when run as CLI script (not when required by tests)
+if (require.main === module) {
+  cli();
+}
