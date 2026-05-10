@@ -8,6 +8,32 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.2.1](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.0...v0.2.1) (2026-05-10)
+
+
+### Features
+
+* **core:** tighter YAML, flatten and key-name safety ([1ec060c](https://github.com/javier545dev/react-native-config-ultimate/commit/1ec060c09481840c02616e9a40dc479fb5f3ce02))
+* **pipeline:** always validate key names; harden xcconfig output; simplify override template ([99f37d5](https://github.com/javier545dev/react-native-config-ultimate/commit/99f37d531114566c7d04e436bb1417d87d4af41e))
+* **resolve-env:** validate on_env hook return type ([f0eb626](https://github.com/javier545dev/react-native-config-ultimate/commit/f0eb6266c798d409ea39d8d35f8e4c3c3433d26b))
+
+
+### Bug Fixes
+
+* **android:** warn loudly when setBuildConfig was not called; correct quickstart ([e1bfc14](https://github.com/javier545dev/react-native-config-ultimate/commit/e1bfc140dbb280fd323c742a27e9f6ab2c84a9fc))
+* **cli:** absolute paths, required env file, test-friendly entry ([f41b23d](https://github.com/javier545dev/react-native-config-ultimate/commit/f41b23d01e9adb604152dcaa8f4917894b524126))
+* **ios:** handle nil string in getAll() result ([ef741fc](https://github.com/javier545dev/react-native-config-ultimate/commit/ef741fcb62f79b4b4e711e89f7fcf0d6443b3606))
+
+
+### Code Refactoring
+
+* **android:** extract BuildConfig helper and fix isCxxModule flag ([7b545bb](https://github.com/javier545dev/react-native-config-ultimate/commit/7b545bb8c900096e7d582825ba08dacb5ca7579f))
+
+
+### Build System
+
+* **gradle:** safe YAML loader, escape backslashes, quieter logging ([9060f14](https://github.com/javier545dev/react-native-config-ultimate/commit/9060f1481e2560806f1e1ee418793c5d4d06440f))
+
 ## [0.2.0](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.1.0...v0.2.0) (2026-03-16)
 
 
