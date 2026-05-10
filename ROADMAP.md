@@ -12,7 +12,7 @@ Estado actual y futuro de react-native-config-ultimate.
 - [x] Merge de múltiples archivos env (`npx rncu .env.base .env.staging`)
 - [x] Variable expansion (`$VAR` y `${VAR}`)
 - [x] Schema validation con `.rncurc.js`
-- [x] Hooks API (`on_env`, `on_js`, etc.)
+- [x] Hooks API (`on_env`) y `js_override` para overrides per-platform
 - [x] Watch mode (`--watch`)
 - [x] TypeScript types auto-generados (`index.d.ts`)
 
@@ -56,7 +56,7 @@ Estado actual y futuro de react-native-config-ultimate.
 
 ### Infrastructure
 - [x] Monorepo con pnpm + Turborepo
-- [x] Jest tests (136 tests passing)
+- [x] Jest tests (153 tests, coverage gates en lines:88 / branches:82)
 - [x] ESLint 9 (flat config)
 - [x] TypeScript strict mode
 - [x] react-native-builder-bob
@@ -67,9 +67,11 @@ Estado actual y futuro de react-native-config-ultimate.
 
 ---
 
-## En Progreso
+## Planeado
 
 ### v0.3.0 - CLI Enhancements
+
+> Specs y design ya escritos vía SDD (engram). Implementación todavía no comenzada.
 
 #### `rncu init` - Auto-setup nativo
 - [ ] **Phase 1: Foundation**
@@ -145,6 +147,83 @@ Estado actual y futuro de react-native-config-ultimate.
 
 ---
 
+## v0.4.0 - Secure Keys (JNI/C++)
+
+**KILLER FEATURE** — Secrets protegidos con código nativo compilado.
+
+### ¿Por qué?
+
+Las env vars normales son **inseguras**:
+- Android: `BuildConfig.java` se puede decompilar con jadx
+- iOS: strings en el binario son extraíbles
+- JS Bundle: cualquiera puede leer el código
+
+### ¿Cómo lo solucionamos?
+
+Inspirado en [react-native-keys](https://github.com/numandev1/react-native-keys):
+
+```yaml
+# .env.yaml
+public:
+  API_URL: https://api.example.com
+  APP_NAME: MyApp
+
+secure:  # ← NEW: Cifrado con JNI/C++
+  API_KEY: sk_live_123456
+  STRIPE_KEY: pk_live_abcdef
+```
+
+```tsx
+import Config from 'react-native-config-ultimate';
+
+// Public (normal)
+Config.API_URL  // "https://api.example.com"
+
+// Secure (descifrado en runtime desde código nativo)
+Config.secureFor('API_KEY')  // "sk_live_123456"
+```
+
+### Arquitectura
+
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│   .env.yaml     │ ──▶ │   Build Time     │ ──▶ │    Runtime      │
+│                 │     │                  │     │                 │
+│ public: {...}   │     │ public → normal  │     │ JS: Config.X    │
+│ secure: {...}   │     │ secure → C++/JNI │     │ Native: decrypt │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+```
+
+### Tasks
+
+- [ ] Definir formato YAML para `secure` section
+- [ ] Android: Implementar JNI/NDK para secrets
+- [ ] iOS: Implementar C++ nativo para secrets
+- [ ] JSI binding para `secureFor()` method
+- [ ] Cifrado AES-256 en build time
+- [ ] Key derivation segura (no hardcoded)
+- [ ] Tests de seguridad (decompile verification)
+- [ ] Documentación de seguridad
+
+### Comparación Final
+
+| Feature | rncu v0.4 | react-native-config | react-native-keys |
+|---------|:---------:|:-------------------:|:-----------------:|
+| New Architecture | ✅ | ❌ | ✅ |
+| YAML + per-platform | ✅ | ❌ | ❌ |
+| Multi-env merge | ✅ | ❌ | ❌ |
+| Schema validation | ✅ | ❌ | ❌ |
+| TypeScript types | ✅ | ❌ | ❌ |
+| Web support | ✅ | ❌ | ❌ |
+| Secure keys (JNI) | ✅ | ❌ | ✅ |
+| Auto-setup (init) | ✅ | ❌ | ❌ |
+
+**Seríamos la ÚNICA librería con TODAS las features.**
+
+**Estimado:** 2-3 semanas
+
+---
+
 ## Ideas (Evaluando)
 
 | Idea | Valor | Esfuerzo | Status |
@@ -163,8 +242,8 @@ Estado actual y futuro de react-native-config-ultimate.
 |---------|--------|------------|
 | **0.2.0** | ✅ Released | Primera versión estable. New Arch, React 19, Web support |
 | **0.3.0** | 🚧 Planned | `rncu init`, `rncu validate` |
-| **0.4.0** | 📋 Backlog | Secrets encryption, remote config |
-| **1.0.0** | 🎯 Goal | API estable, feature complete |
+| **0.4.0** | 📋 Planned | **Secure Keys** — JNI/C++ para secrets protegidos |
+| **1.0.0** | 🎯 Goal | API estable, feature complete
 
 ---
 

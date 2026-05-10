@@ -487,12 +487,14 @@ print(Config.appName)  // → "MyApp"
 The Gradle plugin injects environment variables as:
 
 1. `BuildConfig` entries
-1. stirng resources
+1. string resources
 1. `project.ext.env` of `build.gradle`
+
+> **Required setup (both Old and New Architecture):** call `UltimateConfigModule.setBuildConfig(BuildConfig::class.java)` once from `MainApplication.onCreate()`. Without it the native module returns an empty config at runtime. See [troubleshooting → Android: setBuildConfig not called](./troubleshooting.md#android-setbuildconfig-not-called-empty-config-at-runtime).
 
 ### build.gradle
 
-you can access config variales with simple
+you can access config variables with simple
 
 ```gradle
 project.config.get("APP_NAME")

@@ -352,12 +352,11 @@ RCT_NEW_ARCH_ENABLED=1 pod install
 cd ..
 ```
 
-### Old Architecture: setBuildConfig not called
+### Android: setBuildConfig not called (empty config at runtime)
 
-**Error:**
-```
-UltimateConfigModule.setBuildConfig() must be called in MainApplication.onCreate()
-```
+**Symptom:** `Config.MY_VAR` returns `undefined` on Android even though `BuildConfig.MY_VAR` exists. The native module returns an empty object (`{}`).
+
+**Why:** The library reads values from your **app's** `BuildConfig` (not the library's). It cannot resolve your app's class automatically, so you must hand it the reference once at app start. This applies to **both Old and New Architecture** — the JNI lookup depends on `_buildConfig` being set in `UltimateConfigHelper`.
 
 **Solution**: Add to `MainApplication.kt`:
 
@@ -370,15 +369,13 @@ override fun onCreate() {
 }
 ```
 
-> **Note:** New Architecture (TurboModules) does NOT require `setBuildConfig()`.
-
 ---
 
 ## Still Stuck?
 
 1. Check the [API Reference](./api.md) for correct usage
 2. See [Monorepo Tips](./monorepo-tips.md) for workspace setups
-3. [Open an issue](https://github.com/AuxStudio/react-native-config-ultimate/issues) with:
+3. [Open an issue](https://github.com/javier545dev/react-native-config-ultimate/issues) with:
    - React Native version (`npx react-native --version`)
    - Library version (`npm list react-native-config-ultimate`)
    - Architecture (Old or New)

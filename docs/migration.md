@@ -244,5 +244,5 @@ npx react-native start --reset-cache
 ## Need More Help?
 
 - [Troubleshooting Guide](./troubleshooting.md) — Common issues and solutions
-- [GitHub Issues](https://github.com/AuxStudio/react-native-config-ultimate/issues) — Report bugs or ask questions
+- [GitHub Issues](https://github.com/javier545dev/react-native-config-ultimate/issues) — Report bugs or ask questions
 - [API Reference](./api.md) — Full API documentation

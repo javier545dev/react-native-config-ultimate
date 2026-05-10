@@ -263,6 +263,6 @@ Web support relies on the `browser` field in `package.json` pointing to `index.w
 
 ## Questions?
 
-- Check existing [issues](https://github.com/AuxStudio/react-native-config-ultimate/issues)
+- Check existing [issues](https://github.com/javier545dev/react-native-config-ultimate/issues)
 - Open a new issue for bugs or feature requests
 - PRs welcome!
