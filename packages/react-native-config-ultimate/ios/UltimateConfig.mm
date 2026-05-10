@@ -28,7 +28,8 @@ RCT_EXPORT_MODULE()
     if (error || !jsonData) {
         return @"{}";
     }
-    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *result = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return result ?: @"{}";
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
