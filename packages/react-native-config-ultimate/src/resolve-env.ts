@@ -26,7 +26,14 @@ export interface SchemaField {
 export type Schema = Record<string, SchemaField>;
 
 export interface RC {
-  on_env?: (env: EnvData) => unknown;
+  /**
+   * Hook to transform env data before validation and rendering.
+   * Return the modified env object, or `undefined`/`void` to keep the original.
+   *
+   * **Important:** if you mutate `env` in place without returning it, the
+   * mutations are ignored. Always return the modified object.
+   */
+  on_env?: (env: EnvData) => EnvData | undefined | void | Promise<EnvData | undefined | void>;
   js_override?: boolean;
   /**
    * Optional schema for build-time validation of env vars.
@@ -38,7 +45,14 @@ export interface RC {
 export default async function resolve_env(env: EnvData, rc?: RC): Promise<EnvData> {
   if (rc && rc.on_env) {
     const patched_env = await rc.on_env(env);
-    return typeof patched_env === 'undefined' ? env : (patched_env as EnvData);
+    if (typeof patched_env === 'undefined') return env;
+    if (!patched_env || typeof patched_env !== 'object' || Array.isArray(patched_env)) {
+      throw new Error(
+        `[rncu] on_env hook must return an object (or undefined to keep the original), ` +
+          `but got ${typeof patched_env}: ${String(patched_env)}`
+      );
+    }
+    return patched_env as EnvData;
   } else {
     return env;
   }
