@@ -43,7 +43,7 @@ public class UltimateConfigPackage extends TurboReactPackage {
           UltimateConfigModule.NAME,
           false,  // canOverrideExistingModule
           false,  // needsEagerInit
-          isTurboModule,  // isCxxModule — true for TurboModules
+          false,  // isCxxModule — false: this is a Java TurboModule, not C++ JSI
           isTurboModule   // isTurboModule
         )
       );
