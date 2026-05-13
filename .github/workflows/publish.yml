@@ -29,6 +29,14 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           cache: "pnpm"
 
+      # npm Trusted Publishing (token-less OIDC auth) requires npm >= 11.5.1.
+      # Node 22.x ships with npm 10.x by default, which knows how to sign
+      # provenance but not how to exchange the OIDC token for an npm publish
+      # credential — so the PUT to the registry would fail with 404 ("not
+      # authorized") despite the OIDC signature being valid.
+      - name: Upgrade npm for Trusted Publishing
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
