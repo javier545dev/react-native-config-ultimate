@@ -1,0 +1,8 @@
+# Every file change in this repo requires approval from @javier545dev.
+# Combined with branch protection's "Require review from Code Owners",
+# this means nobody can merge anything — including PRs from forks —
+# without an explicit approval from the package owner.
+#
+# Add more granular rules below if collaborators are added in the future.
+
+* @javier545dev
