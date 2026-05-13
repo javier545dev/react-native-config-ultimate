@@ -29,14 +29,6 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           cache: "pnpm"
 
-      # npm Trusted Publishing (token-less OIDC auth) requires npm >= 11.5.1.
-      # Node 22.x ships with npm 10.x by default, which knows how to sign
-      # provenance but not how to exchange the OIDC token for an npm publish
-      # credential — so the PUT to the registry would fail with 404 ("not
-      # authorized") despite the OIDC signature being valid.
-      - name: Upgrade npm for Trusted Publishing
-        run: npm install -g npm@latest
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -50,9 +42,15 @@ jobs:
         run: cp LICENSE README.md packages/react-native-config-ultimate/
 
       # Authentication via npm Trusted Publishing (OIDC):
-      # the workflow exchanges its OIDC token for an npm publish token at runtime,
-      # so no NPM_TOKEN secret is needed. Configured at
+      # the workflow exchanges its OIDC token for an npm publish token at
+      # runtime, so no NPM_TOKEN secret is needed. Configured at
       # https://www.npmjs.com/package/react-native-config-ultimate/access
-      - name: Publish to npm
-        run: npm publish --access public --provenance
+      #
+      # We invoke npm@latest via npx instead of the system npm because Trusted
+      # Publishing requires npm >= 11.5.1; Node 22.x ships with npm 10.x. Using
+      # npx avoids the well-known `npm install -g npm@latest` self-upgrade bug
+      # (Cannot find module 'promise-retry' mid-install) by running the new
+      # npm as a transient tool only for this step.
+      - name: Publish to npm with npm@latest
+        run: npx -y npm@latest publish --access public --provenance
         working-directory: packages/react-native-config-ultimate
