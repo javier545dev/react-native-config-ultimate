@@ -22,12 +22,20 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
+      # Node 24 ships with npm >= 11.5.1, which is the minimum the npm CLI
+      # needs to exchange GitHub Actions' OIDC token for an npm publish
+      # credential (Trusted Publishing). Earlier Node majors ship with npm 10,
+      # which signs provenance but cannot complete the OIDC token exchange and
+      # falls back to looking for NODE_AUTH_TOKEN — leading to a misleading
+      # 404 from the registry when no token is present.
+      #
+      # Per npm docs, release builds should also disable dependency caching to
+      # avoid any chance of cache-poisoning a published artifact.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
-          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -41,16 +49,12 @@ jobs:
       - name: Copy LICENSE and README to package
         run: cp LICENSE README.md packages/react-native-config-ultimate/
 
-      # Authentication via npm Trusted Publishing (OIDC):
-      # the workflow exchanges its OIDC token for an npm publish token at
-      # runtime, so no NPM_TOKEN secret is needed. Configured at
+      # Authentication via npm Trusted Publishing (OIDC).
+      # The npm CLI auto-detects the GitHub Actions OIDC environment and
+      # exchanges the id-token for a short-lived publish credential — no
+      # NPM_TOKEN secret is needed. Provenance attestation is also generated
+      # via the same OIDC flow. Trusted publisher is configured at
       # https://www.npmjs.com/package/react-native-config-ultimate/access
-      #
-      # We invoke npm@latest via npx instead of the system npm because Trusted
-      # Publishing requires npm >= 11.5.1; Node 22.x ships with npm 10.x. Using
-      # npx avoids the well-known `npm install -g npm@latest` self-upgrade bug
-      # (Cannot find module 'promise-retry' mid-install) by running the new
-      # npm as a transient tool only for this step.
-      - name: Publish to npm with npm@latest
-        run: npx -y npm@latest publish --access public --provenance
+      - name: Publish to npm
+        run: npm publish --access public --provenance
         working-directory: packages/react-native-config-ultimate
