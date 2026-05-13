@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.2.2](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.1...v0.2.2) (2026-05-13)
+
+
+### Bug Fixes
+
+* revert manifest to 0.2.1 to match published baseline ([#22](https://github.com/javier545dev/react-native-config-ultimate/issues/22)) ([d1bfd3e](https://github.com/javier545dev/react-native-config-ultimate/commit/d1bfd3e2f519acf29057a3c47022406dac14f22c))
+
 ## [0.2.1](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.0...v0.2.1) (2026-05-10)
 
 
