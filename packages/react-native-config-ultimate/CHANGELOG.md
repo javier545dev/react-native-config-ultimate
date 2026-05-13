@@ -13,7 +13,20 @@
 
 ### Bug Fixes
 
-* revert manifest to 0.2.1 to match published baseline ([#22](https://github.com/javier545dev/react-native-config-ultimate/issues/22)) ([d1bfd3e](https://github.com/javier545dev/react-native-config-ultimate/commit/d1bfd3e2f519acf29057a3c47022406dac14f22c))
+* **ios:** warn at runtime when `getValues()` returns an empty dictionary, mirroring the Android `setBuildConfig` warning. The new `RCTLogWarn` fires once per process (via `dispatch_once`) from both Old Architecture (`constantsToExport`) and New Architecture (`getAll`) entry points — users now get a clear log line instead of silently seeing `Config.MY_VAR === undefined` when `npx rncu` was not run before building, or when the env source was empty. ([#18](https://github.com/javier545dev/react-native-config-ultimate/pull/18))
+* revert release-please manifest to 0.2.1 to match the actual published baseline so the changelog computes from the right base tag. ([#22](https://github.com/javier545dev/react-native-config-ultimate/pull/22))
+
+
+### Documentation
+
+* cover the new iOS runtime warning in `troubleshooting.md`, `quickstart.md` and `api.md` with the exact log message, symptom, and fix. Also correct stale "Old Architecture only" notes about `setBuildConfig` — the call is required on **both** architectures, matching the current `UltimateConfigHelper` implementation. ([#18](https://github.com/javier545dev/react-native-config-ultimate/pull/18))
+
+
+### Supply Chain & Repo Hardening
+
+* switch `publish.yml` to npm Trusted Publishing (OIDC). The long-lived `NPM_TOKEN` secret has been removed from the repository; authentication now happens via short-lived OIDC token exchange at publish time. Combined with the existing `--provenance` flag, this means npm publishes carry a verifiable sigstore attestation tying them to this exact workflow run. ([#19](https://github.com/javier545dev/react-native-config-ultimate/pull/19))
+* add `.github/CODEOWNERS` so every file change requires owner approval, complementing the new branch ruleset's `require_code_owner_review` enforcement. ([#18](https://github.com/javier545dev/react-native-config-ultimate/pull/18))
+* add `.github/dependabot.yml` configuring weekly version updates for npm and github-actions, with minor/patch grouped into a single PR to reduce noise. Security alerts are now active on the repository. ([#18](https://github.com/javier545dev/react-native-config-ultimate/pull/18))
 
 ## [0.2.1](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.0...v0.2.1) (2026-05-10)
 
