@@ -8,6 +8,54 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.3.0](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.2...v0.3.0) (2026-05-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* Library now uses react-native-builder-bob for building
+* Gradle 6 will not be supported.
+
+### Features
+
+* **core:** tighter YAML, flatten and key-name safety ([1ec060c](https://github.com/javier545dev/react-native-config-ultimate/commit/1ec060c09481840c02616e9a40dc479fb5f3ce02))
+* migrate to react-native-builder-bob for builds ([775a749](https://github.com/javier545dev/react-native-config-ultimate/commit/775a7494f083427f13d157a21063c05d1df2e09a))
+* **pipeline:** always validate key names; harden xcconfig output; simplify override template ([99f37d5](https://github.com/javier545dev/react-native-config-ultimate/commit/99f37d531114566c7d04e436bb1417d87d4af41e))
+* **resolve-env:** validate on_env hook return type ([f0eb626](https://github.com/javier545dev/react-native-config-ultimate/commit/f0eb6266c798d409ea39d8d35f8e4c3c3433d26b))
+* support Gradle 7+ ([48ce3c9](https://github.com/javier545dev/react-native-config-ultimate/commit/48ce3c928f3d9fc58eacc947e7bac4224fdf69fd))
+* v0.2.0 - pnpm/turbo migration, Jest fix, RN 0.79-0.83 support ([91c4f44](https://github.com/javier545dev/react-native-config-ultimate/commit/91c4f4443e311a82b6ce2438c24dc822f78c78c6))
+* **web:** migrate to Vite + React Native Web ([98bd13e](https://github.com/javier545dev/react-native-config-ultimate/commit/98bd13efcd14ec5eb682510a92428a7c232082f1))
+
+
+### Bug Fixes
+
+* add react-native condition to exports for Metro 0.82+ compatibility ([d1803de](https://github.com/javier545dev/react-native-config-ultimate/commit/d1803de0b09766ed3c6b76620e28d40a215fd57b))
+* **android:** warn loudly when setBuildConfig was not called; correct quickstart ([e1bfc14](https://github.com/javier545dev/react-native-config-ultimate/commit/e1bfc140dbb280fd323c742a27e9f6ab2c84a9fc))
+* bugfixes and test coverage improvements (0.0.2) ([e5a03b7](https://github.com/javier545dev/react-native-config-ultimate/commit/e5a03b78d64b1a94131cacb00f94611c58c45f20))
+* **cli:** absolute paths, required env file, test-friendly entry ([f41b23d](https://github.com/javier545dev/react-native-config-ultimate/commit/f41b23d01e9adb604152dcaa8f4917894b524126))
+* exclude test files from npm package ([#9](https://github.com/javier545dev/react-native-config-ultimate/issues/9)) ([fca4c29](https://github.com/javier545dev/react-native-config-ultimate/commit/fca4c29ce6cbe73287ec1c5b9946c5cc0da14ef2))
+* improve build error messages when rncu has not been run ([#11](https://github.com/javier545dev/react-native-config-ultimate/issues/11)) ([770aa2a](https://github.com/javier545dev/react-native-config-ultimate/commit/770aa2a638534c00ae04a518d4b8b1547aaaafaf))
+* include NativeUltimateConfig.ts for Codegen ([8e4f165](https://github.com/javier545dev/react-native-config-ultimate/commit/8e4f165f0ba7a6edc2d29569f1cd17d2442536af))
+* **ios:** handle nil string in getAll() result ([ef741fc](https://github.com/javier545dev/react-native-config-ultimate/commit/ef741fcb62f79b4b4e711e89f7fcf0d6443b3606))
+* remove .ts files from npm package to fix Metro resolution in RN 0.80+ ([491cc06](https://github.com/javier545dev/react-native-config-ultimate/commit/491cc06657f724728651e8aa7e9498b57441da1e))
+* update peerDependencies to &gt;=0.73 and add missing keywords ([#5](https://github.com/javier545dev/react-native-config-ultimate/issues/5)) ([1174921](https://github.com/javier545dev/react-native-config-ultimate/commit/117492166a9cd886b5c917e24157eeffbfca90f9))
+
+
+### Styles
+
+* format code with Prettier ([f871e8f](https://github.com/javier545dev/react-native-config-ultimate/commit/f871e8fe5d57c6d43d0d187162c481f87c528e08))
+
+
+### Code Refactoring
+
+* **android:** extract BuildConfig helper and fix isCxxModule flag ([7b545bb](https://github.com/javier545dev/react-native-config-ultimate/commit/7b545bb8c900096e7d582825ba08dacb5ca7579f))
+* rename package directory, command rnuc→rncu, and all generated files ([77b0399](https://github.com/javier545dev/react-native-config-ultimate/commit/77b0399506f61303fcf3de8ea547354634eb82b6))
+
+
+### Build System
+
+* **gradle:** safe YAML loader, escape backslashes, quieter logging ([9060f14](https://github.com/javier545dev/react-native-config-ultimate/commit/9060f1481e2560806f1e1ee418793c5d4d06440f))
+
 ## [0.2.1](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.0...v0.2.1) (2026-05-10)
 
 
