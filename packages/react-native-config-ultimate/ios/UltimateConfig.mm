@@ -1,5 +1,26 @@
 #import "UltimateConfig.h"
 #import "ConfigValues.h"
+#import <React/RCTLog.h>
+
+// Mirror Android's runtime warning: if getValues() is empty, the consumer
+// either skipped `npx rncu <env-file>` before building, or generated the
+// header with an empty source. Without this warning the JS side just sees
+// Config.MY_VAR === undefined with no clue why. Fire once per process so
+// it doesn't spam the log on every getAll() call.
+static NSDictionary *getValuesChecked()
+{
+    static dispatch_once_t onceToken;
+    static NSDictionary *cached = nil;
+    dispatch_once(&onceToken, ^{
+        cached = getValues();
+        if (cached.count == 0) {
+            RCTLogWarn(@"[UltimateConfig] No config values found. Did you run "
+                       @"`npx rncu <env-file>` and rebuild the iOS app? "
+                       @"Required on both Old and New Architecture.");
+        }
+    });
+    return cached;
+}
 
 @implementation UltimateConfig
 RCT_EXPORT_MODULE()
@@ -11,7 +32,7 @@ RCT_EXPORT_MODULE()
 
 - (NSDictionary *)constantsToExport
 {
-    return getValues();
+    return getValuesChecked();
 }
 
 #ifdef RCT_NEW_ARCH_ENABLED
@@ -20,7 +41,7 @@ RCT_EXPORT_MODULE()
 // Using string avoids Codegen limitations with dynamic/indexed object types.
 - (NSString *)getAll
 {
-    NSDictionary *values = getValues();
+    NSDictionary *values = getValuesChecked();
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:values
                                                        options:0
