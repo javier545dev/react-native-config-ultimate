@@ -16,7 +16,8 @@ Common errors and solutions when using `react-native-config-ultimate`.
 |---------|-----------|
 | Config files not generated | Run `npx rncu .env` |
 | Values undefined at runtime | Regenerate + **full rebuild** (hot reload won't work) |
-| Android empty config `{}` | Add `setBuildConfig()` in MainApplication (Old Arch only) |
+| Android empty config `{}` | Add `setBuildConfig()` in MainApplication (required on both architectures) |
+| iOS empty config `{}` | Run `npx rncu <env-file>` and rebuild (header is generated at build time) |
 | iOS xcconfig not found | Drag `rncu.xcconfig` into Xcode project |
 | TypeScript errors | Regenerate with `npx rncu .env` |
 
@@ -94,7 +95,13 @@ yarn rncu .env
 
 ### Android: Empty config object `{}`
 
-**Cause 1**: Missing `setBuildConfig` call (Old Architecture only).
+**Cause 1**: Missing `setBuildConfig` call (required on both Old and New Architecture).
+
+You will see this warning in logcat:
+
+```
+W/UltimateConfig: setBuildConfig was never called. Add UltimateConfigModule.setBuildConfig(BuildConfig.class) to MainApplication.onCreate() — required on both Old and New Architecture.
+```
 
 **Solution**: Add to `MainApplication.kt`:
 
@@ -108,7 +115,7 @@ override fun onCreate() {
 }
 ```
 
-> **New Architecture**: If you're using TurboModules (RN 0.73+ with New Arch enabled), `setBuildConfig` is NOT required.
+> The native module looks up your **app's** generated `BuildConfig` class via reflection. The library cannot resolve it on its own — you have to hand it the reference once at app start, on both architectures.
 
 **Cause 2**: Missing `rncu.gradle` in `build.gradle`.
 
@@ -368,6 +375,36 @@ override fun onCreate() {
     UltimateConfigModule.setBuildConfig(BuildConfig::class.java)
 }
 ```
+
+### iOS: empty config at runtime (`npx rncu` not run before build)
+
+**Symptom:** `Config.MY_VAR` returns `undefined` on iOS. The following warning appears in Metro / the Xcode console at startup:
+
+```
+[UltimateConfig] No config values found. Did you run `npx rncu <env-file>` and rebuild the iOS app? Required on both Old and New Architecture.
+```
+
+**Why:** Unlike Android (which reads values via reflection at runtime), iOS bakes values into a generated `ConfigValues.h` header at **build time**. If the header was never generated, or was generated from an empty `.env`, `getValues()` returns `@{}` and JS receives an empty config.
+
+**Solution**:
+
+1. Generate the header with your env file:
+   ```bash
+   npx rncu .env
+   ```
+
+2. Verify it contains your variables (not a placeholder):
+   ```bash
+   cat node_modules/react-native-config-ultimate/ios/ConfigValues.h
+   ```
+
+3. **Full rebuild** (the new header is picked up by the Objective-C compiler, not by Metro):
+   ```bash
+   cd ios && pod install && cd ..
+   npx react-native run-ios
+   ```
+
+> The warning fires once per process via `dispatch_once`, so it won't spam your console. It's printed from both Old Arch (`constantsToExport`) and New Arch (`getAll`) code paths.
 
 ---
 
