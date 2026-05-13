@@ -293,6 +293,8 @@ For dotenv files, all values are typed as `string`. For YAML files, the actual t
 
 ![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=apple&logoColor=white)
 
+> **Required setup (both Old and New Architecture):** run `npx rncu <env-file>` before each iOS build so `ConfigValues.h` is regenerated. Unlike Android, values are baked into a compiled header at build time, not read via reflection — so a stale or empty header means JS sees an empty config. A runtime warning (`[UltimateConfig] No config values found…`) is emitted from the native module if this happens. See [troubleshooting → iOS: empty config at runtime](./troubleshooting.md#ios-empty-config-at-runtime-npx-rncu-not-run-before-build).
+
 ### Build Settings
 
 All values from env file are exposed to Build Settings.

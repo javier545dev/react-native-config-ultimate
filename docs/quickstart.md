@@ -107,6 +107,8 @@ This generates platform-specific files that native code reads at build time.
    ![set](./quickstart.assets/ios.3.png)
    ![set](./quickstart.assets/ios.4.png)
 
+> **Runtime sanity check:** if `Config.MY_VAR` is `undefined` at runtime and you see `[UltimateConfig] No config values found…` in the Xcode console, you skipped `npx rncu <env-file>` before building (or your `.env` was empty). See [troubleshooting → iOS: empty config at runtime](./troubleshooting.md#ios-empty-config-at-runtime-npx-rncu-not-run-before-build).
+
 ---
 
 ## 6. Configure Android (one-time setup)
