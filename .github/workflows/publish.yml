@@ -41,10 +41,11 @@ jobs:
       - name: Copy LICENSE and README to package
         run: cp LICENSE README.md packages/react-native-config-ultimate/
 
-      # Authentication via npm Trusted Publishing (OIDC):
-      # the workflow exchanges its OIDC token for an npm publish token at runtime,
-      # so no NPM_TOKEN secret is needed. Configured at
-      # https://www.npmjs.com/package/react-native-config-ultimate/access
+      # TEMPORARY: Trusted Publishing (OIDC) returned a 404 on the first 0.2.2
+      # publish attempt. Falling back to NPM_TOKEN so we can ship 0.2.2 now;
+      # OIDC setup needs to be revisited as a follow-up before the next release.
       - name: Publish to npm
         run: npm publish --access public --provenance
         working-directory: packages/react-native-config-ultimate
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
