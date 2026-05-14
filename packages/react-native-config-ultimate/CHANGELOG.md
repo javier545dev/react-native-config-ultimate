@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.2.3](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.2...v0.2.3) (2026-05-14)
+
+
+### Build System
+
+* **deps:** bump handlebars from 4.7.8 to 4.7.9 ([#21](https://github.com/javier545dev/react-native-config-ultimate/issues/21)) ([fc0cc53](https://github.com/javier545dev/react-native-config-ultimate/commit/fc0cc53a8892540dace0240fad09dd874e055d87))
+
 ## [0.2.2](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.1...v0.2.2) (2026-05-13)
 
 
