@@ -278,73 +278,11 @@ npx rncu .env --watch
 
 ## How It Works
 
-```mermaid
-flowchart TB
-    subgraph Config["📄 Configuration"]
-        ENV[".env"]
-        YAML[".env.yaml"]
-        SCHEMA[".rncurc.js"]
-    end
+The CLI reads your `.env` / `.env.yaml` at build time, generates platform-specific files (`rncu.xcconfig` for iOS, `BuildConfig` fields for Android, typed JS for the runtime), and your app reads the values natively at startup.
 
-    subgraph Build["🔧 Build Time"]
-        CLI["npx rncu"]
-    end
+📊 **[See the full architecture diagram with technology stack on the docs site →](https://javier545dev.github.io/react-native-config-ultimate/#how-it-works)**
 
-    subgraph Generated["📦 Generated Files"]
-        TS["env.ts + index.d.ts"]
-        XCCONFIG["rncu.xcconfig"]
-        KT["RNCUValues.kt"]
-    end
-
-    subgraph iOS["🍎 iOS"]
-        SWIFT["Swift"]
-        OBJC["Objective-C"]
-        PLIST["Info.plist"]
-        XCODE["Build Settings"]
-    end
-
-    subgraph Android["🤖 Android"]
-        KOTLIN["Kotlin"]
-        JAVA["Java"]
-        MANIFEST["AndroidManifest"]
-        GRADLE["build.gradle"]
-    end
-
-    subgraph Web["🌐 Web"]
-        VITE["Vite"]
-        WEBPACK["Webpack"]
-        RNW["React Native Web"]
-    end
-
-    subgraph JS["⚛️ JavaScript"]
-        REACT["React Components"]
-        HOOKS["Custom Hooks"]
-        SERVICES["API Services"]
-    end
-
-    ENV --> CLI
-    YAML --> CLI
-    SCHEMA --> CLI
-
-    CLI --> TS
-    CLI --> XCCONFIG
-    CLI --> KT
-
-    TS --> JS
-    TS --> Web
-
-    XCCONFIG --> iOS
-    KT --> Android
-
-    style Config fill:#e3f2fd
-    style Build fill:#fff8e1
-    style Generated fill:#e8f5e9
-    style iOS fill:#fafafa
-    style Android fill:#e8f5e9
-    style Web fill:#e1f5fe
-    style JS fill:#fce4ec
-```
-```
+> The diagram is intentionally hosted on the docs site (which renders Mermaid) instead of inlined here, because the npm package page does not render Mermaid blocks and the source would otherwise appear as raw text to anyone reading the package on npmjs.com.
 
 ---
 
