@@ -14,7 +14,7 @@ function detect_format(config_path: string): FileFormat {
 }
 
 function read_yaml(config_path: string): EnvData {
-  const data = yaml.load(fs.readFileSync(config_path).toString());
+  const data = yaml.load(fs.readFileSync(config_path, 'utf8'));
   if (typeof data === 'undefined' || data === null || typeof data !== 'object') {
     throw new Error(`Expected to read object from ${config_path}, but got '${data}'`);
   }

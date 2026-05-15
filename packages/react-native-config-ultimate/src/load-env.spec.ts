@@ -102,18 +102,18 @@ describe('load-env', () => {
       ${'yml'}
       ${'yaml'}
     `("reads yaml when extension is '.$extension'", ({ extension }: { extension: string }) => {
-      mockReadFileSync.mockReturnValueOnce(Buffer.from('data'));
+      mockReadFileSync.mockReturnValueOnce('data');
       mockYaml.mockReturnValueOnce({ hello: 'world' });
       const result = load_env(`hello.${extension}`);
-      expect(mockReadFileSync).toHaveBeenCalledWith(`hello.${extension}`);
+      expect(mockReadFileSync).toHaveBeenCalledWith(`hello.${extension}`, 'utf8');
       expect(mockYaml).toHaveBeenCalledWith('data');
       expect(result).toEqual({ hello: 'world' });
     });
 
     it('merges multiple yaml files, last file wins for conflicts', () => {
       mockReadFileSync
-        .mockReturnValueOnce(Buffer.from('A: base\nB: base'))
-        .mockReturnValueOnce(Buffer.from('B: override\nC: new'));
+        .mockReturnValueOnce('A: base\nB: base')
+        .mockReturnValueOnce('B: override\nC: new');
       mockYaml
         .mockReturnValueOnce({ A: 'base', B: 'base' })
         .mockReturnValueOnce({ B: 'override', C: 'new' });
@@ -138,7 +138,7 @@ describe('load-env', () => {
           ${null}
           ${undefined}
         `("when content is '$content'", ({ content }: { content: unknown }) => {
-          mockReadFileSync.mockReturnValueOnce(Buffer.from('data'));
+          mockReadFileSync.mockReturnValueOnce(String('data'));
           mockYaml.mockReturnValueOnce(content);
           expect(() => {
             load_env(`hello.${extension}`);
@@ -155,7 +155,7 @@ describe('load-env', () => {
 
     it('rejects YAML values parsed as Date with a quoting hint', () => {
       // js-yaml returns a Date instance for unquoted ISO dates like 2024-01-01.
-      mockReadFileSync.mockReturnValue(Buffer.from('RELEASE_DATE: 2024-01-01'));
+      mockReadFileSync.mockReturnValue(String('RELEASE_DATE: 2024-01-01'));
       mockYaml.mockReturnValue({ RELEASE_DATE: new Date('2024-01-01T00:00:00.000Z') });
 
       expect(() => load_env('config.yaml')).toThrow(
@@ -164,14 +164,14 @@ describe('load-env', () => {
     });
 
     it('rejects YAML arrays with a clear message', () => {
-      mockReadFileSync.mockReturnValueOnce(Buffer.from('TAGS: [a, b]'));
+      mockReadFileSync.mockReturnValueOnce(String('TAGS: [a, b]'));
       mockYaml.mockReturnValueOnce({ TAGS: ['a', 'b'] });
 
       expect(() => load_env('config.yaml')).toThrow(/arrays are not supported/);
     });
 
     it('lists multiple unsupported values in a single error', () => {
-      mockReadFileSync.mockReturnValueOnce(Buffer.from('data'));
+      mockReadFileSync.mockReturnValueOnce(String('data'));
       mockYaml.mockReturnValueOnce({
         DATE_KEY: new Date('2024-01-01'),
         ARRAY_KEY: [1, 2, 3],
@@ -186,7 +186,7 @@ describe('load-env', () => {
     it('merges yaml and dotenv files together', () => {
       // First file is yaml
       mockReadFileSync
-        .mockReturnValueOnce(Buffer.from('YAML_VAR: from_yaml'))
+        .mockReturnValueOnce(String('YAML_VAR: from_yaml'))
         .mockReturnValueOnce('DOTENV_VAR=from_dotenv');
       mockYaml.mockReturnValueOnce({ YAML_VAR: 'from_yaml' });
       mockParse.mockReturnValueOnce({ DOTENV_VAR: 'from_dotenv' });
@@ -203,7 +203,7 @@ describe('load-env', () => {
 
     it('dotenv file in mixed mode still gets expanded', () => {
       mockReadFileSync
-        .mockReturnValueOnce(Buffer.from('BASE: https://api.com'))
+        .mockReturnValueOnce(String('BASE: https://api.com'))
         .mockReturnValueOnce('URL=$BASE/v1');
       mockYaml.mockReturnValueOnce({ BASE: 'https://api.com' });
       mockParse.mockReturnValueOnce({ URL: '$BASE/v1' });
@@ -222,7 +222,7 @@ describe('load-env', () => {
 
     it('last file wins for conflicting keys in mixed mode', () => {
       mockReadFileSync
-        .mockReturnValueOnce(Buffer.from('SHARED: from_yaml'))
+        .mockReturnValueOnce(String('SHARED: from_yaml'))
         .mockReturnValueOnce('SHARED=from_dotenv');
       mockYaml.mockReturnValueOnce({ SHARED: 'from_yaml' });
       mockParse.mockReturnValueOnce({ SHARED: 'from_dotenv' });
@@ -235,7 +235,7 @@ describe('load-env', () => {
     it('handles dotenv first, then yaml', () => {
       mockReadFileSync
         .mockReturnValueOnce('DOTENV_VAR=first')
-        .mockReturnValueOnce(Buffer.from('YAML_VAR: second'));
+        .mockReturnValueOnce(String('YAML_VAR: second'));
       mockParse.mockReturnValueOnce({ DOTENV_VAR: 'first' });
       mockYaml.mockReturnValueOnce({ YAML_VAR: 'second' });
 
