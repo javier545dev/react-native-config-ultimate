@@ -2,7 +2,12 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
-// react-native-config-ultimate: loads env vars into BuildConfig
+// react-native-config-ultimate: loads env vars into BuildConfig.
+// Also expose them as AndroidManifest.xml placeholders so we can demo
+// `${APP_NAME}` / `${APP_ICON}` substitution in the manifest. Opt-in
+// because manifest placeholders are visible in the unpacked APK/AAB;
+// only enable for keys that are not sensitive (names, icons, urls).
+project.ext.rncuManifestPlaceholders = true
 apply from: project(':react-native-config-ultimate').projectDir.getPath() + "/rncu.gradle"
 
 /**
