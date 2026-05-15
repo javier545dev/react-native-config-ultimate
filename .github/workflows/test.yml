@@ -75,6 +75,14 @@ jobs:
       - name: Build library
         run: pnpm build
 
+      # The example app is excluded from the pnpm workspace, so its
+      # node_modules is not populated by the root `pnpm install`. Install
+      # its dependencies separately. The example has no committed lockfile
+      # (see #31), so use --no-frozen-lockfile.
+      - name: Install example dependencies
+        working-directory: packages/example
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
+
       - name: Pack library and install into example
         run: |
           mkdir -p /tmp/rncu-pack
