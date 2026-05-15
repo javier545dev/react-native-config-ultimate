@@ -77,11 +77,13 @@ jobs:
 
       # The example app is excluded from the pnpm workspace, so its
       # node_modules is not populated by the root `pnpm install`. Install
-      # its dependencies separately. The example has no committed lockfile
-      # (see #31), so use --no-frozen-lockfile.
+      # its dependencies separately. Use --ignore-workspace because pnpm
+      # otherwise walks up and re-runs at the workspace root (leaving the
+      # example's node_modules empty). No committed lockfile in example
+      # (see #31), hence --no-frozen-lockfile.
       - name: Install example dependencies
         working-directory: packages/example
-        run: pnpm install --no-frozen-lockfile --ignore-scripts
+        run: pnpm install --ignore-workspace --no-frozen-lockfile --ignore-scripts
 
       - name: Pack library and install into example
         run: |
