@@ -16,6 +16,26 @@ function load_rc(rc_file: string): RC | undefined {
   return require(rc_file) as RC;
 }
 
+/**
+ * Read this package's version from package.json. Tries both source
+ * (../package.json from src/) and compiled (../../package.json from lib/{commonjs,module}/)
+ * layouts so `--version` works in tests and in published builds.
+ */
+function get_pkg_version(): string {
+  for (const rel of ['../package.json', '../../package.json']) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, rel), 'utf8')) as {
+        name?: string;
+        version: string;
+      };
+      if (pkg.name === 'react-native-config-ultimate') return pkg.version;
+    } catch {
+      /* try next candidate */
+    }
+  }
+  return 'unknown';
+}
+
 function log(msg: string): void {
   process.stdout.write(`[rncu] ${msg}\n`);
 }
@@ -47,6 +67,8 @@ export default async function cli(): Promise<void> {
         'still require a full native rebuild.',
     })
     .usage('Usage: $0 <env-file> [env-file2 ...] [options]')
+    .version(get_pkg_version())
+    .alias('version', 'v')
     .help()
     .parseAsync();
 
