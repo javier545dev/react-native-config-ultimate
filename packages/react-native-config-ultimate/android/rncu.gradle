@@ -117,7 +117,14 @@ def escape_single(str) {
 }
 
 android {
-    // patch all variants with config values
+    // We use applicationVariants.all (the legacy variant API) on purpose:
+    // it does exactly what an env-var injector needs — write simple
+    // BuildConfig fields and resValues per variant — and works across
+    // AGP 7, 8, and 9. The newer androidComponents.onVariants API exists
+    // for plugins that manipulate the variant lifecycle or inject typed
+    // values, which is overkill here and additionally fails to compile
+    // when loaded via `apply from:` (its types are not on the script's
+    // classpath). If AGP eventually removes this API, revisit then.
     applicationVariants.all { variant ->
         logger.info "[rncu] processing variant ${variant.name}"
         def flavorName = variant.flavorName
@@ -127,13 +134,13 @@ android {
         logger.info "[rncu] variant '${variant.name}': ${keySet.size()} keys [${keySet.join(', ')}]"
         def rncuKeys = java.lang.String.join(",", keySet)
         variant.buildConfigField "String", "__RNCU_KEYS", "\"${rncuKeys}\""
-        // Only inject manifest placeholders if explicitly opted in via project.ext.rncuManifestPlaceholders = true
+        // Only inject manifest placeholders if explicitly opted in via project.ext.rncuManifestPlaceholders = true.
         // This prevents accidental secret leakage into AndroidManifest.xml (readable in APK/AAB).
         if (project.ext.has('rncuManifestPlaceholders') && project.ext.get('rncuManifestPlaceholders') == true) {
             variant.mergedFlavor.manifestPlaceholders.putAll(cfg)
         }
 
-        cfg.each { k,v -> 
+        cfg.each { k, v ->
             if (v instanceof java.lang.String) {
                 variant.buildConfigField "String", k, "\"${escape_double(v)}\""
                 variant.resValue "string", k, "${escape_single(v)}"
@@ -150,7 +157,6 @@ android {
                 throw new GradleException("unknown type for key ${k} in flavor ${flavorName}: ${v.getClass()}")
             }
         }
-
     }
     defaultConfig {
         project.ext.set("config", rootConfig)
