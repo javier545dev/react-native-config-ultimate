@@ -6,7 +6,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.33'
+        // snakeyaml 2.x fixes CVE-2022-1471 (RCE via deserialization).
+        // We already use SafeConstructor(LoaderOptions), which is the 2.x-compatible pattern,
+        // so the upgrade is API-compatible. See: https://snakeyaml.com/changelog.html
+        classpath group: 'org.yaml', name: 'snakeyaml', version: '2.6'
     }
 }
 
