@@ -8,6 +8,23 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.2.4](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.3...v0.2.4) (2026-05-16)
+
+
+### Features
+
+* **cli:** add --version flag with -v alias ([4563652](https://github.com/javier545dev/react-native-config-ultimate/commit/456365289651d2a445a3bb4084ea02c8ddab405c))
+
+
+### Bug Fixes
+
+* **load-env:** use explicit utf-8 encoding for YAML reads ([5569974](https://github.com/javier545dev/react-native-config-ultimate/commit/5569974142a5ececce2faaea71850d50741c5678))
+
+
+### Documentation
+
+* **android:** explain applicationVariants.all is intentional ([afbe7a7](https://github.com/javier545dev/react-native-config-ultimate/commit/afbe7a724a17b64756586405b48fce926c2be835))
+
 ## [0.2.3](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.2...v0.2.3) (2026-05-14)
 
 
