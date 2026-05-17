@@ -162,6 +162,14 @@ export default async function cli(): Promise<void> {
   const watcher = watch(files_to_watch, {
     ignoreInitial: true,
     persistent: true,
+    // Wait for the file write to settle before firing `change`. Without this,
+    // chokidar can emit `change` while the editor (or `>` redirect) is still
+    // writing, and fs.readFileSync returns the previous content — the
+    // pipeline then regenerates the output files using stale input.
+    awaitWriteFinish: {
+      stabilityThreshold: 150,
+      pollInterval: 50,
+    },
   });
 
   log(
