@@ -51,9 +51,12 @@ describe('load-env', () => {
         .mockReturnValueOnce({ B: 'override', C: 'new' });
       const result = load_env(['.env.base', '.env.staging']);
       expect(mockReadFileSync).toHaveBeenCalledTimes(2);
-      // expand is called once with the merged raw object
+      // expand is called once with the merged raw object.
+      // `processEnv: {}` isolates expansion from process.env so a long-running
+      // watch process does not leak stale values between regenerations.
       expect(mockExpand).toHaveBeenCalledWith({
         parsed: { A: 'base', B: 'override', C: 'new' },
+        processEnv: {},
       });
       expect(result).toEqual({ A: 'base', B: 'override', C: 'new' });
     });
@@ -88,6 +91,7 @@ describe('load-env', () => {
       const result = load_env(['.env.base', '.env.staging']);
       expect(mockExpand).toHaveBeenCalledWith({
         parsed: { BASE_URL: 'https://api.com', API_URL: '$BASE_URL/v1' },
+        processEnv: {},
       });
       expect(result).toEqual({
         BASE_URL: 'https://api.com',

@@ -77,7 +77,12 @@ export default function load_env(config_paths: string | string[]): EnvData {
       const content = fs.readFileSync(p, 'utf8');
       Object.assign(raw, dotenv.parse(content));
     }
-    const result = expand({ parsed: raw });
+    // `processEnv: {}` prevents dotenv-expand from leaking process.env values
+    // back into the parsed result. Without this, in long-running processes
+    // (`--watch` mode), the first run writes parsed values into process.env
+    // and every later run silently overrides the fresh values from disk
+    // with the stale ones still cached there.
+    const result = expand({ parsed: raw, processEnv: {} });
     return (result.parsed ?? raw) as EnvData;
   }
 
@@ -91,7 +96,7 @@ export default function load_env(config_paths: string | string[]): EnvData {
     } else {
       const content = fs.readFileSync(p, 'utf8');
       const parsed = dotenv.parse(content);
-      const expanded = expand({ parsed });
+      const expanded = expand({ parsed, processEnv: {} });
       Object.assign(merged, expanded.parsed ?? parsed);
     }
   }
