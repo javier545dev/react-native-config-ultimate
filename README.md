@@ -317,9 +317,12 @@ val apiUrl = BuildConfig.API_URL
 
 ## Compatibility
 
-| Version | React Native | React | Gradle | Architecture |
-|:-------:|:------------:|:-----:|:------:|:------------:|
-| **0.2.x** | ≥ 0.73 | ≥ 18 | ≥ 8 | ✅ New (TurboModules) |
+| Version | Node | React Native | React | Gradle | Architecture |
+|:-------:|:----:|:------------:|:-----:|:------:|:------------:|
+| **0.3.x** | ≥ 20.19 | ≥ 0.73 | ≥ 18 | ≥ 8 | ✅ New (TurboModules) |
+| **0.2.x** | ≥ 18 | ≥ 0.73 | ≥ 18 | ≥ 8 | ✅ New (TurboModules) |
+
+> **Node 20.19+ requirement on 0.3.x** comes from `chokidar` v5 (used for `--watch` mode), which is ESM-only. Node 20.19 and 22.12+ ship with `require(esm)` enabled by default, so the published CommonJS build works without changes.
 
 > **Need older RN support?** See [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config)
 
