@@ -15,10 +15,11 @@ Thanks for your interest in contributing! This guide will help you set up a loca
 ```
 react-native-config-ultimate/
 ├── packages/
-│   ├── react-native-config-ultimate/   # The library itself
-│   ├── example/                        # Example app (older RN version)
-│   ├── example083/                     # Example app for RN 0.83+
-│   └── example-web/                    # Web example
+│   └── react-native-config-ultimate/   # The publishable library
+├── apps/
+│   ├── example/                        # Example app for RN 0.83+
+│   ├── Example079/                     # Example app pinned to RN 0.79
+│   └── example-web/                    # Vite + React Native Web example
 └── package.json                        # Root workspace config
 ```
 
@@ -43,18 +44,18 @@ npm run build
 
 This generates the `lib/` directory with compiled JavaScript and TypeScript declarations.
 
-### 3. Testing with example083 (React Native 0.83+)
+### 3. Testing with example (React Native 0.83+)
 
-The `example083` project is configured as a **standalone project** (not part of the npm workspace) that links to the library via `file:` reference. This simulates how real consumers would use the library from npm.
+The `example` project is configured as a **standalone project** (not part of the npm workspace) that links to the library via `file:` reference. This simulates how real consumers would use the library from npm.
 
 ```bash
-cd packages/example083
+cd apps/example
 npm install
 ```
 
 #### Metro Configuration for Local Development
 
-When using `file:` links, Metro needs to know about the symlinked library folder. The `metro.config.js` in example083 is already configured for this:
+When using `file:` links, Metro needs to know about the symlinked library folder. The `metro.config.js` in example is already configured for this:
 
 ```javascript
 const path = require('path');
@@ -91,7 +92,7 @@ module.exports = mergeConfig(getDefaultConfig(__dirname), config);
 Before running the app, generate the native config files from your `.env`:
 
 ```bash
-cd packages/example083
+cd apps/example
 npx rncu .env
 ```
 
@@ -99,7 +100,7 @@ npx rncu .env
 
 **iOS:**
 ```bash
-cd packages/example083/ios
+cd apps/example/ios
 pod install
 cd ..
 npm run ios
@@ -107,7 +108,7 @@ npm run ios
 
 **Android:**
 ```bash
-cd packages/example083
+cd apps/example
 npm run android
 ```
 

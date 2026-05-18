@@ -135,9 +135,6 @@
     "js-yaml": "^4",
     "yargs": "^17"
   },
-  "workspaces": [
-    "example"
-  ],
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",

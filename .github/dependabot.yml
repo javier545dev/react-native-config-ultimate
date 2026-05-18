@@ -21,7 +21,7 @@ updates:
       - dependency-name: react
       - dependency-name: react-native
       # @react-native-community/cli surfaces a critical alert
-      # (GHSA-399j-vxmf-hjvr, OS command injection) only inside packages/Example079,
+      # (GHSA-399j-vxmf-hjvr, OS command injection) only inside apps/Example079,
       # the demo app pinned to RN 0.79.5 that we keep around to validate the
       # library on Old Architecture. The CLI is a dev-time tool that never reaches
       # the published library, so the vulnerability does not affect consumers of

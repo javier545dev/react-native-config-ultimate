@@ -164,7 +164,7 @@ curl -Ls "https://get.maestro.mobile.dev" | bash
 ### Prepare the app
 
 ```bash
-cd packages/example
+cd apps/example
 
 # Generate native config files
 npx rncu .env
@@ -224,7 +224,7 @@ native module loading failures, TurboModule initialization errors, etc.
 ### Install Detox
 
 ```bash
-cd packages/example
+cd apps/example
 npm install --save-dev detox @types/detox
 
 # iOS only — install xcpretty
@@ -234,7 +234,7 @@ gem install xcpretty
 ### Prepare the app
 
 ```bash
-cd packages/example
+cd apps/example
 
 # 1. Generate native config
 npx rncu .env
@@ -345,10 +345,10 @@ jobs:
         with: { node-version: 22 }
       - run: gem install xcpretty
       - run: npm install
-      - run: cd packages/example && npx rncu .env
-      - run: cd packages/example/ios && pod install
-      - run: cd packages/example && npm run test:e2e:build:ios
-      - run: cd packages/example && npm run test:e2e:ios
+      - run: cd apps/example && npx rncu .env
+      - run: cd apps/example/ios && pod install
+      - run: cd apps/example && npm run test:e2e:build:ios
+      - run: cd apps/example && npm run test:e2e:ios
 ```
 
 ---
@@ -358,12 +358,12 @@ jobs:
 | What | Command | Where |
 |---|---|---|
 | Unit tests (library) | `npm test` | `packages/react-native-config-ultimate/` |
-| Unit tests (example app) | `npm test` | `packages/example/` |
-| Maestro e2e | `maestro test .maestro/` | `packages/example/` |
-| Detox build iOS | `npm run test:e2e:build:ios` | `packages/example/` |
-| Detox run iOS | `npm run test:e2e:ios` | `packages/example/` |
-| Detox build Android | `npm run test:e2e:build:android` | `packages/example/` |
-| Detox run Android | `npm run test:e2e:android` | `packages/example/` |
+| Unit tests (example app) | `npm test` | `apps/example/` |
+| Maestro e2e | `maestro test .maestro/` | `apps/example/` |
+| Detox build iOS | `npm run test:e2e:build:ios` | `apps/example/` |
+| Detox run iOS | `npm run test:e2e:ios` | `apps/example/` |
+| Detox build Android | `npm run test:e2e:build:android` | `apps/example/` |
+| Detox run Android | `npm run test:e2e:android` | `apps/example/` |
 
 ---
 

@@ -349,9 +349,9 @@ val apiUrl = BuildConfig.API_URL
 
 | Project | React Native | Platforms | Description |
 |:--------|:------------:|:---------:|:------------|
-| [**example**](./packages/example) | 0.83 | iOS, Android | Full native app with YAML |
-| [**Example079**](./packages/Example079) | 0.79 | iOS, Android, Web | Native + Vite web |
-| [**example-web**](./packages/example-web) | — | Web | Standalone Vite + RN Web |
+| [**example**](./apps/example) | 0.83 | iOS, Android | Full native app with YAML |
+| [**Example079**](./apps/Example079) | 0.79 | iOS, Android, Web | Native + Vite web |
+| [**example-web**](./apps/example-web) | — | Web | Standalone Vite + RN Web |
 
 ---
 

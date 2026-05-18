@@ -287,13 +287,13 @@ This one-liner:
 
 ### Testing the Example App
 
-The example app is a React Native project in `packages/example/`. 
+The example app is a React Native project in `apps/example/`. 
 
 **Important for monorepo development**: The example needs symlinks for Android to work:
 
 ```bash
 # These are created automatically, but if needed:
-cd packages/example/node_modules
+cd apps/example/node_modules
 ln -sf ../../../node_modules/react-native react-native
 ln -sf ../../../node_modules/@react-native @react-native
 ```
