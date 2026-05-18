@@ -163,6 +163,97 @@ npx rncu .env.yaml
 
 ---
 
+## Upgrading from 0.2.x to 0.3.x
+
+> **TL;DR:** No public API changed. Bump Node to ≥20.19 and regenerate.
+> Two watch-mode bugs are fixed. One expansion behavior changed — see
+> [Behavior change](#behavior-change-shell-environment-no-longer-leaks-into-expansions) below.
+
+### 1. Bump Node to ≥20.19
+
+The library now requires Node ≥20.19. This is enforced via the `engines`
+field — older versions emit an `EBADENGINE` warning at install time and
+the CLI may fail at runtime.
+
+**Why:** `chokidar` v5 (used by `--watch` mode) ships as ESM and depends
+on `require(esm)`, which only became default in Node 20.19 and 22.12.
+Node 18 reached end-of-life on 30 April 2025.
+
+```bash
+# Check your Node version
+node --version
+# v20.19.0 or higher
+```
+
+If your team uses `.nvmrc` or `volta`, update the pin.
+
+### 2. Reinstall
+
+```bash
+npm install react-native-config-ultimate@^0.3
+# or
+yarn add react-native-config-ultimate@^0.3
+# or
+pnpm add react-native-config-ultimate@^0.3
+```
+
+No `pod install` or Android changes are needed. The native modules are
+unchanged.
+
+### 3. Regenerate output files
+
+```bash
+npx rncu .env
+```
+
+### Behavior change: shell environment no longer leaks into expansions
+
+Dotenv variable expansion (`$VAR`, `${VAR}`, `${VAR:-default}`) now sees
+**only the values declared in your env files** — not values from your
+shell or CI environment. This closes a watch-mode bug where stale values
+from previous regenerations were silently reused.
+
+**Before (0.2.x):**
+
+```env
+# .env
+API_URL=$HOME/api  # → "/Users/you/api" (pulled from shell)
+```
+
+**After (0.3.x):**
+
+```env
+# .env
+API_URL=$HOME/api  # → "/api" ($HOME is not defined in the .env file)
+```
+
+If you relied on shell variable interpolation, declare the value
+explicitly in your env file or compose it in a `.rncurc.js` `on_env`
+hook before the value reaches `rncu`.
+
+### What's fixed
+
+| Fix | Symptom before |
+|-----|----------------|
+| **Watch-mode stale-value leak** | After the first regeneration, `--watch` would emit outputs containing values from earlier runs instead of the current `.env` contents. |
+| **Chokidar fires mid-write** | Editors and shell redirects (`>`) that write `.env` incrementally could trigger regeneration with stale bytes. The watcher now waits for the file to settle before reacting. |
+
+### Internal: dep bumps
+
+For transparency, these versions were upgraded:
+
+| Dependency | 0.2.x | 0.3.x |
+|------------|-------|-------|
+| `chokidar`        | 4.0.3   | 5.0.0   |
+| `dotenv`          | 16.6.1  | 17.4.2  |
+| `dotenv-expand`   | ^12     | ^13     |
+
+The integration test suite locks the current behavior of `dotenv@17`
+and `dotenv-expand@13` so future major bumps surface any regressions
+loudly.
+
+---
+
 ## What's New in v0.2.0
 
 ### New Features
