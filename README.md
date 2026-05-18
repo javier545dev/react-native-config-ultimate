@@ -125,6 +125,9 @@ console.log(Config.API_URL); // https://api.myapp.com
 
 ### 1. Install
 
+> **Requires Node ≥20.19** on 0.3.x (chokidar v5 dependency — see [Compatibility](#compatibility)).
+> Upgrading from 0.2.x? See the [migration guide](./docs/migration.md#upgrading-from-02x-to-03x).
+
 ```bash
 npm install react-native-config-ultimate
 # or
