@@ -13,6 +13,8 @@ export interface ConfigVariables {
 {{/each}}
 }
 
+export type { ConfigValue, Spec } from './lib/typescript/src/index';
+
 declare const UltimateConfig: ConfigVariables;
 
 export default UltimateConfig;
