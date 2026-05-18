@@ -3,8 +3,7 @@
   "private": true,
   "packageManager": "pnpm@10.28.0",
   "workspaces": [
-    "packages/react-native-config-ultimate",
-    "apps/example-web"
+    "packages/react-native-config-ultimate"
   ],
   "scripts": {
     "build": "turbo build --filter=react-native-config-ultimate",
@@ -28,9 +27,9 @@
     "example079:web:preview": "cd apps/Example079 && pnpm web:preview",
     "example:web:env": "cd apps/example-web && npx rncu .env --libRoot ../../packages/react-native-config-ultimate",
     "example:web:setup": "pnpm run build && pnpm run example:web:env",
-    "example:web:dev": "pnpm --filter=example-web dev",
-    "example:web:build": "pnpm --filter=example-web build",
-    "example:web:preview": "pnpm --filter=example-web preview"
+    "example:web:dev": "cd apps/example-web && pnpm dev",
+    "example:web:build": "cd apps/example-web && pnpm build",
+    "example:web:preview": "cd apps/example-web && pnpm preview"
   },
   "devDependencies": {
     "@bacons/xcode": "1.0.0-alpha.33",
