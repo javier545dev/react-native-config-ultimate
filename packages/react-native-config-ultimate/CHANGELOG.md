@@ -8,6 +8,13 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.2.5](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.4...v0.2.5) (2026-05-18)
+
+
+### Bug Fixes
+
+* **types:** point package types to generated index.d.ts ([b8c890e](https://github.com/javier545dev/react-native-config-ultimate/commit/b8c890ea730ea4d5fa823f4fa4dd1cb19a7eb7e1))
+
 ## [0.2.4](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.3...v0.2.4) (2026-05-16)
 
 
