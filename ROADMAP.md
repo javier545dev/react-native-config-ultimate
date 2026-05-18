@@ -69,9 +69,30 @@ Estado actual y futuro de react-native-config-ultimate.
 
 ## Planeado
 
-### v0.3.0 - CLI Enhancements
+### v0.3.0 - Dependency Hygiene & Watch-mode Fixes
+
+> Esta es la release actual en preparación. No agrega API pública; sube el
+> piso de Node y arregla dos bugs de `--watch`.
+
+- [x] **Bump dependencies**
+  - [x] `chokidar` 4 → 5
+  - [x] `dotenv` 16 → 17
+  - [x] `dotenv-expand` 12 → 13
+- [x] **Bump Node floor a ≥20.19** (requerido por chokidar v5 ESM)
+- [x] **Fix:** watch-mode stale-value leak (`processEnv: {}` isolation)
+- [x] **Fix:** chokidar fires `change` mid-write (`awaitWriteFinish`)
+- [x] **Test:** integration spec sin mocks que lockea el comportamiento de
+      las deps mayores para futuros bumps
+- [ ] Tagear y publicar
+
+**Breaking change:** consumidores en Node 18 o Node 20.0–20.18 no soportados.
+Ver [`docs/migration.md`](./docs/migration.md#upgrading-from-02x-to-03x).
+
+### v0.4.0 - CLI Enhancements
 
 > Specs y design ya escritos vía SDD (engram). Implementación todavía no comenzada.
+> Originalmente planeado para 0.3.0; movido a 0.4.0 cuando 0.3.0 absorbió
+> el ciclo de dep hygiene.
 
 #### `rncu init` - Auto-setup nativo
 - [ ] **Phase 1: Foundation**
@@ -145,9 +166,20 @@ Estado actual y futuro de react-native-config-ultimate.
 - [ ] Ejemplos de CI/CD (GitHub Actions, Bitrise, CircleCI)
 - [ ] Changelog detallado por versión
 
+### Maintenance & Dependencies
+- [ ] **`migrate-js-yaml-to-yaml`** — reemplazar `js-yaml` (sin release desde 2022)
+      por `yaml` (eemeli/yaml, activamente mantenido, mejor spec YAML 1.2).
+      Requiere SDD: verificar parity del comportamiento Date-detection
+      (`load-env.ts:26`) y multidoc. Candidato 0.4.x.
+- [ ] **`evaluate-node-parseenv`** — evaluar si `node:util.parseEnv`
+      (estable en Node 22 LTS) puede reemplazar `dotenv` + `dotenv-expand`.
+      Bloqueante: necesitamos una solución de expansión (`$VAR`,
+      `${VAR:-default}`) — `parseEnv` no expande. Candidato ≥0.5.0 cuando
+      Node 22 sea piso seguro.
+
 ---
 
-## v0.4.0 - Secure Keys (JNI/C++)
+## v0.5.0 - Secure Keys (JNI/C++)
 
 **KILLER FEATURE** — Secrets protegidos con código nativo compilado.
 
@@ -207,7 +239,7 @@ Config.secureFor('API_KEY')  // "sk_live_123456"
 
 ### Comparación Final
 
-| Feature | rncu v0.4 | react-native-config | react-native-keys |
+| Feature | rncu v0.5 | react-native-config | react-native-keys |
 |---------|:---------:|:-------------------:|:-----------------:|
 | New Architecture | ✅ | ❌ | ✅ |
 | YAML + per-platform | ✅ | ❌ | ❌ |
@@ -241,8 +273,10 @@ Config.secureFor('API_KEY')  // "sk_live_123456"
 | Versión | Estado | Highlights |
 |---------|--------|------------|
 | **0.2.0** | ✅ Released | Primera versión estable. New Arch, React 19, Web support |
-| **0.3.0** | 🚧 Planned | `rncu init`, `rncu validate` |
-| **0.4.0** | 📋 Planned | **Secure Keys** — JNI/C++ para secrets protegidos |
+| **0.2.x** | ✅ Released | Patches y hardening (audit pre-release, supply chain, iOS warning) |
+| **0.3.0** | 🚧 In prep | Bump deps (chokidar 5, dotenv 17, expand 13), Node ≥20.19, fixes de `--watch` |
+| **0.4.0** | 📋 Planned | `rncu init`, `rncu validate` (CLI enhancements) |
+| **0.5.0** | 📋 Planned | **Secure Keys** — JNI/C++ para secrets protegidos |
 | **1.0.0** | 🎯 Goal | API estable, feature complete
 
 ---
