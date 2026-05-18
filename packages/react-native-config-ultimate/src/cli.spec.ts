@@ -114,6 +114,24 @@ describe('cli', () => {
       );
     });
 
+    it('configures awaitWriteFinish so chokidar waits for partial writes to settle', async () => {
+      // Without this option, chokidar fires `change` while editors/redirects
+      // are still writing the file — the pipeline then regenerates outputs
+      // from stale bytes. The exact thresholds are part of the contract:
+      // if they get loosened we want a test failure, not silent regression.
+      set_argv('.env', '--watch');
+      await cli();
+      expect(mock_chokidar_watch).toHaveBeenCalledWith(
+        ['.env'],
+        expect.objectContaining({
+          awaitWriteFinish: {
+            stabilityThreshold: 150,
+            pollInterval: 50,
+          },
+        })
+      );
+    });
+
     it('also watches .rncurc.js when it exists', async () => {
       set_argv('.env', '--watch');
       // All files exist (env + RC). We suppress the require() error below

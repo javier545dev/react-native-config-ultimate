@@ -218,6 +218,12 @@ describe('load-env', () => {
 
       const result = load_env(['config.yaml', '.env']);
 
+      // Mixed-format path must also isolate expansion from process.env —
+      // otherwise watch-mode regenerations leak stale values here too.
+      expect(mockExpand).toHaveBeenCalledWith({
+        parsed: { URL: '$BASE/v1' },
+        processEnv: {},
+      });
       expect(result).toEqual({
         BASE: 'https://api.com',
         URL: 'https://api.com/v1',
