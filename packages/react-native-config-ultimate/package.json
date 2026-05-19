@@ -5,16 +5,19 @@
   "description": "Config that works. A community-maintained fork of react-native-ultimate-config.",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
-  "types": "./index.d.ts",
+  "types": "./lib/typescript/src/index.d.ts",
   "react-native": "./src/index.ts",
   "source": "./src/index.ts",
   "exports": {
     ".": {
       "react-native": "./src/index.ts",
       "source": "./src/index.ts",
-      "types": "./index.d.ts",
+      "types": "./lib/typescript/src/index.d.ts",
       "browser": "./index.web.js",
       "default": "./lib/module/index.js"
+    },
+    "./index": {
+      "types": "./index.d.ts"
     },
     "./package.json": "./package.json"
   },

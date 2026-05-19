@@ -135,10 +135,11 @@ describe('render-env', () => {
   });
 
   describe('template content', () => {
-    it('index.d.ts contains type declarations for ios env keys', () => {
+    it('index.d.ts contains ConfigVariables export for ios env keys', () => {
       const result = render_env(project_root, lib_root, sample_env);
       const content = result[path.join(lib_root, 'index.d.ts')];
 
+      expect(content).toContain('export interface ConfigVariables');
       expect(content).toContain('API_URL');
       expect(content).toContain('DEBUG');
       expect(content).toContain('PORT');

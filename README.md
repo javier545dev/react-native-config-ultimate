@@ -185,6 +185,25 @@ function App() {
 
 **That's it!** Full guide: [**Quickstart →**](./docs/quickstart.md)
 
+### 5. TypeScript Setup (recommended)
+
+Out of the box, `Config.API_URL` resolves to a generic `string | number | boolean` because the library cannot know your env keys at publish time. To get **fully typed access** with autocomplete and compile-time errors on typos, drop this 5-line augmentation file into your project once:
+
+```ts
+// rncu-types.d.ts (at your project root, committed to git)
+declare module 'react-native-config-ultimate' {
+  import type { ConfigVariables } from 'react-native-config-ultimate/index';
+  const Config: ConfigVariables;
+  export default Config;
+}
+```
+
+**How it works:** every time you run `npx rncu`, the CLI regenerates `node_modules/react-native-config-ultimate/index.d.ts` with a `ConfigVariables` interface containing your exact keys (`HELLO: string`, `PORT: number`, `DEBUG: boolean`, etc.). The augmentation above pulls that interface in and types the default export with it.
+
+You only write this file **once**. The keys evolve via `rncu`; your augmentation stays stable.
+
+> If your `tsconfig.json` uses `"include": ["src"]` (or any pattern that excludes the project root), either add `"rncu-types.d.ts"` to `include` or move the file inside `src/`.
+
 ---
 
 ## Features
