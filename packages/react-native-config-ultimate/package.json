@@ -1,7 +1,7 @@
 {
   "name": "react-native-config-ultimate",
   "title": "React Native Config Ultimate",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Config that works. A community-maintained fork of react-native-ultimate-config.",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
@@ -43,7 +43,7 @@
   ],
   "scripts": {
     "example": "yarn workspace react-native-config-ultimate-example",
-    "build": "bob build && node -e \"const fs=require('fs');const f='lib/commonjs/cli.js';const c=fs.readFileSync(f,'utf8');if(!c.startsWith('#!')){fs.writeFileSync(f,'#!/usr/bin/env node\\n'+c)}\"",
+    "build": "bob build && node -e \"const fs=require('fs');const f='lib/commonjs/cli.js';const c=fs.readFileSync(f,'utf8');if(!c.startsWith('#!')){fs.writeFileSync(f,'#!/usr/bin/env node\\n'+c)}fs.chmodSync(f,0o755)\"",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "npm run build",
     "prepack": "printf '#error \"react-native-config-ultimate: ConfigValues.h not generated. Run: npx rncu .env from your project root before building iOS.\\n\"' > ios/ConfigValues.h",
