@@ -85,7 +85,8 @@ export default function render_env(
   project_root: string,
   lib_root: string,
   env: PlatformEnv,
-  rc?: RC
+  rc?: RC,
+  sidecar?: { json: string }
 ): FileMap {
   const { ios, android, web } = env;
   const map: FileMap = {
@@ -109,6 +110,10 @@ export default function render_env(
     ios: js_override ? ios : {},
     android: js_override ? android : {},
   });
+
+  if (sidecar) {
+    map[path.join(lib_root, 'android', 'rncu.yaml.sha256')] = sidecar.json;
+  }
 
   return map;
 }

@@ -42,7 +42,15 @@ export default function write_env(files: FileMap): void {
   }
 
   // Phase 2: atomically rename temp → dest.
-  // We collect errors and rethrow at the end so the caller gets a clear message.
+  // Sort so the sidecar (rncu.yaml.sha256) is renamed LAST. If Gradle observes
+  // mid-write, it sees "missing sidecar" (clear error) rather than "drifted sidecar"
+  // (confusing mismatch). See design D-7.
+  pending.sort((a, b) => {
+    const a_is_sidecar = a.dest.endsWith('rncu.yaml.sha256') ? 1 : 0;
+    const b_is_sidecar = b.dest.endsWith('rncu.yaml.sha256') ? 1 : 0;
+    return a_is_sidecar - b_is_sidecar;
+  });
+
   const rename_errors: string[] = [];
 
   for (const { tmp, dest } of pending) {
