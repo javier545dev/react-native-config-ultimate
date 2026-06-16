@@ -9,9 +9,22 @@ jest.doMock('./flatten', () => ({ __esModule: true, default: mock_flatten }));
 const mock_validate_env = jest.fn();
 const mock_validate_keys = jest.fn();
 jest.doMock('./validate-env', () => ({ validate_env: mock_validate_env, validate_keys: mock_validate_keys }));
+const mock_build_sidecar = jest.fn();
+jest.doMock('./sidecar', () => ({
+  build_sidecar: mock_build_sidecar,
+  compute_file_sha256: jest.fn().mockReturnValue('a'.repeat(64)),
+}));
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const main: (...args: unknown[]) => Promise<void> = require('./main').default;
+
+// Helper: mock load_env to return the new { data, sources } shape
+function mock_load_env_result(
+  data: Record<string, unknown>,
+  sources: Array<{ path: string; sha256: string }> = []
+) {
+  mock_load_env.mockReturnValueOnce({ data, sources });
+}
 
 export const files_to_assert = [
   'ios/rncu.xcconfig',
@@ -30,16 +43,18 @@ describe('main', () => {
     mock_flatten.mockReset();
     mock_validate_env.mockReset();
     mock_validate_keys.mockReset();
+    mock_build_sidecar.mockReset();
+    mock_build_sidecar.mockReturnValue({ json: '{}', combined_hash: 'a'.repeat(64) });
   });
 
   it('execute render with paths (string arg — backward-compatible)', async () => {
-    mock_load_env.mockReturnValueOnce({ data: true });
+    mock_load_env_result({ data: true }, [{ path: 'file', sha256: 'abc' }]);
     mock_flatten.mockReturnValueOnce({ data: true, ios: true });
     mock_flatten.mockReturnValueOnce({ data: true, android: true });
     mock_flatten.mockReturnValueOnce({ data: true, web: true });
     mock_render_env.mockReturnValueOnce({ hello: 'world' });
     await main('project', 'project/node_modules/react-native-config-ultimate', 'file');
-    expect(mock_load_env).toHaveBeenCalledWith('file');
+    expect(mock_load_env).toHaveBeenCalledWith('file', 'project');
     expect(mock_flatten).toHaveBeenCalledWith({ data: true }, 'ios');
     expect(mock_flatten).toHaveBeenCalledWith({ data: true }, 'android');
     expect(mock_flatten).toHaveBeenCalledWith({ data: true }, 'web');
@@ -51,25 +66,27 @@ describe('main', () => {
         android: { data: true, android: true },
         web: { data: true, web: true },
       },
-      undefined
+      undefined,
+      { json: '{}' }
     );
     expect(mock_write_env).toHaveBeenCalledWith({ hello: 'world' });
   });
 
   it('passes array of env files to load_env (multi-file merge)', async () => {
-    mock_load_env.mockReturnValueOnce({ data: true });
+    mock_load_env_result({ data: true });
     mock_flatten.mockReturnValue({});
     mock_render_env.mockReturnValueOnce({});
     await main('project', 'project/node_modules/react-native-config-ultimate', [
       '.env.base',
       '.env.staging',
     ]);
-    expect(mock_load_env).toHaveBeenCalledWith(['.env.base', '.env.staging']);
+    expect(mock_load_env).toHaveBeenCalledWith(['.env.base', '.env.staging'], 'project');
   });
+
   describe('rc.on_env', () => {
     it('invoke rc hook with config before flattening', async () => {
       const on_env = jest.fn();
-      mock_load_env.mockReturnValueOnce({ data: true });
+      mock_load_env_result({ data: true });
       await main('project', 'project/node_modules/react-native-config-ultimate', 'file', {
         on_env,
       });
@@ -85,7 +102,7 @@ describe('main', () => {
         void key1;
         return { ...rest, key2: 'hello' };
       });
-      mock_load_env.mockReturnValueOnce({ data: true, key1: 'bye' });
+      mock_load_env_result({ data: true, key1: 'bye' });
       await main('project', 'project/node_modules/react-native-config-ultimate', 'file', {
         on_env,
       });
@@ -99,7 +116,7 @@ describe('main', () => {
   describe('rc.schema', () => {
     it('calls validate_env when schema is provided', async () => {
       const schema = { API_KEY: { type: 'string' as const, required: true } };
-      mock_load_env.mockReturnValueOnce({ API_KEY: 'secret' });
+      mock_load_env_result({ API_KEY: 'secret' });
       mock_flatten.mockReturnValue({});
       mock_render_env.mockReturnValueOnce({});
       await main('project', 'project/node_modules/react-native-config-ultimate', 'file', {
@@ -109,7 +126,7 @@ describe('main', () => {
     });
 
     it('does not call validate_env when no schema is provided', async () => {
-      mock_load_env.mockReturnValueOnce({ data: true });
+      mock_load_env_result({ data: true });
       mock_flatten.mockReturnValue({});
       mock_render_env.mockReturnValueOnce({});
       await main('project', 'project/node_modules/react-native-config-ultimate', 'file');
@@ -117,7 +134,7 @@ describe('main', () => {
     });
 
     it('always calls validate_keys even without a schema', async () => {
-      mock_load_env.mockReturnValueOnce({ API_KEY: 'secret' });
+      mock_load_env_result({ API_KEY: 'secret' });
       mock_flatten.mockReturnValue({});
       mock_render_env.mockReturnValueOnce({});
       await main('project', 'project/node_modules/react-native-config-ultimate', 'file');
@@ -127,7 +144,7 @@ describe('main', () => {
     it('validates env AFTER on_env hook runs (hook output is validated)', async () => {
       const schema = { INJECTED_KEY: { type: 'string' as const, required: true } };
       const on_env = jest.fn().mockReturnValue({ INJECTED_KEY: 'from-hook' });
-      mock_load_env.mockReturnValueOnce({});
+      mock_load_env_result({});
       mock_flatten.mockReturnValue({});
       mock_render_env.mockReturnValueOnce({});
       await main('project', 'project/node_modules/react-native-config-ultimate', 'file', {
@@ -140,13 +157,59 @@ describe('main', () => {
 
     it('propagates validation error thrown by validate_env', async () => {
       const schema = { API_KEY: { type: 'string' as const, required: true } };
-      mock_load_env.mockReturnValueOnce({});
+      mock_load_env_result({});
       mock_validate_env.mockImplementation(() => {
         throw new Error('❌ validation failed: Missing required env var: API_KEY');
       });
       await expect(
         main('project', 'project/node_modules/react-native-config-ultimate', 'file', { schema })
       ).rejects.toThrow('Missing required env var: API_KEY');
+    });
+  });
+
+  // ─── T9: sidecar wired into pipeline ─────────────────────────────────────────
+
+  describe('sidecar pipeline — T9', () => {
+    it('build_sidecar is called with sources from load_env and flavor_mapping null when no rc.flavor_env_mapping', async () => {
+      const sources = [{ path: '.env.staging', sha256: 'abc123' }];
+      mock_load_env_result({ KEY: 'val' }, sources);
+      mock_flatten.mockReturnValue({});
+      mock_render_env.mockReturnValueOnce({});
+      await main('project', 'project/node_modules/react-native-config-ultimate', '.env.staging');
+      expect(mock_build_sidecar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sources,
+          flavor_mapping: null,
+        })
+      );
+    });
+
+    it('render_env is called with the sidecar JSON from build_sidecar', async () => {
+      mock_load_env_result({ KEY: 'val' }, [{ path: '.env.staging', sha256: 'abc' }]);
+      mock_flatten.mockReturnValue({});
+      mock_render_env.mockReturnValueOnce({});
+      mock_build_sidecar.mockReturnValueOnce({ json: '{"version":1}', combined_hash: 'x'.repeat(64) });
+      await main('project', 'project/node_modules/react-native-config-ultimate', '.env.staging');
+      expect(mock_render_env).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        undefined,
+        { json: '{"version":1}' }
+      );
+    });
+
+    it('build_sidecar receives flavor_mapping from rc.flavor_env_mapping when set', async () => {
+      const flavor_env_mapping = { staging: '.env.staging', prod: '.env.prod' };
+      mock_load_env_result({ KEY: 'val' }, [{ path: '.env.staging', sha256: 'abc' }]);
+      mock_flatten.mockReturnValue({});
+      mock_render_env.mockReturnValueOnce({});
+      await main('project', 'project/node_modules/react-native-config-ultimate', '.env.staging', {
+        flavor_env_mapping,
+      });
+      expect(mock_build_sidecar).toHaveBeenCalledWith(
+        expect.objectContaining({ flavor_mapping: flavor_env_mapping })
+      );
     });
   });
 });

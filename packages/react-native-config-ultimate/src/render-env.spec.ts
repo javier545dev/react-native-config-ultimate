@@ -319,6 +319,58 @@ describe('handlebars helpers (via template output)', () => {
   });
 });
 
+// ─── T7: sidecar added to FileMap ────────────────────────────────────────────
+
+describe('render-env — sidecar in FileMap (T7)', () => {
+  const project_root = '/project';
+  const lib_root = '/project/node_modules/react-native-config-ultimate';
+
+  const sample_env = {
+    ios: { KEY: 'val' },
+    android: { KEY: 'val' },
+    web: { KEY: 'val' },
+  };
+
+  beforeEach(() => {
+    mock_exists_sync.mockImplementation((p: fs.PathLike) => {
+      const path_str = p.toString();
+      if (path_str === path.join(project_root, 'ios')) return true;
+      if (path_str.includes('templates')) {
+        return (jest.requireActual('fs') as typeof fs).existsSync(p);
+      }
+      return false;
+    });
+
+    mock_read_file_sync.mockImplementation((p: fs.PathOrFileDescriptor, options?: unknown) => {
+      const path_str = p.toString();
+      if (path_str.includes('templates')) {
+        return (jest.requireActual('fs') as typeof fs).readFileSync(p, options as BufferEncoding);
+      }
+      return 'mocked content';
+    });
+  });
+
+  it('when sidecar arg is omitted, rncu.yaml.sha256 is absent from FileMap', () => {
+    const result = render_env(project_root, lib_root, sample_env);
+    const sidecar_path = path.join(lib_root, 'android', 'rncu.yaml.sha256');
+    expect(result[sidecar_path]).toBeUndefined();
+  });
+
+  it('when sidecar is passed, FileMap contains rncu.yaml.sha256 at correct path', () => {
+    const sidecar_json = '{"version":1}';
+    const result = render_env(project_root, lib_root, sample_env, undefined, { json: sidecar_json });
+    const sidecar_path = path.join(lib_root, 'android', 'rncu.yaml.sha256');
+    expect(result[sidecar_path]).toBeDefined();
+  });
+
+  it('sidecar content matches exactly the passed-in JSON string', () => {
+    const sidecar_json = '{"version":1,"combinedHash":"abc123"}';
+    const result = render_env(project_root, lib_root, sample_env, undefined, { json: sidecar_json });
+    const sidecar_path = path.join(lib_root, 'android', 'rncu.yaml.sha256');
+    expect(result[sidecar_path]).toBe(sidecar_json);
+  });
+});
+
 describe('template caching', () => {
   const project_root = '/project';
   const lib_root = '/project/node_modules/react-native-config-ultimate';
