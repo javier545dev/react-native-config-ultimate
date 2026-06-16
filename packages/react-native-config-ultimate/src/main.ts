@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import load_env from './load-env';
 import render_env from './render-env';
 import write_env from './write-env';
@@ -9,11 +11,24 @@ import { build_sidecar } from './sidecar';
 import type { RC, EnvData } from './resolve-env';
 import type { EnvConfig } from './flatten';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pkg = require('../package.json') as { version: string };
-
+/**
+ * Read this package's version from package.json. Tries both source layout
+ * (../package.json from src/) and compiled layout (../../package.json from
+ * lib/{commonjs,module}/) so this works in tests and in published builds.
+ */
 function get_pkg_version(): string {
-  return pkg.version;
+  for (const rel of ['../package.json', '../../package.json']) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, rel), 'utf8')) as {
+        name?: string;
+        version: string;
+      };
+      if (pkg.name === 'react-native-config-ultimate') return pkg.version;
+    } catch {
+      /* try next candidate */
+    }
+  }
+  return 'unknown';
 }
 
 /**
