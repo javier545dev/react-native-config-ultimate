@@ -8,6 +8,24 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.3.0](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.5...v0.3.0) (2026-06-17)
+
+
+### Features
+
+* **android:** Gradle sidecar reader, divergence check, manifestPlaceholders revert (PR 2/2) ([#45](https://github.com/javier545dev/react-native-config-ultimate/issues/45)) ([a009568](https://github.com/javier545dev/react-native-config-ultimate/commit/a0095680ccbf3ad5878497f2c2aca1f703a9f723))
+* **cli:** sidecar checksum pipeline for Android stale env-var fix (PR 1/2) ([#43](https://github.com/javier545dev/react-native-config-ultimate/issues/43)) ([b178765](https://github.com/javier545dev/react-native-config-ultimate/commit/b1787658599f0090d8d695074b9598bcbb53667a))
+
+
+### Bug Fixes
+
+* **cli:** chmod 0755 cli.js so the published binary is executable ([40baaf4](https://github.com/javier545dev/react-native-config-ultimate/commit/40baaf4320c53d224a6591df1c06e29de554bfd9))
+
+
+### Miscellaneous Chores
+
+* release 0.3.0 ([8b95024](https://github.com/javier545dev/react-native-config-ultimate/commit/8b9502430f93267ab9cc77d12a03535510f22c60))
+
 ## [0.3.0] (Unreleased)
 
 ### BREAKING CHANGE: minimum Gradle version is now 7.4
