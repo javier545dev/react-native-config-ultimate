@@ -11,7 +11,10 @@ const mockYaml = jest.fn();
 jest.doMock('js-yaml', () => ({ load: mockYaml }));
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const load_env: (paths: string | string[]) => Record<string, unknown> =
+const load_env: (
+  paths: string | string[],
+  project_root?: string
+) => { data: Record<string, unknown>; sources: Array<{ path: string; sha256: string }> } =
   require('./load-env').default;
 
 describe('load-env', () => {
@@ -28,18 +31,18 @@ describe('load-env', () => {
     it('reads a single dotenv file (backward-compatible string arg)', () => {
       mockReadFileSync.mockReturnValueOnce('hello=world');
       mockParse.mockReturnValueOnce({ hello: 'world' });
-      const result = load_env('hello');
+      const result = load_env('hello', '/project');
       expect(mockReadFileSync).toHaveBeenCalledWith('hello', 'utf8');
       expect(mockParse).toHaveBeenCalledWith('hello=world');
-      expect(result).toEqual({ hello: 'world' });
+      expect(result.data).toEqual({ hello: 'world' });
     });
 
     it('reads a single dotenv file when passed as an array', () => {
       mockReadFileSync.mockReturnValueOnce('hello=world');
       mockParse.mockReturnValueOnce({ hello: 'world' });
-      const result = load_env(['hello']);
+      const result = load_env(['hello'], '/project');
       expect(mockReadFileSync).toHaveBeenCalledWith('hello', 'utf8');
-      expect(result).toEqual({ hello: 'world' });
+      expect(result.data).toEqual({ hello: 'world' });
     });
 
     it('merges multiple dotenv files, last file wins for conflicts', () => {
@@ -49,13 +52,13 @@ describe('load-env', () => {
       mockParse
         .mockReturnValueOnce({ A: 'base', B: 'base' })
         .mockReturnValueOnce({ B: 'override', C: 'new' });
-      const result = load_env(['.env.base', '.env.staging']);
+      const result = load_env(['.env.base', '.env.staging'], '/project');
       expect(mockReadFileSync).toHaveBeenCalledTimes(2);
       // expand is called once with the merged raw object
       expect(mockExpand).toHaveBeenCalledWith({
         parsed: { A: 'base', B: 'override', C: 'new' },
       });
-      expect(result).toEqual({ A: 'base', B: 'override', C: 'new' });
+      expect(result.data).toEqual({ A: 'base', B: 'override', C: 'new' });
     });
 
     it('expands $VAR references using dotenv-expand', () => {
@@ -64,8 +67,8 @@ describe('load-env', () => {
       mockExpand.mockReturnValueOnce({
         parsed: { BASE: 'https://api.com', URL: 'https://api.com/v1' },
       });
-      const result = load_env('.env');
-      expect(result).toEqual({
+      const result = load_env('.env', '/project');
+      expect(result.data).toEqual({
         BASE: 'https://api.com',
         URL: 'https://api.com/v1',
       });
@@ -85,11 +88,11 @@ describe('load-env', () => {
           API_URL: 'https://api.com/v1',
         },
       });
-      const result = load_env(['.env.base', '.env.staging']);
+      const result = load_env(['.env.base', '.env.staging'], '/project');
       expect(mockExpand).toHaveBeenCalledWith({
         parsed: { BASE_URL: 'https://api.com', API_URL: '$BASE_URL/v1' },
       });
-      expect(result).toEqual({
+      expect(result.data).toEqual({
         BASE_URL: 'https://api.com',
         API_URL: 'https://api.com/v1',
       });
@@ -104,10 +107,10 @@ describe('load-env', () => {
     `("reads yaml when extension is '.$extension'", ({ extension }: { extension: string }) => {
       mockReadFileSync.mockReturnValueOnce('data');
       mockYaml.mockReturnValueOnce({ hello: 'world' });
-      const result = load_env(`hello.${extension}`);
+      const result = load_env(`hello.${extension}`, '/project');
       expect(mockReadFileSync).toHaveBeenCalledWith(`hello.${extension}`, 'utf8');
       expect(mockYaml).toHaveBeenCalledWith('data');
-      expect(result).toEqual({ hello: 'world' });
+      expect(result.data).toEqual({ hello: 'world' });
     });
 
     it('merges multiple yaml files, last file wins for conflicts', () => {
@@ -117,9 +120,9 @@ describe('load-env', () => {
       mockYaml
         .mockReturnValueOnce({ A: 'base', B: 'base' })
         .mockReturnValueOnce({ B: 'override', C: 'new' });
-      const result = load_env(['base.yaml', 'staging.yaml']);
+      const result = load_env(['base.yaml', 'staging.yaml'], '/project');
       expect(mockReadFileSync).toHaveBeenCalledTimes(2);
-      expect(result).toEqual({ A: 'base', B: 'override', C: 'new' });
+      expect(result.data).toEqual({ A: 'base', B: 'override', C: 'new' });
     });
 
     describe.each`
@@ -141,7 +144,7 @@ describe('load-env', () => {
           mockReadFileSync.mockReturnValueOnce(String('data'));
           mockYaml.mockReturnValueOnce(content);
           expect(() => {
-            load_env(`hello.${extension}`);
+            load_env(`hello.${extension}`, '/project');
           }).toThrow();
         });
       }
@@ -150,7 +153,7 @@ describe('load-env', () => {
 
   describe('edge cases', () => {
     it('throws when no files are provided', () => {
-      expect(() => load_env([])).toThrow('No env file specified');
+      expect(() => load_env([], '/project')).toThrow('No env file specified');
     });
 
     it('rejects YAML values parsed as Date with a quoting hint', () => {
@@ -158,7 +161,7 @@ describe('load-env', () => {
       mockReadFileSync.mockReturnValue(String('RELEASE_DATE: 2024-01-01'));
       mockYaml.mockReturnValue({ RELEASE_DATE: new Date('2024-01-01T00:00:00.000Z') });
 
-      expect(() => load_env('config.yaml')).toThrow(
+      expect(() => load_env('config.yaml', '/project')).toThrow(
         /Unsupported value types[\s\S]*RELEASE_DATE: YAML parsed as Date/
       );
     });
@@ -167,7 +170,7 @@ describe('load-env', () => {
       mockReadFileSync.mockReturnValueOnce(String('TAGS: [a, b]'));
       mockYaml.mockReturnValueOnce({ TAGS: ['a', 'b'] });
 
-      expect(() => load_env('config.yaml')).toThrow(/arrays are not supported/);
+      expect(() => load_env('config.yaml', '/project')).toThrow(/arrays are not supported/);
     });
 
     it('lists multiple unsupported values in a single error', () => {
@@ -178,7 +181,7 @@ describe('load-env', () => {
         OK_KEY: 'fine',
       });
 
-      expect(() => load_env('config.yaml')).toThrow(/DATE_KEY[\s\S]*ARRAY_KEY/);
+      expect(() => load_env('config.yaml', '/project')).toThrow(/DATE_KEY[\s\S]*ARRAY_KEY/);
     });
   });
 
@@ -191,11 +194,11 @@ describe('load-env', () => {
       mockYaml.mockReturnValueOnce({ YAML_VAR: 'from_yaml' });
       mockParse.mockReturnValueOnce({ DOTENV_VAR: 'from_dotenv' });
 
-      const result = load_env(['config.yaml', '.env']);
+      const result = load_env(['config.yaml', '.env'], '/project');
 
       expect(mockYaml).toHaveBeenCalled();
       expect(mockParse).toHaveBeenCalled();
-      expect(result).toEqual({
+      expect(result.data).toEqual({
         YAML_VAR: 'from_yaml',
         DOTENV_VAR: 'from_dotenv',
       });
@@ -212,9 +215,9 @@ describe('load-env', () => {
         parsed: { URL: 'https://api.com/v1' },
       });
 
-      const result = load_env(['config.yaml', '.env']);
+      const result = load_env(['config.yaml', '.env'], '/project');
 
-      expect(result).toEqual({
+      expect(result.data).toEqual({
         BASE: 'https://api.com',
         URL: 'https://api.com/v1',
       });
@@ -227,9 +230,9 @@ describe('load-env', () => {
       mockYaml.mockReturnValueOnce({ SHARED: 'from_yaml' });
       mockParse.mockReturnValueOnce({ SHARED: 'from_dotenv' });
 
-      const result = load_env(['config.yaml', '.env']);
+      const result = load_env(['config.yaml', '.env'], '/project');
 
-      expect(result.SHARED).toBe('from_dotenv');
+      expect(result.data.SHARED).toBe('from_dotenv');
     });
 
     it('handles dotenv first, then yaml', () => {
@@ -239,12 +242,59 @@ describe('load-env', () => {
       mockParse.mockReturnValueOnce({ DOTENV_VAR: 'first' });
       mockYaml.mockReturnValueOnce({ YAML_VAR: 'second' });
 
-      const result = load_env(['.env', 'config.yml']);
+      const result = load_env(['.env', 'config.yml'], '/project');
 
-      expect(result).toEqual({
+      expect(result.data).toEqual({
         DOTENV_VAR: 'first',
         YAML_VAR: 'second',
       });
+    });
+  });
+
+  // ─── T6: sources[] with hashes ───────────────────────────────────────────────
+
+  describe('sources[] — T6', () => {
+    it('return type includes { data, sources }', () => {
+      mockReadFileSync.mockReturnValueOnce('KEY=val');
+      mockParse.mockReturnValueOnce({ KEY: 'val' });
+      const result = load_env('.env.staging', '/project');
+      expect(result).toHaveProperty('data');
+      expect(result).toHaveProperty('sources');
+      expect(Array.isArray(result.sources)).toBe(true);
+    });
+
+    it('sources[0].path is POSIX-relative to project_root (forward slashes)', () => {
+      mockReadFileSync.mockReturnValueOnce('KEY=val');
+      mockParse.mockReturnValueOnce({ KEY: 'val' });
+      const result = load_env('.env.staging', '/project');
+      expect(result.sources[0]?.path).toBe('.env.staging');
+      expect(result.sources[0]?.path).not.toContain('\\');
+    });
+
+    it('sources[0].sha256 is a 64-char hex string derived from file content', () => {
+      mockReadFileSync.mockReturnValueOnce('KEY=val');
+      mockParse.mockReturnValueOnce({ KEY: 'val' });
+      const result = load_env('.env.staging', '/project');
+      expect(result.sources[0]?.sha256).toMatch(/^[0-9a-f]{64}$/);
+    });
+
+    it('multiple files produce one source entry per file', () => {
+      mockReadFileSync
+        .mockReturnValueOnce('A=1')
+        .mockReturnValueOnce('B=2');
+      mockParse
+        .mockReturnValueOnce({ A: '1' })
+        .mockReturnValueOnce({ B: '2' });
+      const result = load_env(['.env.base', '.env.staging'], '/project');
+      expect(result.sources).toHaveLength(2);
+      expect(result.sources[0]?.path).toBe('.env.base');
+      expect(result.sources[1]?.path).toBe('.env.staging');
+    });
+
+    it('path escaping project_root throws', () => {
+      mockReadFileSync.mockReturnValueOnce('KEY=val');
+      mockParse.mockReturnValueOnce({ KEY: 'val' });
+      expect(() => load_env('../../outside/.env', '/project')).toThrow();
     });
   });
 });

@@ -40,6 +40,20 @@ export interface RC {
    * Validated after `on_env` runs (so the hook can add/transform vars before validation).
    */
   schema?: Schema;
+  /**
+   * Optional mapping of Android product flavor name → env file path (relative to project root).
+   * When set, the CLI renders one YAML per flavor and writes a combined sidecar covering all.
+   * Must match the key set of `project.ext.flavorEnvMapping` in your `android/app/build.gradle`.
+   *
+   * @example
+   * module.exports = {
+   *   flavor_env_mapping: {
+   *     staging: '.env.staging',
+   *     prod:    '.env.prod',
+   *   },
+   * };
+   */
+  flavor_env_mapping?: Record<string, string>;
 }
 
 export default async function resolve_env(env: EnvData, rc?: RC): Promise<EnvData> {

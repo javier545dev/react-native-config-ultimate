@@ -93,6 +93,31 @@ describe('write-env', () => {
     expect(() => write_env({ hello: 'world' })).toThrow('hello');
   });
 
+  // ─── T8: sidecar renamed LAST in Phase 2 ──────────────────────────────────
+
+  it('sidecar (rncu.yaml.sha256) is renamed AFTER all other files in Phase 2', () => {
+    const files = {
+      '/lib/android/rncu.yaml': 'yaml content',
+      '/lib/android/rncu.yaml.sha256': '{"version":1}',
+      '/lib/index.d.ts': 'type content',
+    };
+
+    write_env(files);
+
+    const rename_calls = mockRenameSync.mock.calls as Array<[string, string]>;
+    const dest_order = rename_calls.map(([, dest]) => dest);
+    const sidecar_idx = dest_order.indexOf('/lib/android/rncu.yaml.sha256');
+    const other_idxs = dest_order
+      .map((d, i) => ({ d, i }))
+      .filter(({ d }) => d !== '/lib/android/rncu.yaml.sha256')
+      .map(({ i }) => i);
+
+    expect(sidecar_idx).toBeGreaterThan(-1);
+    for (const idx of other_idxs) {
+      expect(sidecar_idx).toBeGreaterThan(idx);
+    }
+  });
+
   it('cleans up temp files when Phase 1 write fails', () => {
     // First write succeeds, second fails mid-write
     mockWriteFileSync
