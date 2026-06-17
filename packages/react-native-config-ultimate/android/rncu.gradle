@@ -198,6 +198,7 @@ def buildRootConfig() {
         return config
     } else {
         logger.info "[rncu] No flavor mapping detected. Reading injected file"
+        def libAndroidDir = buildscript.sourceFile.getParent()
         def yamlAbsPath = new File(libAndroidDir, 'rncu.yaml').absolutePath
         def yamlFile = layout.projectDirectory.file(yamlAbsPath)
         def yamlText
