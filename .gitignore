@@ -57,3 +57,4 @@ logs/
 
 # AI Agent Config
 .atl/
+.claude/
