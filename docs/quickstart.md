@@ -14,6 +14,7 @@ Get up and running with `react-native-config-ultimate` in 5 minutes.
 
 | Library | React Native | React | Gradle | Architecture |
 |:-------:|:------------:|:-----:|:------:|:------------:|
+| **0.3.x** | ≥ 0.73 | 18 / 19 | ≥ 7.4 | Old & New (TurboModules) |
 | **0.2.x** | ≥ 0.73 | 18 / 19 | ≥ 8 | Old & New (TurboModules) |
 
 **Supported Platforms:**
@@ -113,6 +114,8 @@ This generates platform-specific files that native code reads at build time.
 
 ## 6. Configure Android (one-time setup)
 <a name="android-setup"></a>
+
+> **Prerequisites:** Gradle 7.4+ required (0.3.0+). Check your version in `android/gradle/wrapper/gradle-wrapper.properties`. See [Migration Guide](./migration.md#migrating-to-030) if you need to upgrade.
 
 ### Step 1: Apply the Gradle plugin
 
@@ -255,12 +258,32 @@ See [API Reference](./api.md) for complete native code examples.
 
 ## Switching environments
 
+**On Android (0.3.0+), `npx rncu` is required before every build that uses a different env.** Gradle verifies that your `.env` file hasn't changed since the last CLI run. If you skip this step, the build fails immediately with an actionable error.
+
+**Workflow:**
+
+```bash
+# 1. Pick your env and run the CLI
+npx rncu .env.staging
+
+# 2. Build Android
+cd android && ./gradlew bundleRelease
+```
+
+If you edit `.env.staging` without re-running the CLI, Gradle will stop the build with:
+
+```
+Source env file(s) changed since the rncu CLI was last run:
+  - .env.staging changed
+Run:  npx rncu .env.staging
+Then retry the Android build.
+```
+
+**Other common invocations:**
+
 ```bash
 # Development
 npx rncu .env.dev
-
-# Staging  
-npx rncu .env.staging
 
 # Production
 npx rncu .env.prod
@@ -269,9 +292,20 @@ npx rncu .env.prod
 npx rncu .env.base .env.staging
 ```
 
+**Recommended `package.json` script** — run the CLI automatically before every Android build:
+
+```json
+{
+  "scripts": {
+    "preandroid": "rncu .env"
+  }
+}
+```
+
 After running `rncu`:
 - **JavaScript changes**: Just reload the app
 - **Native changes** (Info.plist, AndroidManifest): Rebuild required
+- **Android with config cache** (`org.gradle.configuration-cache=true`): No `--no-configuration-cache` flag needed in 0.3.0+; the sidecar file is a tracked input that automatically invalidates the cache when env values change.
 
 ---
 

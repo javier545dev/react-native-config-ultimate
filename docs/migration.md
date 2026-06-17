@@ -10,6 +10,122 @@ This guide covers migrating from other environment variable libraries to `react-
 
 ---
 
+## Migrating to 0.3.0
+
+This release ships two important Android changes. Read all five sections before upgrading.
+
+### 1. Gradle 7.4+ required
+
+**Check your version:**
+
+```bash
+cat android/gradle/wrapper/gradle-wrapper.properties | grep distributionUrl
+```
+
+The URL should contain `gradle-7.4-` or newer (e.g. `gradle-8.9-`).
+
+**Upgrade** — edit `android/gradle/wrapper/gradle-wrapper.properties`:
+
+```properties
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-bin.zip
+```
+
+**Cannot upgrade?** Pin the library:
+
+```bash
+npm install react-native-config-ultimate@^0.2.5
+# or
+pnpm add react-native-config-ultimate@^0.2.5
+```
+
+Then delete any leftover sidecar file if present:
+
+```bash
+rm -f node_modules/react-native-config-ultimate/android/rncu.yaml.sha256
+```
+
+---
+
+### 2. New file: `rncu.yaml.sha256`
+
+After upgrading to 0.3.0, every `npx rncu` invocation writes a sidecar checksum file to:
+
+```
+node_modules/react-native-config-ultimate/android/rncu.yaml.sha256
+```
+
+This file is a JSON document that records the SHA-256 of every `.env` source file. Gradle reads it at configuration time to detect when `.env` has changed since the last CLI run.
+
+**You do not need to commit this file.** It lives inside `node_modules/`, which is already gitignored.
+
+**Do not hand-edit it.** It is regenerated on every `npx rncu` run.
+
+---
+
+### 3. `manifestPlaceholders` reverted to default-on
+
+In v0.2.1 (commit `9060f14`), `manifestPlaceholders.putAll(cfg)` was silently made opt-in — requiring `project.ext.set("rncuManifestPlaceholders", true)` in `build.gradle` to activate. This change was undocumented and broke projects that relied on `${KEY}` references in `AndroidManifest.xml`.
+
+**0.3.0 restores the pre-0.2.1 default:** injection is on unless explicitly disabled.
+
+| Your current `build.gradle` | What to do in 0.3.0 |
+|-----------------------------|---------------------|
+| `project.ext.set("rncuManifestPlaceholders", true)` | Remove the line — it's a no-op now (you'll see a WARN log nudge). |
+| Nothing (no flag) | Nothing. Injection runs as expected. |
+| `project.ext.set("rncuManifestPlaceholders", false)` | Keep it. This is the new opt-out escape hatch (prevents `${ENV_VAR}` from resolving in `AndroidManifest.xml`). |
+
+---
+
+### 4. Flavor users: add `flavor_env_mapping` to `.rncurc.js`
+
+If your project uses `project.ext.flavorEnvMapping` in `build.gradle`, you now also need to declare the same mapping in `.rncurc.js` so the CLI can generate a complete sidecar.
+
+**Example — your existing `build.gradle`:**
+
+```gradle
+project.ext.set("flavorEnvMapping", [
+    staging: "node_modules/react-native-config-ultimate/android/rncu.staging.yaml",
+    prod:    "node_modules/react-native-config-ultimate/android/rncu.prod.yaml"
+])
+```
+
+**Add matching keys to `.rncurc.js`:**
+
+```js
+module.exports = {
+  flavor_env_mapping: {
+    staging: '.env.staging',
+    prod:    '.env.prod',
+  },
+};
+```
+
+The **keys** must match exactly (case-sensitive). The values in `.rncurc.js` are your `.env` source files; the values in `build.gradle` are the generated YAML output paths. Both are required; only the keys are compared.
+
+---
+
+### 5. Rollback
+
+If you hit a problem in 0.3.0, pin to 0.2.x:
+
+```json
+// package.json
+"dependencies": {
+  "react-native-config-ultimate": "~0.2.5"
+}
+```
+
+Then reinstall and remove the sidecar:
+
+```bash
+npm install
+rm -f node_modules/react-native-config-ultimate/android/rncu.yaml.sha256
+```
+
+Bug reports welcome at [GitHub Issues](https://github.com/javier545dev/react-native-config-ultimate/issues).
+
+---
+
 ## Migrating from `react-native-ultimate-config`
 
 This library is a community-maintained fork of [`react-native-ultimate-config`](https://github.com/maxkomarychev/react-native-ultimate-config) with New Architecture support, bug fixes, and active maintenance. Migration is straightforward — the API is 100% compatible.

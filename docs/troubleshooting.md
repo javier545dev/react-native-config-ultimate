@@ -35,6 +35,97 @@ Common errors and solutions when using `react-native-config-ultimate`.
 
 ## Build Issues
 
+### Build fails with "Source env file(s) changed since the rncu CLI was last run"
+
+**Error (0.3.0+):**
+
+```
+react-native-config-ultimate — Android build error
+════════════════════════════════════════════════════════════
+  Source env file(s) changed since the rncu CLI was last run:
+    - .env.staging changed
+
+  Run from your React Native project root:
+
+    npx rncu .env.staging
+
+  Then retry the Android build.
+```
+
+**Cause:** You edited a `.env` file after the last `npx rncu` run. Gradle detects this via a SHA-256 checksum stored in `rncu.yaml.sha256` and hard-fails to prevent shipping stale values.
+
+**Fix:**
+
+```bash
+npx rncu .env.staging   # or whichever file the error names
+./gradlew bundleRelease
+```
+
+**When this is expected:** Every time you edit `.env` without re-running `npx rncu`.
+
+**When this might be a false positive:** If your editor converted line endings from LF to CRLF — see the CRLF section below.
+
+---
+
+### Build fails with "requires Gradle 7.4 or newer"
+
+**Error (0.3.0+):**
+
+```
+react-native-config-ultimate 0.3.0+ requires Gradle 7.4 or newer.
+Current: 7.3.3.
+Pin to react-native-config-ultimate@^0.2.0 if you cannot upgrade Gradle.
+```
+
+**Fix — upgrade Gradle** (edit `android/gradle/wrapper/gradle-wrapper.properties`):
+
+```properties
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-bin.zip
+```
+
+**Fix — pin the library if you cannot upgrade Gradle:**
+
+```bash
+npm install react-native-config-ultimate@^0.2.5
+```
+
+See [Migration Guide → 0.3.0 → Section 1](./migration.md#migrating-to-030) for details.
+
+---
+
+### Divergence error after CRLF / line ending change
+
+**Symptom:** `npx rncu` succeeds, but the next Android build immediately fails with a divergence error even though you didn't change any `.env` values.
+
+**Cause:** SHA-256 is a byte-level hash. If your editor (VS Code on Windows, Notepad, etc.) silently converted LF line endings to CRLF in the `.env` file, the bytes changed — even though the visible content looks identical. Gradle detects this and fails.
+
+**Fix:**
+
+1. Configure your editor to always use LF for `.env` files. In VS Code, add to `.vscode/settings.json`:
+
+   ```json
+   {
+     "files.eol": "\n"
+   }
+   ```
+
+   Or add a `.editorconfig` at the project root:
+
+   ```ini
+   [.env*]
+   end_of_line = lf
+   ```
+
+2. After configuring the editor, re-run the CLI to refresh the sidecar with the correct line endings:
+
+   ```bash
+   npx rncu .env   # or whichever .env file was affected
+   ```
+
+**Why this is intentional:** The hash check catches any byte-level change to ensure the CLI saw exactly the same content as what Gradle builds against. CRLF vs LF produces different binary output, which is a real content difference even if semantically equivalent.
+
+---
+
 ### Missing config files error
 
 **Error:**
