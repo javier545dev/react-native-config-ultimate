@@ -8,6 +8,40 @@
 >
 > All notable changes to this project will be documented in this file.
 
+## [0.3.0] (Unreleased)
+
+### BREAKING CHANGE: minimum Gradle version is now 7.4
+
+`rncu.gradle` hard-fails at configuration phase when the running Gradle is older than 7.4. This is required for `providers.fileContents()` support, which is the config-cache-safe file read API.
+
+**Migration:**
+- Upgrade Gradle to 7.4+ in `android/gradle/wrapper/gradle-wrapper.properties`.
+- Or pin the library to `react-native-config-ultimate@^0.2.5` if you cannot upgrade Gradle.
+
+See [docs/migration.md](../../docs/migration.md#migrating-to-030) for the upgrade steps.
+
+### BREAKING CHANGE (inverse — restores pre-0.2.1 behavior): `manifestPlaceholders` is default-on again
+
+Commit `9060f14` (v0.2.1) silently changed `manifestPlaceholders.putAll(cfg)` from default-on to opt-in, requiring `project.ext.set("rncuManifestPlaceholders", true)` to activate it. This undocumented change broke projects using `${KEY}` references in `AndroidManifest.xml`.
+
+**0.3.0 reverts this:** injection is on by default. Setting `= false` is the new opt-out.
+
+| Before 0.3.0 (0.2.1–0.2.5) | 0.3.0+ |
+|---|---|
+| `= true` required for injection | Remove the line — it's a no-op (you'll see a WARN log nudge) |
+| Nothing set → no injection | Nothing set → injection runs (restored) |
+| `= false` → no injection | `= false` → no injection (opt-out, unchanged) |
+
+### Added
+
+- **Sidecar checksum tracking.** The CLI (`npx rncu`) now writes `rncu.yaml.sha256` alongside `rncu.yaml` in `node_modules/react-native-config-ultimate/android/`. This file records the SHA-256 of every `.env` source file. Gradle reads it via `providers.fileContents()` so it becomes a tracked configuration-cache input — switching environments invalidates the cache automatically.
+
+- **Hard divergence check at Gradle configuration time.** If you edit a `.env` file without re-running `npx rncu`, Gradle fails immediately with a clear error naming the changed file and the exact CLI command to fix it. Builds no longer silently ship stale values.
+
+- **`flavor_env_mapping` in `.rncurc.js`.** Flavor-mode users can now declare the `flavor → .env file` mapping in their RC config. The sidecar records this mapping; Gradle cross-checks it against `project.ext.flavorEnvMapping` key sets at build time.
+
+---
+
 ## [0.2.5](https://github.com/javier545dev/react-native-config-ultimate/compare/v0.2.4...v0.2.5) (2026-05-18)
 
 
