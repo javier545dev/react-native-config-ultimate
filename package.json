@@ -34,6 +34,6 @@
   },
   "devDependencies": {
     "@bacons/xcode": "1.0.0-alpha.33",
-    "turbo": "^2.8.17"
+    "turbo": "^2.9.14"
   }
 }
